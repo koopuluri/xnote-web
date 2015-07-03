@@ -1,0 +1,103 @@
+
+textarea:focus, input:focus{
+    outline-color: #34BE5F;
+}
+
+.form-input {
+	padding: 15px;
+	margin-top: 15px;
+	margin-left: 15px;
+	width: 90%;
+	height: 50px;
+	float: top;
+
+	border-width: 1px;
+	border-radius: 5px;
+
+}
+
+.submit-button {
+	margin-top: 35px;
+	width: 90%;
+	margin-left: 15px;
+
+	font-family: 'Roboto', sans-serif;
+	font-weight: 100;
+	font-size: 22px;
+}
+
+.submit-button:hover {
+	background-color: #2A984C;
+	border-color: #2A984C;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: #34BE5F;
+	border-color: #34BE5F; 
+}
+
+
+.loginsignup-signup {
+	width: 300px;
+	overflow: hidden;
+	margin: auto;
+	margin-top: 50px;
+}
+
+
+
+.add-on {
+	width: 300px;
+	text-align: center;
+}
+
+.title {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	font-size: 28px;
+}
+
+.error-message {
+	margin-top: 2px;
+	color: #f00;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 100;
+	font-size: 16px;
+}
+
+
+
+.mode-toggle {
+	margin-top: 15px;
+	cursor: pointer;
+	text-align: center;
+	color: #34BE5F;
+
+	font-family: 'Roboto', sans-serif;
+	font-weight: 100;
+	font-size: 16px;
+}
+
+.mode-toggle:hover {
+	color: #2A984C;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

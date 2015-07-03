@@ -1,0 +1,21 @@
+{
+    "name": "xnote-dashboard",
+    "version": "0.0.1",
+    "description": "xnote Dash",
+    "main": "js/app.js",
+
+    "scripts": {
+      "start": "watchify -o ../../static/static/js/dashboard.js -v -d .",
+      "build": "browserify . | uglifyjs -cm > ../../static/static/js/dashboard.js"
+    },
+
+    "author": "koopuluri",
+
+    "browserify": {
+      "transform": [
+        "reactify",
+        "envify"
+      ]
+    }
+
+}

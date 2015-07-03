@@ -1,0 +1,49 @@
+{
+  "name": "xnote-react-node",
+  "version": "0.0.0",
+  "description": "Xnote",
+  "main": "server.js",
+
+  "author": "XnoteLabs",
+  "dependencies": {
+    "express": "~4.9.7",
+    "ejs" : "~0.8.5",
+    "express-handlebars": "~1.1.0",
+    "node-jsx": "~0.11.0",
+    "react": "^0.13.3",
+    "flux": "^2.0.0",
+    "underscore": "^1.7.0",
+    "mixpanel": "*",
+    "parse": "*",
+    "body-parser": "*",
+    "diffbot": "*",
+    "socket.io": "*",
+
+    "mongoose" : "~3.8.1",
+    "passport" : "^0.1.17",
+    "passport-facebook" : "^1.0.2",
+    "connect-flash" : "~0.1.1",
+    "bcrypt-nodejs" : "latest",
+    "morgan": "~1.0.0",
+    "body-parser": "~1.0.0",
+    "cookie-parser": "~1.0.0",
+    "method-override": "~1.0.0",
+    "express-session": "~1.0.0"
+  },
+
+  "devDependencies": {
+    "nodemon": "^1.2.1",
+    "uglify-js": "~2.4.15",
+    "watchify": "*",
+    "browserify": "~6.2.0",
+    "envify": "~3.0.0",
+    "reactify": "^0.15",
+    "react-bootstrap": "*"
+  },
+
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  }
+}
