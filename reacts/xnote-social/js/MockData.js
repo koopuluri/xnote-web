@@ -41,7 +41,7 @@ module.exports = {
 						},
 						{
 							createdBy : {
-								username : 'Karajgikar',
+								name : 'Karajgikar',
 								id: '1234'
 							},
 							createdAt : 4,

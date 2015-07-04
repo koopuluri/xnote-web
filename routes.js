@@ -1,4 +1,4 @@
-var DB = require('./MongoDB');
+//var DB = require('./MongoDB');
 
 var  _dbCallback = function(res) {
         return function(dbOutput) {
@@ -42,12 +42,12 @@ module.exports = function(app, passport) {
      });
 
      app.get('/_groups', isLoggedIn, function(req, res) {
-        DB.getGroups(req.user, _dbCallback(res));
+        //DB.getGroups(req.user, _dbCallback(res));
      });
 
      app.post('/_add_group', isLoggedIn, function(req, res) {
         var groupObj = req.body.group;
-        DB.addGroup(req.user, groupObj, _dbCallback(res));
+        //DB.addGroup(req.user, groupObj, _dbCallback(res));
      });
 
 

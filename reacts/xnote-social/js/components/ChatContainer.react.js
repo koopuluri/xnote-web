@@ -3,6 +3,13 @@ var ChatStore = require('../stores/ChatStore');
 var ChatPost = require('./ChatPost.react.js');
 var GroupActions = require('../actions/GroupActions');
 
+var mui = require('material-ui');
+var List = mui.List;
+var ListItem = mui.ListItem;
+var ListDivider = mui.ListDivider;
+var TextField = mui.TextField;
+var RaisedButton = mui.RaisedButton;
+
 function getChatState() {
 	return {
 		messages: ChatStore.getChat(),
@@ -25,7 +32,7 @@ var ChatContainer = React.createClass({
 	},
 
 	_chat: function() {
-		var content = this.refs.sendMessage.getDOMNode().value;
+		var content = this.refs.sendMessage.getValue();
 		GroupActions.chat(content);
 	},
 
@@ -42,25 +49,37 @@ var ChatContainer = React.createClass({
 		}
 		var messages = messages.map(function(message) {
 			return (
-				<ChatPost message={message}/>
+				<div>
+					<ListItem>
+						<ChatPost message={message}/>
+					</ListItem>
+				</div>
 			);
 		})
+
+		var ButtonLabelStyle = {
+      		container: {
+        		textAlign: 'center',
+      		},
+      		buttonLabel: {
+        		padding: '0px 0px 0px 0px'
+      		}
+		}
 		return (
 			<div className = "chat-container">
-				{messages}
+				<List>
+					{messages}
+				</List>
 				<div className = 'chat-form'>
-					<form ref = 'chat-form'>
-						<input		
-							className = 'chat-form-input' 
-							type='text'
-							placeholder= 'Send Message'
-							ref = 'sendMessage'/>
-						<input 
-							className = 'chat-message-send-button'
-							type = 'button' 
-							value = 'Send'
-							onClick={this._chat}/>
-					</form>
+					<TextField
+  						hintText="Send Message"
+  						ref = 'sendMessage' />
+  					<RaisedButton
+  						fullWidth = {false}
+  						linkButton = {true}
+  						label="Send"
+  						primary={true}
+  						onClick = {this._chat} />
 				</div>
 			</div>
 		);

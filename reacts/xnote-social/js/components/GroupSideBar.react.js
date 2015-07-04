@@ -1,48 +1,43 @@
 var React = require('react');
-var GroupConstants = require('../constants/GroupConstants');
-var GroupActions = require('../actions/GroupActions');
+var GroupContainer = require('./GroupContainer.react');
 
-var FeedContainer = require('./FeedContainer.react');
-var ChatContainer = require('./ChatContainer.react');
-var GroupNavbar = require('./GroupNavbar.react');
-var SidebarStore = require('../stores/SidebarStore');
+var mui = require('material-ui');
+var ThemeManager = new mui.Styles.ThemeManager();
+var Colors = mui.Styles.Colors;
 
 
-function getViewMode() {
-    return {
-        mode: SidebarStore.getViewMode(),
-    }
-}
+//Using material UI themes
+//http://material-ui.com/#/customization/themes
 
 var GroupSidebar = React.createClass({
-    getInitialState: function() {
-        return getViewMode();
+
+
+    childContextTypes : {
+        muiTheme: React.PropTypes.object
     },
 
-    componentDidMount: function() {
-        SidebarStore.addChangeListener(this._onChange);
+    getChildContext: function() { 
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
+
+    componentWillMount: function() {
+        ThemeManager.setPalette({
+            primary1Color: Colors.green500,
+            accent1Color: Colors.green500,
+        });
+        ThemeManager.setSpacing(10);
     },
 
     render: function() {
-        var comp = null;
-        if (this.state.mode === GroupConstants.SIDEBAR_FEED_VIEW) {
-            comp = (<FeedContainer/>);
-        } else {
-            comp = (<ChatContainer/>)
-        }
-
-        // renderring the toggling mode view along with the component to display:
+        // renderring the container
         return (
-            <div className="discussion-view-container">
-                <GroupNavbar/>
-                {comp}
+            <div className="group-sidebar-container">
+                <GroupContainer/>
             </div>
         );
     },
-
-    _onChange: function() {
-        this.setState(getViewMode());
-    }
 });
 
 module.exports = GroupSidebar;
