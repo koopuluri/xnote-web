@@ -53,25 +53,36 @@ var DB = {
         });
      },
 
+     addGroupMembers: function() {
+
+     },
+
+     removeGroupMembers: function() {
+
+     },
+
      // ========================= ARTICLE ======================================
 
-     addArticle: function(user, article) {
+     addArticle: function(user, article, callback) {
+        var self = this;
         var a = Article({
             createdBy: user._id,
             title: article.title,
             content: article.content,
             url: article.url,
             articleId: article.articleId,
+            groupId: article.groupId,
             serialization: article.serialization
         });
 
-        a.save(function(err) {
+        a.save(function(err, savedArticle) {
             if (err) {
                 callback({error: err});
                 return;
             }
 
-            console.log('article saved successfuly');
+            // adding a feedPost for this article:
+            self._addFeedPostForArticle(user, savedArticle, callback)
         });
      },
 
@@ -85,9 +96,36 @@ var DB = {
                   }
 
                   // article was deleted:
-                  callback({articleId: articleId});
                   console.log('article deleted successfuly!');
+                  callback({articleId: articleId});
               });
+        });
+     },
+
+     addArticleFromUrl: function(user, groupId, url) {
+
+     },
+
+     // saves a new feedPost for an article
+     _addFeedPostForArticle: function(user, article, callback) {
+        var groupId = article.groupId;
+        var post = FeedPost({
+            createdBy: user,
+            lastModifiedTimestamp: {type: Date, default: Date.now},
+            type: 'ArticleFeedPost',
+            groupId: article.groupId,
+            article: article,
+            articleId: article.articleId
+        });
+
+        post.save(function (err, savedObject) {
+            if (err) {
+                callback({error: err});
+                return;
+            }
+
+            console.log('feedPost for article successfuly created!');
+            callback({feedPostId: savedObject._id});
         });
      },
 
@@ -95,26 +133,54 @@ var DB = {
      // ========================= HIGHLIGHT ====================================
 
 
-     addHighlight: function(user, highlight) {
+     addHighlight: function(user, highlight, callback) {
+        var self = this;
         var light = Highlight({
             createdBy: user._id,
             highlightId: highlight.highlightId,
             articleId: highlight.articleId,
             clippedText: highlight.clippedText,
+            groupId: highlight.groupId
         });
 
-        light.save(function (err, obj) {
+        light.save(function (err, savedHighlight) {
             if (err) {
+                console.log('addHighlight error: ' + err);
                 callback({error: err});
                 return;
             }
 
-            callback({id: obj.highlightId});
-            console.log('highlight added!');
+            console.log('highlight successfuly saved');
+            // now creating a feedPost for this highlight:
+            self._addFeedPostForHighlight(user, savedHighlight, callback);
         });
      },
 
-     deleteHighlight: function(user, highlightId) {
+     _addFeedPostForHighlight: function(user, hl, callback) {
+         var groupId = hl.groupId;
+         var post = FeedPost({
+             createdBy: user,
+             lastModifiedTimestamp: {type: Date, default: Date.now},
+             type: 'HighlightFeedPost',
+             groupId: groupId,
+             highlight: hl,
+             highlightId: hl.highlightId
+         });
+
+         post.save(function (err, savedObject) {
+             if (err) {
+
+                 console.log('feedPost for highlight save error: ' + err);
+                 callback({error: err});
+                 return;
+             }
+
+             console.log('feedPost for highlight successfuly created!');
+             callback({feedPostId: savedObject._id});
+         });
+     },
+
+     deleteHighlight: function(user, groupId, highlightId, callback) {
         Highlight.findOne({highlightId: highlightId}, function(err, obj) {
             if (err) {
                 callback({error: err});
@@ -136,167 +202,70 @@ var DB = {
                     callback({highlightId: highlightId});
                     return;
                 });
+            } else {
+                console.log('invalid permissions, cannot delete highlight');
+                callback({error: 'invalid permissions'});
             }
-
-            console.log('invalid permissions, cannot delete highlight');
-            return callback({error: 'invalid permissions'});
         });
      },
 
      // ========================= NOTE =========================================
 
-     addNote: function(user, noteObj) {
-        var highlightId = note.highlightId;
-        if (!highlightId) {
-            callback({error: 'invalid highlightId'});
-        }
-
-        // creating the note model obj:
-        var note = Note({
-            createdBy: user._id,
+     addNote: function(user, noteObj, highlightId, callback) {
+        var self = this;
+        var note = {
+            createdBy: user,
             noteId: noteObj.noteId,
             content: noteObj.content,
-            highlightId: highlightId
-        });
+        };
 
-
-        note.save(function (err, savedNote) {
-            if (err) {
-                console.log('note could not be saved: ' + err);
-                callback({error: 'note could not be saved'});
-                return;
-            }
-
-            // now update the highlight with the note ref:
-            Highlight.findOne({highlightId: highlightId}, function (err, highlight) {
+        Highlight.findOneAndUpdate({highlightId: highlightId},
+            {$push: {'notes': note}},
+            {safe: true, upsert: true},
+            function (err, savedHighlight) {
                 if (err) {
-                    callback({error: 'highlight could not be found for note'});
-                    console.log('highlight note found to add note to: ' + highlightId);
-                    return;
+                    console.log('error in finding and updating the highlight: ' + err);
+                    callback({error: err});
                 }
 
-                // highlight found, adding ref to this note to it's note list:
-                highlight.notes.push(savedNote._id);
-                highlight.save(function (err, savedHighlight) {
-                    if (err) {
-                        console.log('could not save highlight after adding note: ' + err);
-                        callback({error: 'could not save highlight after adding note'});
-                        return;
-                    }
-
-                    // now updating the lastModifiedTimestamp of the FeedObject associated with this highlight:
-                    FeedPost.findOne({highlightId: highlightId}, function (err, obj) {
-                        if (err) {
-                            console.log('could not find feedPost for highlightId: ' + highlightId);
-                            callback({error: 'feedPost not found for highlight'});
-                            return;
-                        }
-
-                        // found feedPost, now updating its lastModifiedTimestamp:
-                        obj.lastModifiedTimestamp = Date.now;
-
-                        // now saving this feedPost:
-                        obj.save(function (err, savedObj) {
-                            if (err) {
-                                console.log('could not save the updated feedPost');
-                                callback({error: 'could not save the updated feedPost'});
-                                return;
-                            }
-
-                            console.log('feedPost updated and saved; note added successfuly!');
-                            callback({noteId: noteObj.noteId});
-                        });
-                    });
-                });
+                self._updateTimestampForHighlightFeedObject(savedHighlight._id, callback);
             });
-        });
-
-        console.log('addNote, shouldnt even be here!');
-        callback({error: ""});
      },
 
-     deleteNote: function(user, noteId) {
-        if (!noteId) {
-            console.log('noteId is nothing: ' + noteId);
-            callback({error: 'noteId is nothing'});
-            return;
-        }
 
-        Note.findOne({noteId: noteId}, function (err, obj) {
-            if (err) {
-                console.log('deleteNote(): note not found for id: ' + noteId);
-                callback({error: 'note not found'});
-                return;
-            }
-
-            if (obj.createdBy.equals(user._id)) {
-                // ok this user can delete this note:
-                obj.remove(function (error, deletedNote) {
-                    if (error) {
-                        callback({error: error});
-                        return;
-                    }
-
-                    // note was deleted:
-                    callback({noteId: noteId});
-                    console.log('note deleted successfuly!');
-                    return;
-                });
-            }
-
-            callback({error: 'no permission to delete this note!'});
-            return;
-        });
+     _findNote: function(noteId, highlightId, callback) {
+          Highlight.findOne({'highlightId': highlightId, 'notes.noteid': noteId},
+            function (err, obj) {
+                callback(err, obj);
+            });
      },
 
-     editNote: function(user, noteId, newContent) {
-         if (!noteId) {
-             console.log('editNote(): noteId is nothing: ' + noteId);
-             callback({error: 'noteId is nothing'});
-             return;
-         }
-
-         Note.findOne({noteId: noteId}, function (err, obj) {
-             if (err) {
-                 console.log('editNote(): note not found for id: ' + noteId);
-                 callback({error: 'note not found'});
-                 return;
-             }
-
-             if (obj.createdBy.equals(user._id)) {
-                 // ok this user can delete this note:
-                 obj.content = newContent;
-                 obj.save(function (error, savedNote) {
-                      if (error) {
-                          console.log('editNote(): note could not be saved after found');
-                          callback({error: 'note could not be saved'});
-                      }
-
-                      // note was deleted:
-                      callback({noteId: noteId});
-                      console.log('note deleted successfuly!');
-                      return;
-                 });
-             }
-
-             callback({error: 'no permission to delete this note!'});
-             return;
-         });
-     },
 
      // ========================= FEED ======================================
 
-     addArticleFeedObject: function(user, article) {
-
-     },
-
-     addHighlightFeedObject: function(user, highlightId) {
-
-     },
-
      // sets last modified timestamp to NOW, only called when note added to highlight.
-     updateTimestampForHighlightFeedObject: function(user, groupId, highlightId) {
+     _updateTimestampForHighlightFeedObject: function(highlightRef, callback) {
+        console.log('_updatetimestamp: ' + highlightRef);
+        FeedPost.findOne({highlight: highlightRef}, function (err, obj) {
+            if (err) {
+                console.log('could not get feed post to update its timestamp: ' + err);
+                callback({error: err});
+                return;
+            }
 
+            console.log('got the feedPost object for the highlight!');
+            obj.lastModifiedTimestamp = Date.now();
+            obj.save(function (err, savedPost) {
+                if (err) {
+                    console.log('could not save post after updat: ' + err);
+                    callback({error: err});
+                    return;
+                }
+
+                console.log('feedPost updated successfuly');
+                callback({feedPostId: savedPost._id});
+            });
+        });
      },
 }
 
@@ -304,28 +273,65 @@ module.exports = DB;
 
 // testing out groups fetch and group save:
 // getting user, and then saving a group for the user:
-// User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, obj) {
+// User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
-//         // creating group and saving it for this user:
-//         // groupObj = {
-//         //     title: 'poopGroop',
-//         //     groupId: 'thirdOne'
-//         // }
-//         // console.log('about to add to group!!!');
-//         // DB.addGroup(obj, groupObj);
-//
-//         // getting all groups for this user:
-//         console.log('got user! their groups: ' + obj.groups);
-//         DB.getGroups(obj, function(res) {
-//             if (res.error) {
-//                 console.log('error in getting groups: ' + res.error);
-//             } else {
-//                 var groups = res.result;
-//                 console.log('num of groups: ' + groups.length);
-//                 console.log('groups for user: ' + res.result);
-//             }
+//         console.log('about to save a dummy article!');
+//         var dummyArticle = {
+//             articleId: 'dummyArticle2!',
+//             groupId: 'poopopo',
+//             content: 'aksld;fjakl;fjklajfk;lasjdkfl;ajdklf;j',
+//             title: 'dummyArticle! dude',
+//             url: 'www.xnote.io',
+//         }
+//         // saving a dummy article:
+//         DB.addArticle(user, dummyArticle, function(poop) {
+//             console.log('poop: ' + Object.keys(poop));
 //         });
+//         //
+//         // // going to delete the dummy article added above:
+//         // DB.deleteArticle(user, 'dummyArticle!', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
 //     }
 // });
+
+
+// testing out the highlight saving / deleting:
+User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
+    if (err) {
+        console.log('pooped in getting user!');
+    } else {
+
+        // adding note:
+        var dummyNote = {
+            noteId: 'dummyNote1',
+            content: 'dummy note content',
+        }
+
+        console.log('about to add note');
+        DB.addNote(user, dummyNote, 'pooplight', function(poop) {
+            console.log('poop: ' + Object.keys(poop));
+        });
+
+        //
+        // console.log('about to save a dummy highlight!');
+        // var dummyHighlight = {
+        //     articleId: 'dummyArticle2!',
+        //     highlightId: 'pooplight',
+        //     groupId: 'poopopo',
+        //     clippedText: 'poop is the secret of my energy!',
+        // }
+        //
+        // // saving a dummy highlight:
+        // DB.addHighlight(user, dummyHighlight, function(poop) {
+        //     console.log('poop: ' + Object.keys(poop));
+        // });
+
+        // // going to delete the dummy article added above:
+        // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
+        //     console.log('poop: ' + Object.keys(poop));
+        // });
+    }
+});

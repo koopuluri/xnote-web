@@ -13,9 +13,11 @@ var Schema = mongoose.Schema;
 
 var groupSchema = new Schema({
     groupId: String,
-    users: [],
+    users: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    feedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: 'FeedPost'}],
+    articles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Article'}],
     title: String,
-    createdAt: {type: Date, default: Date.now}
+    createdAt: {type: Date, default: Date.now},
 });
 
 module.exports = mongoose.model('Group', groupSchema);

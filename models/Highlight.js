@@ -16,8 +16,19 @@ var highlightSchema = mongoose.Schema({
     lastModifiedTimestamp: {type: Date, default: Date.now},
     highlightId: String,
     articleId: String,
+    groupId: String,
     clippedText: String,
-    notes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Note'}],
+    notes: [
+        {
+            createdBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            noteId: String,
+            content: String,
+            createdAt: {type: Date, default: Date.now},
+        }
+    ],
 });
 
 module.exports = mongoose.model('Highlight', highlightSchema);
