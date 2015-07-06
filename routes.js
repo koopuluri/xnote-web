@@ -1,4 +1,4 @@
-var DB = require('./MongoDB');
+//var DB = require('./MongoDB');
 
 var  _dbCallback = function(res) {
         return function(dbOutput) {

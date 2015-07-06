@@ -3,9 +3,9 @@ var GroupActions = require('../actions/GroupActions');
 module.exports = {
 	getGroupData: function() {
 		var feed = JSON.parse(localStorage.getItem('feed'));
-		GroupActions.receiveFeed(feed);
+		GroupActions.fetchAndSetFeedForGroup(feed);
 		var chat = JSON.parse(localStorage.getItem('chat'));
-		GroupActions.receiveChat(chat);
+		GroupActions.fetchAndSetChatForGroup(chat);
 	},
 
 	receiveFeed: function(successCallback, errorCallback) {

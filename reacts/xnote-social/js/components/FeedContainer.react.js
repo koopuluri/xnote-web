@@ -2,11 +2,20 @@ var React = require('react');
 var FeedStore = require('../stores/FeedStore');
 var FeedPost = require('./FeedPost.react.js');
 
+var mui = require('material-ui');
+var List = mui.List;
+var ListItem = mui.ListItem;
+var ListDivider = mui.ListDivider;
+var Colors = mui.Styles.Colors;
+
 function getFeedState() {
 	return {
 		feed: FeedStore.getFeed(),
 	}
 }
+
+
+
 
 var FeedContainer = React.createClass({
 
@@ -36,12 +45,18 @@ var FeedContainer = React.createClass({
 		}
 		var feed = feed.map(function(post) {
 			return (
-				<FeedPost post={post}/>
-			);
-		})
+				<div>
+					<ListItem disableTouchTap = {true}>
+						<FeedPost post={post} />
+					</ListItem>
+				</div>
+			)
+		});
 		return (
 			<div className = "feed-container">
-				{feed}
+				<List>
+					{feed}
+				</List>
 			</div>
 		);
 	},

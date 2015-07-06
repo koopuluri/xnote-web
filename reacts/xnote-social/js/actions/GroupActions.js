@@ -10,14 +10,16 @@ var GroupActions = {
 
 	},
 
-	fetchAndSetFeedForGroup: function(groupId) {
+
+	fetchAndSetFeedForGroup: function(data) {
 			GroupDispatcher.handleAction({
 					actionType: GroupConstants.RECEIVE_FEED,
 					data: data
 			});
 	},
 
-	fetchAndSetChatForGroup: function(groupId) {
+
+	fetchAndSetChatForGroup: function(data) {
 			GroupDispatcher.handleAction({
 					actionType: GroupConstants.RECEIVE_CHAT,
 					data: data
