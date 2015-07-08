@@ -1,7 +1,6 @@
 var React = require('react');
 var GroupActions = require('../actions/GroupActions');
-var GroupConstants = require('../constants/Constants');
-var SidebarStore = require('../stores/SidebarStore');
+var NotificationStore = require('../stores/NotificationStore');
 
 var FeedContainer = require('./FeedContainer.react');
 var ChatContainer = require('./ChatContainer.react');
@@ -11,14 +10,29 @@ var Tabs = mui.Tabs;
 var Tab = mui.Tab;
 var Colors = mui.Styles.Colors;
 
+function getNotifsState() {
+    return {
+        chatNotifs: NotificationStore.getChatNotifs(),
+        feedNotifs: NotificationStore.getFeedNotifs()
+    }
+}
+
+
 var GroupContainer = React.createClass({
 
-    _onChange: function(tabIndex, tab) {
-        console.log(tabIndex, tab);
+    getInitialState: function() {
+        return getNotifsState();
+    },
+
+    componentDidMount: function() {
+        NotificationStore.addChangeListener(this._onChange);
+    },
+
+    componentWillUnmount: function() {
+        NotificationStore.removeChangeListener(this._onChange);
     },
 
     render: function() {
-
         var containerStyle = {
             backgroundColor: "#FFFFFF",
         }
@@ -27,27 +41,53 @@ var GroupContainer = React.createClass({
             color: Colors.green500,
         }
 
+        var chatLabel = 'Chat'
+        if(this.state.chatNotifs > 0) {
+            var chatLabel = 'Chat (' + this.state.chatNotifs + ')'
+        }
+
+        var feedLabel = 'Feed'
+        if(this.state.feedNotifs > 0) {
+            var feedLabel = 'Feed (' + this.state.feedNotifs + ')'
+        }
+
         return (
             <Tabs
                 tabItemContainerStyle = {containerStyle}
                 className = 'discussion-view-tabs'>
 
-                <Tab label="Chat"
-                    style = {contentStyle} >
+                <Tab label= {chatLabel}
+                    style = {contentStyle}
+                    route = 'chat'
+                    onActive = {this._onActive}>
                     <div>
                         <ChatContainer />
                     </div>
                 </Tab>
 
-                <Tab label="Feed"
-                    style = {contentStyle}>
+                <Tab label= {feedLabel}
+                    style = {contentStyle}
+                    route = 'feed'
+                    onActive = {this._onActive}>
                     <div>
                         <FeedContainer />
                     </div>
                 </Tab>
             </Tabs>
         );
-    }
+    },
+
+    _onChange: function() {
+       this.setState(getNotifsState());
+    },
+
+    _onActive: function(tab) {
+        if(tab.props.route == 'chat') {
+            GroupActions.resetChatNotifs();
+        } else if (tab.props.route == 'feed') {
+            GroupActions.resetFeedNotifs();
+        }
+    },
 });
 
 module.exports = GroupContainer;

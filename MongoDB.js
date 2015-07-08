@@ -124,10 +124,11 @@ var DB = {
             }
 
             console.log('diffbot successfuly parsed! ' + response.title);
+
             var article = {
                 groupId: groupId,
                 title: response.title,
-                content: response.content,
+                content: response.html,
                 author: response.author,
                 icon: response.icon,
                 url: response.url,
@@ -412,12 +413,9 @@ module.exports = DB;
 //         //     console.log('article.title: ' + poop.article.title);
 //         // });
 //
-//         //
-//         DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
+//         DB.addArticleFromUrl(user, 'testPoopGroup', 'http://googleprojectzero.blogspot.com/2015/07/when-int-is-new-short.html', function(poop) {
 //             console.log('poop: ' + Object.keys(poop));
 //         });
-//
-//
 //
 //         // var dummyGroup = {
 //         //     title: 'dummy group thing!',

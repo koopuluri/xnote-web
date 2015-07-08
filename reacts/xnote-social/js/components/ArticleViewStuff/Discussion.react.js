@@ -1,12 +1,14 @@
 var React = require('react');
-var Actions = require('../actions/Actions');
+var Actions = require('../../actions/ArticleActions');
 
-var DiscussionStore = require('../stores/DiscussionStore');
-var GroupStore = require('../stores/GroupStore');
+var DiscussionStore = require('../../stores/DiscussionStore');
+var GroupStore = require('../../stores/GroupStore');
 
 var NoteList = require('./NoteList.react');
 var AddNoteInput = require('./AddNoteInput.react');
-var NoteUtils = require('../utils/NoteUtils');
+var NoteUtils = require('./utils/NoteUtils');
+
+var FeedPost = require('../FeedPost.react');
 
 var Loading = require('./Loading.react');
 
@@ -22,11 +24,8 @@ var NO_DISC_SELECTED_AND_NO_USER = 'Select a highlight to see the notes.';
 // - currentUser
 var Discussion = React.createClass({
     getInitialState: function() {
-
-        var disc = DiscussionStore.getDiscussion();
-
         return {
-            discussion: disc,
+            highlight: DiscussionStore.getHighlight(),
             error: DiscussionStore.getError(),
             isLoading: DiscussionStore.getLoading()
         }
@@ -34,32 +33,33 @@ var Discussion = React.createClass({
 
     // simplify, simplify, simplify... ... ...
     _onChange: function() {
-        var disc = DiscussionStore.getDiscussion();
-        var stateDisc = this.state.discussion;
-        if (stateDisc) {
-            if (disc && disc.highlightId != stateDisc.highlightId) {
-                console.log('Discussion.GETINITIALSTATE with discId: ' + disc.highlightId);
-                //socket.on('discId:' + disc.highlightId, this._socketGotNote);
-            } else {
-                if (!disc) {
-                    // do nothing.
-                }
-            }
-        } else {
-            // now stateDisc is null.
-            if (disc) {
-                console.log('Discussion.GETINITIALSTATE with discId: ' + disc.highlightId);
-                //socket.on('discId:' + disc.highlightId, this._socketGotNote);
-            } else {
-                // do nothing.
-            }
-        }
-
-        this.setState({
-            discussion: disc,
-            error: DiscussionStore.getError(),
-            isLoading: DiscussionStore.getLoading()
-        });
+        this.setState(this.getInitialState());
+        // var disc = DiscussionStore.getDiscussion();
+        // var stateDisc = this.state.discussion;
+        // if (stateDisc) {
+        //     if (disc && disc.highlightId != stateDisc.highlightId) {
+        //         console.log('Discussion.GETINITIALSTATE with discId: ' + disc.highlightId);
+        //         //socket.on('discId:' + disc.highlightId, this._socketGotNote);
+        //     } else {
+        //         if (!disc) {
+        //             // do nothing.
+        //         }
+        //     }
+        // } else {
+        //     // now stateDisc is null.
+        //     if (disc) {
+        //         console.log('Discussion.GETINITIALSTATE with discId: ' + disc.highlightId);
+        //         //socket.on('discId:' + disc.highlightId, this._socketGotNote);
+        //     } else {
+        //         // do nothing.
+        //     }
+        // }
+        //
+        // this.setState({
+        //     discussion: disc,
+        //     error: DiscussionStore.getError(),
+        //     isLoading: DiscussionStore.getLoading()
+        // });
 
     },
 
@@ -95,78 +95,111 @@ var Discussion = React.createClass({
         Actions.addNote(newNote, this.state.discussion.highlightId);
     },
 
+
     render: function() {
-        if (this.state.error) {
-            return (<p> error brah </p>);
-        }
+          var comp;
 
-        if (this.state.isLoading) {
-            return (<Loading />);
-        }
+          if (this.state.highlight) {
 
-        var messageStyle = {marginTop: '30%'};
+              var post = {
+                  type: 'HighlightFeedPost',
+                  highlight: this.state.highlight,
+                  createdBy: {facebook: {name: 'Karthik Uppuluri', id: 'dkjsfkjs'}}
+              }
 
-        // if there's no discussion selected:
-        if (!this.state.discussion && !this.props.currentUser) {
-            return (
-                <div className="discussion-view-contents">
-                    <div className="message" style={messageStyle}>
-                        <p> {NO_DISC_SELECTED_AND_NO_USER} </p>
-                    </div>
-                </div>
-            );
-        } else if (!this.state.discussion && this.props.currentUser) {
-            return (
-                <div className="discussion-view-contents">
-                    <div className="message" style={messageStyle}>
-                        <p> {NO_DISC_SELECTED_MESSAGE} </p>
-                    </div>
-                </div>
-            );
-        }
+              comp = <FeedPost post={post} />
+          } else {
+              comp = 'Fuck you';
+          }
 
-        var notes = this.state.discussion.notes;
+          return (
+              <div className="discussion-view-container">
+                  <div className="discussion-view-contents">
+                      {comp}
+                  </div>
+              </div>
+          );
+    },
 
-        // if there is a discussion selected, but it has no notes:
-        if (notes.length == 0 && !this.props.currentUser) {
-            return (
-                <div className="discussion-view-contents">
-                    <div className="message" style={messageStyle}>
-                        <p> {NO_NOTES_MESSAGE_WITHOUT_USER} </p>
-                    </div>
-                </div>
-            );
-        } else if (notes.length == 0 && this.props.currentUser) {
-            return (
-                <div className="discussion-view-contents">
-                    <AddNoteInput
-                          highlightId={this.state.discussion.highlightId}
-                          articleId={this.state.discussion.articleId}
-                          onSave={this._addNoteFormOnSave}
-                          textareaClassName="add-note-text">
-                    </AddNoteInput>
-                    <div className="message" style={messageStyle}>
-                        <p> {NO_NOTES_MESSAGE_WITH_USER} </p>
-                    </div>
-                </div>
-            );
-        }
 
-        // means there's a dicusssion selected and it has notes:
-        return (
-            <div className="discussion-view-contents">
-                <AddNoteInput
-                      highlightId={this.state.discussion.highlightId}
-                      articleId={this.state.discussion.articleId}
-                      onSave={this._addNoteFormOnSave}
-                      textareaClassName="add-note-text">
-                </AddNoteInput>
-                <div className="note-list-thing">
-                    <NoteList notes={this.state.discussion.notes} />
-                </div>
-            </div>
-        );
-    }
+
+    //
+    // render: function() {
+    //     if (this.state.error) {
+    //         return (<p> error brah </p>);
+    //     }
+    //
+    //     if (this.state.isLoading) {
+    //         return (<Loading />);
+    //     }
+    //
+    //     var messageStyle = {marginTop: '30%'};
+    //
+    //     // if there's no discussion selected:
+    //     if (!this.state.highlight && !this.props.currentUser) {
+    //         return (
+    //             <div className="discussion-view-container">
+    //                 <div className="discussion-view-contents">
+    //                     <div className="message" style={messageStyle}>
+    //                         <p> {NO_DISC_SELECTED_AND_NO_USER} </p>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         );
+    //     } else if (!this.state.highlight && this.props.currentUser) {
+    //         return (
+    //             <div className="discussion-view-container">
+    //                 <div className="discussion-view-contents">
+    //                     <div className="message" style={messageStyle}>
+    //                         <p> {NO_DISC_SELECTED_MESSAGE} </p>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         );
+    //     }
+    //
+    //     var notes = this.state.highlight.notes;
+    //
+    //     // if there is a discussion selected, but it has no notes:
+    //     if (notes.length == 0 && !this.props.currentUser) {
+    //         return (
+    //             <div className="discussion-view-contents">
+    //                 <div className="message" style={messageStyle}>
+    //                     <p> {NO_NOTES_MESSAGE_WITHOUT_USER} </p>
+    //                 </div>
+    //             </div>
+    //         );
+    //     } else if (notes.length == 0 && this.props.currentUser) {
+    //         return (
+    //             <div className="discussion-view-contents">
+    //                 <AddNoteInput
+    //                       highlightId={this.state.discussion.highlightId}
+    //                       articleId={this.state.discussion.articleId}
+    //                       onSave={this._addNoteFormOnSave}
+    //                       textareaClassName="add-note-text">
+    //                 </AddNoteInput>
+    //                 <div className="message" style={messageStyle}>
+    //                     <p> {NO_NOTES_MESSAGE_WITH_USER} </p>
+    //                 </div>
+    //             </div>
+    //         );
+    //     }
+    //
+    //     // means there's a dicusssion selected and it has notes:
+    //     return (
+    //         <div className="discussion-view-contents">
+    //             <AddNoteInput
+    //                   highlightId={this.state.discussion.highlightId}
+    //                   articleId={this.state.discussion.articleId}
+    //                   onSave={this._addNoteFormOnSave}
+    //                   textareaClassName="add-note-text">
+    //             </AddNoteInput>
+    //             <div className="note-list-thing">
+    //                 <NoteList notes={this.state.discussion.notes} />
+    //             </div>
+    //         </div>
+    //     );
+    // }
 });
 
 module.exports = Discussion;

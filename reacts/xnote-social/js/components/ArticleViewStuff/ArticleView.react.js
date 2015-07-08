@@ -1,9 +1,8 @@
 var React = require('react');
-var Actions = require('../actions/Actions');
+var Actions = require('../../actions/ArticleActions');
 var NoteUtils = require('./utils/NoteUtils');
 var Annotator = require('./utils/Annotator');
 var AddNoteButton = require('./AddNoteButton.react');
-var NoteForm = require('./NoteForm.react');
 var ArticleHeader = require('./ArticleHeader.react');
 var Loading = require('./Loading.react');
 
@@ -18,14 +17,13 @@ var ArticleView = React.createClass({
 
 	getInitialState: function() {
 			return {
-					article: ContentStore.getSelectedArticle()
+					article: ContentStore.getSelectedArticle(),
 					isLoading: ContentStore.getLoading(),
-
 					selection: null,
 					selectionCoordinates: [],
 					owner: '',
 					currentUser: GroupStore.getCurrentUser(),
-					isError: Content.getError()
+					isError: null
 	 		};
 	},
 
@@ -38,7 +36,7 @@ var ArticleView = React.createClass({
 
 	componentDidMount: function() {
 		// adding listener:
-		ArticleStore.addChangeListener(this._onArticleChange);
+		ContentStore.addChangeListener(this._onArticleChange);
 		if (this.props.articleId) {
 				Actions.fetchAndSetArticle(this.props.articleId);
 		}
@@ -106,6 +104,7 @@ var ArticleView = React.createClass({
 		}
 
 		var content = this.state.article.content;
+		console.log('article.content: ' + Object.keys(this.state.article));
 		var classNameString = '';
 		var formRender = this.state.displayForm;
 		var buttonRender = this.state.selection !== null;
@@ -174,7 +173,9 @@ var ArticleView = React.createClass({
 					selectedHtml: this.state.selection.toHtml(),
 					createdAt: new Date() / 1000,
 					selection: Annotator.getSelectionInfo(this.state.selection),
-					createdBy: this.state.currentUser
+					createdBy: this.state.currentUser,
+					notes: [],
+					article: this.state.article
 			}
 
 			Annotator.addHighlight(newHighlight);

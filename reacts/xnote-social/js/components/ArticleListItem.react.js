@@ -1,4 +1,7 @@
 var React = require('react');
+
+var ArticleActions = require('../actions/ArticleActions');
+
 var mui = require('material-ui');
 var Card = mui.Card;
 var CardTitle = mui.CardTitle;
@@ -30,6 +33,11 @@ var ArticleListItem = React.createClass({
         ThemeManager.setSpacing(10);
     },
 
+    _onClick: function() {
+        console.log('_onClick! articleId: ' + this.props.article._id);
+        ArticleActions._setSelectedArticleId(this.props.article._id);
+    },
+
     render: function() {
         var article = this.props.article;
         if (article.icon) {
@@ -38,7 +46,7 @@ var ArticleListItem = React.createClass({
         return (
             <Card className='article-list-item'>
             <CardActions>
-                <FlatButton label={article.title}/>
+                <FlatButton onClick={this._onClick} label={article.title}/>
             </CardActions>
 
                 <CardHeader

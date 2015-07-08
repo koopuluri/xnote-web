@@ -1,6 +1,6 @@
-var GroupDispatcher = require('../../../dispatcher/GroupDispatcher');
-var Constants = require('../../../constants/Constants');
-var API = require('../../../utils/API');
+var GroupDispatcher = require('../dispatcher/GroupDispatcher');
+var Constants = require('../constants/Constants');
+var API = require('../utils/API');
 
 var Actions = {
 
@@ -36,6 +36,7 @@ var Actions = {
             }
 
             // got article:
+            console.log('got article! ' + Object.keys(data.article));
             self._setSelectedArticle(data.article);
         });
     },
@@ -49,26 +50,41 @@ var Actions = {
         });
     },
 
-    _setHighlight: function(highlight) {
+    setHighlight: function(highlight) {
         GroupDispatcher.handleAction({
             actionType: Constants.SET_DISCUSSION_HIGHLIGHT,
             highlight: highlight
         });
     },
 
+    setPartialHighlight: function(highlightId) {
+        GroupDispatcher.handleAction({
+            actionType: Constants.SET_HOVER_HIGHLIGHT,
+            highlightId: highlightId
+        });
+    },
+
+    hoverHighlight: function(highlightId) {
+        GroupDispatcher.handleAction({
+            actionType: Constants.SET_HOVER_HIGHLIGHT,
+            highlightId: highlightId
+        });
+    },
+
     fetchAndSetHighlight: function(highlightId) {
         this._setDiscussionLoading(true);
+        console.log('fetch and set highlight ' + highlightId);
         var self = this;
-        API.getHighlight(highlightId, function(obj) {
-            if (obj.error) {
-                console.log('fetchAndSetHighlight errored!');
-                self._setDiscussionLoading(false);
-                return;
-            }
-
-            // got highlight:
-            self._setHighlight(obj.highlight);
-        });
+        // API.getHighlight(highlightId, function(obj) {
+        //     if (obj.error) {
+        //         console.log('fetchAndSetHighlight errored!');
+        //         self._setDiscussionLoading(false);
+        //         return;
+        //     }
+        //
+        //     // got highlight:
+        //     self._setHighlight(obj.highlight);
+        // });
     },
 
     addNoteToHighlight: function(note, highlightId) {
@@ -83,24 +99,17 @@ var Actions = {
         });
     },
 
+    // set the highlight in the discussionView
+    // make api call to persist highlight on db.
     addHighlight: function(highlight) {
-        API.addHighlight(highlight, function(obj) {
-            if (obj.error) {
-                console.log('adding highlight error: ' + obj.error);
-            }
-        });
+        this.setHighlight(highlight);
+        this.setPartialHighlight(highlight.highlightId);
+        // API.addHighlight(highlight, function(obj) {
+        //     if (obj.error) {
+        //         console.log('adding highlight error: ' + obj.error);
+        //     }
+        // });
     },
 };
 
 module.exports = Actions;
-
-
-
-
-
-
-
-
-
-
-''

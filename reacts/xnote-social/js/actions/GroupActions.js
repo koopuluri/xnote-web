@@ -36,7 +36,7 @@ var GroupActions = {
 
 		_setChat: function(chat) {
 			GroupDispatcher.handleAction({
-					actionType: GroupConstants.RECEIVE_CHAT,
+					actionType: Constants.RECEIVE_CHAT,
 					data: chat
 			});
 		},
@@ -68,22 +68,9 @@ var GroupActions = {
 
 		},
 
-		addNote: function(highlightId, content) {
-			var note = {
-					//TODO: Get the current user and the ID
-					createdBy: {
-						name : 'Vignesh',
-						id : 'qwerqwer'
-					},
-
-					createdAt: GroupUtils.getTimestamp(),
-					content: content,
-					noteId: GroupUtils.generateUUID(),
-					highlightId: highlightId
-			}
-
+		addNote: function(highlightId, note) {
 			GroupDispatcher.handleAction({
-					actionType: GroupConstants.ADD_NOTE,
+					actionType: Constants.ADD_NOTE,
 					note: note
 			});
 		},
@@ -91,45 +78,43 @@ var GroupActions = {
 		editNote: function(note, content) {
 				note.content = content;
 				GroupDispatcher.handleAction({
-						actionType: GroupConstants.EDIT_NOTE,
+						actionType: Constants.EDIT_NOTE,
 						note: note
 				});
 		},
 
 		deleteNote: function(note) {
 			GroupDispatcher.handleAction({
-				actionType: GroupConstants.DELETE_NOTE,
+				actionType: Constants.DELETE_NOTE,
 				note: note
 			});
 		},
 
 		chat: function(content) {
-				GroupDispatcher.handleAction({
-						actionType: GroupConstants.CHAT_MESSAGE,
-						content: content
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.CHAT_MESSAGE,
+				content: content
+			});
 		},
 
 		setViewMode: function(data) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_VIEW_MODE,
-						data: data
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_VIEW_MODE,
+				data: data
+			});
 		},
 
+		resetChatNotifs: function() {
+			GroupDispatcher.handleAction({
+				actionType: Constants.RESET_CHAT_NOTIFS
+			})
+		},
 
-
+		resetFeedNotifs: function() {
+			GroupDispatcher.handleAction({
+				actionType: Constants.RESET_FEED_NOTIFS
+			})
+		},
 }
 
 module.exports = GroupActions;
-
-
-
-
-
-
-
-
-
-
-'hi';
