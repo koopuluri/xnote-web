@@ -59,7 +59,7 @@ var Actions = {
 
     setPartialHighlight: function(highlightId) {
         GroupDispatcher.handleAction({
-            actionType: Constants.SET_HOVER_HIGHLIGHT,
+            actionType: Constants.SET_SELECT_PARTIAL_HIGHLIGHT,
             highlightId: highlightId
         });
     },
@@ -73,6 +73,7 @@ var Actions = {
 
     fetchAndSetHighlight: function(highlightId) {
         this._setDiscussionLoading(true);
+        this.setPartialHighlight(highlightId);
         console.log('fetch and set highlight ' + highlightId);
         var self = this;
         // API.getHighlight(highlightId, function(obj) {
@@ -87,21 +88,32 @@ var Actions = {
         // });
     },
 
-    addNoteToHighlight: function(note, highlightId) {
-        API.addNoteToHighlight(note, highlightId, function(obj) {
-            if (obj.error) {
-                console.log("error adding note to highlight: " + obj.error);
-                return;
-            }
+    deleteNote: function(highlightId, noteId) {
+        console.log('deleteNote: ' + highlightId);
+    },
 
-            // added successfuly:
-            console.log('note succcessfuly added to highlight! ' + note.content);
+    addNote: function(highlightId, note) {
+        console.log('addNOte(): ' + highlightId);
+        GroupDispatcher.handleAction({
+            actionType: Constants.DISCUSSION_ADD_NOTE,
+            highlightId: highlightId,
+            note: note
         });
+        // API.addNoteToHighlight(note, highlightId, function(obj) {
+        //     if (obj.error) {
+        //         console.log("error adding note to highlight: " + obj.error);
+        //         return;
+        //     }
+        //
+        //     // added successfuly:
+        //     console.log('note succcessfuly added to highlight! ' + note.content);
+        // });
     },
 
     // set the highlight in the discussionView
     // make api call to persist highlight on db.
     addHighlight: function(highlight) {
+        this._setDiscussionLoading(false);
         this.setHighlight(highlight);
         this.setPartialHighlight(highlight.highlightId);
         // API.addHighlight(highlight, function(obj) {

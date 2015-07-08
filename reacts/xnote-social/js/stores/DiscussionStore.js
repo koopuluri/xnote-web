@@ -72,7 +72,7 @@ AppDispatcher.register(function(payload) {
         _highlight = action.highlight;
         break;
 
-    case XnoteConstants.SET_DISC_LOADING:
+    case XnoteConstants.SET_DISCUSSION_LOADING:
         _isLoading = action.isLoading;
         break;
 
@@ -81,20 +81,22 @@ AppDispatcher.register(function(payload) {
         break;
 
 
-    case XnoteConstants.NOTE_ADD:
-        if (action.discussionId == _discussion.discussionId) {
+    case XnoteConstants.DISCUSSION_ADD_NOTE:
+        if (action.highlightId == _highlight.highlightId) {
             addNote(action.note);
         } else {
-            console.log('the ids are not same: ' + action.discussionId + '; ' + _discussion.discussionId);
+            // do nothing.
+            console.log('no note added in discStore.');
         }
         break;
 
 
     case XnoteConstants.NOTE_EDIT:
-        if (action.discussionId == _discussion.discussionId) {
-            editNote(action.noteId, action.newContent);
+        if (action.highlightId == _highlight.highlightId) {
+            editNote(action.noteId, action.content);
         } else {
-            console.log('the ids are not same: ' + action.discussionId + '; ' + _discussion.discussionId);
+            // do nothing.
+            console.log('no note added in discStore.');
         }
         break;
 
