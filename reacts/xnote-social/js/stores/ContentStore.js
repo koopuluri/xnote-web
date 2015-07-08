@@ -5,6 +5,7 @@ var _ = require('underscore');
 
 var _articleList = [];
 var _selectedArticle = null;
+var _selectedArticleId = null;
 
 var CHANGE = 'contentStoreChange';
 
@@ -16,6 +17,14 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
 
     getSelectedArticle: function() {
         return _selectedArticle;
+    },
+
+    getSelectedArticleId: function() {
+        return _selectedArticleId;
+    },
+
+    getLoading: function() {
+        return false;
     },
 
   	//emit change event
@@ -45,17 +54,19 @@ GroupDispatcher.register(function(payload) {
         _articleList.push(action.article);
         break;
 
-    case Constants.SELECT_ARTICLE:
+    case Constants.SET_SELECTED_ARTICLE:
         _selectedArticle = action.article;
         break;
 
-    case Constants.UNSELECT_ARTICLE:
-        _selectedArticle = null;
+    case Constants.SET_SELECTED_ARTICLE_ID:
+        _selectedArticleId = action.articleId;
+        console.log('selectedArticleId set!' + action.articleId);
         break;
 
 		default:
 			return true;
 	}
+
 	ContentStore.emitChange();
 	return true;
 })

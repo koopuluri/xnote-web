@@ -1,7 +1,7 @@
 // handles receiving user input to add note to the discussion:
 var React = require('react');
-var NoteUtils = require('../utils/NoteUtils');
-var Actions = require('../actions/Actions');
+var NoteUtils = require('./utils/NoteUtils');
+var Actions = require('../../actions/ArticleActions');
 //var ContentEditable = require('react-wysiwyg');
 
 // expected props:

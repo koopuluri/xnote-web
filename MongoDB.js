@@ -124,10 +124,11 @@ var DB = {
             }
 
             console.log('diffbot successfuly parsed! ' + response.title);
+
             var article = {
                 groupId: groupId,
                 title: response.title,
-                content: response.content,
+                content: response.html,
                 author: response.author,
                 icon: response.icon,
                 url: response.url,

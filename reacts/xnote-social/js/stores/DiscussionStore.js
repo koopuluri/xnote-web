@@ -1,4 +1,4 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+var AppDispatcher = require('../dispatcher/GroupDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var XnoteConstants = require('../constants/Constants');
 var _ = require('underscore');
@@ -8,31 +8,18 @@ var CHANGE_EVENT = 'discussionChange';
 
 // NOTE: _discussion corresponds to 'highlight' in the new schema.
 // it is the entire highlight object ==> contains all of the highlights notes as well!
-var _discussion = null;
+var _highlight = null;
 var _isLoading = false;
 var _isError = false;
 var _lastAddedNoteId = null;
 
-function setDiscussion(disc) {
-    _discussion = disc;
-}
-
-function setLoading(isLoading) {
-    _isLoading = isLoading;
-}
-
-function setError(isError) {
-    _isError = isError;
-}
-
-
 function addNote(note) {
-    _discussion.notes.unshift(note);
+    _highlight.notes.unshift(note);
     _lastAddedNoteId = note.noteId;
 }
 
 function editNote(noteId, newNoteContent) {
-    var notes = _discussion.notes;
+    var notes = _highlight.notes;
     for (var i = 0; i < notes.length; i++) {
         if (notes[i].noteId == noteId) {
             // editing the content of this note:
@@ -42,8 +29,8 @@ function editNote(noteId, newNoteContent) {
 }
 
 var DiscussionStore = _.extend({}, EventEmitter.prototype, {
-    getDiscussion: function() {
-        return _discussion;
+    getHighlight: function() {
+        return _highlight;
     },
 
     getLoading: function() {
@@ -81,16 +68,16 @@ AppDispatcher.register(function(payload) {
 
   switch(action.actionType) {
 
-    case XnoteConstants.SET_DISC:
-        setDiscussion(action.discussion);
+    case XnoteConstants.SET_DISCUSSION_HIGHLIGHT:
+        _highlight = action.highlight;
         break;
 
     case XnoteConstants.SET_DISC_LOADING:
-        setLoading(action.isLoading);
+        _isLoading = action.isLoading;
         break;
 
     case XnoteConstants.SET_DISC_ERROR:
-        setError(action.isError);
+        _isError = action.isError;
         break;
 
 

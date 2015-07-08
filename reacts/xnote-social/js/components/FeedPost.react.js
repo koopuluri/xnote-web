@@ -59,18 +59,15 @@ var FeedPost = React.createClass({
 		if(payload.text === "Delete") {
 			GroupActions.deleteNote(payload.payload);
 		}
-		if(payload.text === "Edit") {
-
-		}
 	},
 
 	render: function() {
-		var post = this.props.post	
+		var post = this.props.post
 		if (post.type === ARTICLE) {
 			var article = post.article;
 			return (
 				<Card>
-        			<CardTitle 
+        			<CardTitle
         				title={post.createdBy.facebook.name}
         				subtitle = {article.createdAt}
         				style = {
@@ -116,13 +113,13 @@ var FeedPost = React.createClass({
 						closeOnMenuItemTouchTap = {true}
 						onChange = {self._menuOptions}> + </DropDownIcon>
 				}
-				var secondaryText = 
-				<p style = {
-					{
-						fontSize : 10,
-						lineHeight : "10px",
-					}
-				}> {note.createdAt} </p>
+				var secondaryText =
+					<p style = {
+						{
+							fontSize : 10,
+							lineHeight : "10px",
+						}	
+					}> {note.createdAt} </p>
 				return (
 					<div>
 						<ListItem
@@ -145,7 +142,7 @@ var FeedPost = React.createClass({
 				});
 			return (
 				<Card>
-					<CardTitle 
+					<CardTitle
 						title = {post.createdBy.facebook.name}
 						subtitle = {highlight.lastModifiedTimestamp}
 						style = {
@@ -155,8 +152,8 @@ var FeedPost = React.createClass({
         				}
         				titleStyle = {
         					{
-			        			fontSize: 14,        						
-        						lineHeight: '14px'		
+			        			fontSize: 14,
+        						lineHeight: '14px'
         					}
 						}
 						subtitleStyle = {

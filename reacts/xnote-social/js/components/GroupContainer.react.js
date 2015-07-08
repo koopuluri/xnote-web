@@ -51,7 +51,7 @@ var GroupContainer = React.createClass({
             var feedLabel = 'Feed (' + this.state.feedNotifs + ')'     
         }
         
-        return ( 
+        return (
             <Tabs
                 tabItemContainerStyle = {containerStyle}
                 className = 'discussion-view-tabs'>
@@ -64,12 +64,12 @@ var GroupContainer = React.createClass({
                         <ChatContainer />
                     </div>
                 </Tab>
-                
+
                 <Tab label= {feedLabel}
                     style = {contentStyle}
                     route = 'feed'
-                    onActive = {this._onActive}> 
-                    <div> 
+                    onActive = {this._onActive}>
+                    <div>
                         <FeedContainer />
                     </div> 
                 </Tab>

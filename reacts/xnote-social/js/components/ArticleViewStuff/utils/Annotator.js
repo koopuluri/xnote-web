@@ -1,6 +1,6 @@
 var React = require('react');
-var XnoteConstants = require('../constants/XnoteConstants');
-var PartialHighlight = require('../components/PartialHighlight.react');
+var XnoteConstants = require('../../../constants/Constants');
+var PartialHighlight = require('../PartialHighlight.react');
 
 
 // this file is where all the annotation logic resides.
@@ -113,7 +113,7 @@ Annotator = {
 	_renderPartialHighlights: function(highId) {
     console.log('Annotator._renderPartialHighlights');
 		// get all elements associated with this note:
-		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + "-" + discId;
+		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + "-" + highId;
 		var elements = $('.' + className);
 		elements.map(function(index) {
   			// render PartialNote for this element:

@@ -3,8 +3,8 @@ var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
-
 //TODO: Remove dummy chat and feed notification values
+
 var _chatNotifs = 3
 var _feedNotifs = 5
 
