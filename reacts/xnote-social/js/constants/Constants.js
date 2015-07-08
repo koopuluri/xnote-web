@@ -10,6 +10,18 @@ module.exports = KeyMirror({
 	SET_VIEW_MODE: null,
 	CHAT_MESSAGE: null,
 	SIDEBAR_CHAT_VIEW: null,
-	SIDEBAR_FEED_VIEW: null
-});
+	SIDEBAR_FEED_VIEW: null,
 
+	SET_GROUP: null,
+	SET_FEED: null,
+	SET_ARTICLE_LIST: null,
+	SET_USER: null,
+
+	SET_DISC: null,
+	SET_DISC_ERROR: null,
+	SET_DISC_LOADING: null,
+
+	FEED_POST_ARTICLE: 'ArticleFeedPost',
+	FEED_POST_HIGHLIGHT: 'HighlightFeedPost'
+
+});

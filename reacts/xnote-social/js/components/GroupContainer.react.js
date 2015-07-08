@@ -1,6 +1,6 @@
 var React = require('react');
 var GroupActions = require('../actions/GroupActions');
-var GroupConstants = require('../constants/GroupConstants');
+var GroupConstants = require('../constants/Constants');
 var SidebarStore = require('../stores/SidebarStore');
 
 var FeedContainer = require('./FeedContainer.react');
@@ -27,25 +27,25 @@ var GroupContainer = React.createClass({
             color: Colors.green500,
         }
 
-        return ( 
+        return (
             <Tabs
                 tabItemContainerStyle = {containerStyle}
                 className = 'discussion-view-tabs'>
 
                 <Tab label="Chat"
-                    style = {contentStyle} > 
-                    <div> 
+                    style = {contentStyle} >
+                    <div>
                         <ChatContainer />
                     </div>
                 </Tab>
-                
+
                 <Tab label="Feed"
-                    style = {contentStyle}> 
-                    <div> 
+                    style = {contentStyle}>
+                    <div>
                         <FeedContainer />
-                    </div> 
+                    </div>
                 </Tab>
-            </Tabs> 
+            </Tabs>
         );
     }
 });

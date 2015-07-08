@@ -1,6 +1,6 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var EventEmitter = require('events').EventEmitter;
-var GroupConstants = require('../constants/GroupConstants');
+var GroupConstants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _viewMode = GroupConstants.SIDEBAR_CHAT_VIEW;
@@ -39,7 +39,7 @@ GroupDispatcher.register(function(payload) {
 		case GroupConstants.SET_VIEW_MODE:
 			toggleViewMode(action.data);
 			break;
-			
+
 		default:
 			return true;
 

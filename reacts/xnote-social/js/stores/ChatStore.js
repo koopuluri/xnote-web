@@ -1,9 +1,9 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var EventEmitter = require('events').EventEmitter;
-var GroupConstants = require('../constants/GroupConstants');
+var GroupConstants = require('../constants/Constants');
 var _ = require('underscore');
 
-var _chat = {}
+var _chat = [];
 
 function loadChatData(data) {
 	_chat = data;
@@ -63,4 +63,3 @@ GroupDispatcher.register(function(payload) {
 })
 
 module.exports = ChatStore;
-

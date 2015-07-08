@@ -1,4 +1,4 @@
-//var DB = require('./MongoDB');
+var DB = require('./MongoDB');
 
 var  _dbCallback = function(res) {
         return function(dbOutput) {
@@ -25,7 +25,7 @@ module.exports = function(app, passport) {
      // handle the callback after facebook has authenticated the user
      app.get('/auth/facebook/callback',
          passport.authenticate('facebook', {
-             successRedirect : '/dashboard',
+             successRedirect : '/social',
              failureRedirect : '/'
          }));
 
@@ -43,7 +43,8 @@ module.exports = function(app, passport) {
 
 
      app.get('/social/', isLoggedIn, function(req, res) {
-        var groupId = req.query.groupId;
+        //var groupId = req.query.groupId;
+        var groupId = 'testPoopGroup';
         res.render('social.ejs', {
             groupId: groupId
         });
@@ -76,6 +77,7 @@ module.exports = function(app, passport) {
 
     app.get('/_group', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
+        console.log('groupId: ' + groupId);
         DB.getGroup(req.user, groupId, _dbCallback(res));
     });
 
@@ -111,7 +113,7 @@ module.exports = function(app, passport) {
 
     app.post('/_add_article_from_url', isLoggedIn, function(req, res) {
         var url = req.body.url;
-        DB.addArticleFromUrl(req.user, url _dbCallback(res));
+        DB.addArticleFromUrl(req.user, url, _dbCallback(res));
     });
 
     app.post('/_delete_article', isLoggedIn, function(req, res) {

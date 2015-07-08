@@ -16,7 +16,7 @@ var GroupSidebar = React.createClass({
         muiTheme: React.PropTypes.object
     },
 
-    getChildContext: function() { 
+    getChildContext: function() {
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };

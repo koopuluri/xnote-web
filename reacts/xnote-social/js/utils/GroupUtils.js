@@ -20,7 +20,7 @@ var GroupUtils = {
 		if (!seconds) {
 			return '';
 		}
-			
+
 		var d = new Date(seconds*1000); // The 0 there is the key, which sets the date to the epoch
 		return '' + d;
 	},

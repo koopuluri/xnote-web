@@ -7,6 +7,9 @@ var FeedPost = require('./models/FeedPost');
 var Note = require('./models/Note');
 var Highlight = require('./models/Highlight');
 
+var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
+
+
 
 //Lets connect to our database using the DB server URL.
 try {
@@ -18,19 +21,12 @@ try {
 
 var DB = {
 
-     // get all groups associated with user:
-     getGroups: function(user, callback) {
-        User.findOne({_id: user._id}).populate('groups')
-                    .exec(function (err, populatedUser) {
-                        callback({groups: populatedUser.groups});
-        });
-     },
-
      // add provided group for the provided user:
      addGroup: function(user, groupObj, callback) {
         var group = Group({
+            createdBy: user,
             title: groupObj.title,
-            users: [user._id],
+            members: [user._id],
             groupId: groupObj.groupId
         });
 
@@ -40,15 +36,16 @@ var DB = {
                 return;
             }
             console.log('group saved successfuly!');
-            // now saving the ref to this group in the user object:
-            user.groups.push(group._id);
-            user.save(function(err) {
-                if (err) {
-                    callback({error: err});
-                } else {
-                    console.log('added group to user!');
-                }
-            });
+            callback({groupId: groupObj.groupId});
+            // // now saving the ref to this group in the user object:
+            // user.groups.push(group._id);
+            // user.save(function(err) {
+            //     if (err) {
+            //         callback({error: err});
+            //     } else {
+            //         console.log('added group to user!');
+            //     }
+            // });
 
         });
      },
@@ -70,9 +67,14 @@ var DB = {
             title: article.title,
             content: article.content,
             url: article.url,
-            articleId: article.articleId,
+            icon: article.icon,
             groupId: article.groupId,
-            serialization: article.serialization
+            serialization: article.serialization,
+
+            author: article.author,
+            articleDate: article.articleDate,
+            icon: article.icon,
+
         });
 
         a.save(function(err, savedArticle) {
@@ -102,9 +104,40 @@ var DB = {
         });
      },
 
-     addArticleFromUrl: function(user, groupId, url) {
 
+     addArticleFromUrl: function(user, groupId, url, callback) {
+        if (!url) {
+            console.log('url is null');
+            callback({error: 'empty url'});
+        }
+
+        var self = this;
+        var Diffbot = require('diffbot').Diffbot;
+        var diff = new Diffbot(DIFFBOT_ID);
+        diff.article({
+            uri: url
+        }, function (err, response) {
+            if (response.error) {
+                console.log('diffbot error! ' + response.error);
+                callback({error: response.error});
+                return;
+            }
+
+            console.log('diffbot successfuly parsed! ' + response.title);
+            var article = {
+                groupId: groupId,
+                title: response.title,
+                content: response.content,
+                author: response.author,
+                icon: response.icon,
+                url: response.url,
+                articleDate: response.date
+
+            }
+            self.addArticle(user, article, callback);
+        });
      },
+
 
      // saves a new feedPost for an article
      _addFeedPostForArticle: function(user, article, callback) {
@@ -233,105 +266,196 @@ var DB = {
      },
 
 
-     _findNote: function(noteId, highlightId, callback) {
-          Highlight.findOne({'highlightId': highlightId, 'notes.noteid': noteId},
-            function (err, obj) {
-                callback(err, obj);
-            });
+     // ========================= FEED ========================================
+
+     // sets last modified timestamp to NOW, only called when note added to highlight.
+     // CANNOT save(), because that will cause the groups ref to be updated.
+     // ===> MUST only update.
+     _updateTimestampForHighlightFeedObject: function(highlightRef, callback) {
+       FeedPost.findOneAndUpdate({highlight: highlightRef},
+           {$set: {'lastModifiedTimestamp': Date.now()}},
+           {},
+           function (err, savedFeedPost) {
+               if (err) {
+                   console.log('error in finding and updating the FeedPost for highlight: ' + err);
+                   callback({error: err});
+               }
+
+               console.log('feedPost time updated: ' + savedFeedPost.lastModifiedTimestamp);
+           });
      },
 
 
-     // ========================= FEED ======================================
+     // ========================= GROUPS =======================================
 
-     // sets last modified timestamp to NOW, only called when note added to highlight.
-     _updateTimestampForHighlightFeedObject: function(highlightRef, callback) {
-        console.log('_updatetimestamp: ' + highlightRef);
-        FeedPost.findOne({highlight: highlightRef}, function (err, obj) {
-            if (err) {
-                console.log('could not get feed post to update its timestamp: ' + err);
-                callback({error: err});
-                return;
-            }
+     // get all groups associated with user:
+     // ONLY POPULATE WITH: {title, members, createdAt}
+     getGroups: function(user, callback) {
+        User.findOne({_id: user._id}).populate('groups')
+                    .exec(function (err, populatedUser) {
+                        callback({groups: populatedUser.groups});
+        });
+     },
 
-            console.log('got the feedPost object for the highlight!');
-            obj.lastModifiedTimestamp = Date.now();
-            obj.save(function (err, savedPost) {
+     // populate:
+     // - user: (facebook.id, facebook.name)
+     // - feedPost: (sub-populate the article / highlight ref within each feedPost)
+     // - articles: (title, url; sub-populate(createdBy));
+     getGroup: function(user, groupId, callback) {
+        Group.findOne({groupId: groupId})
+             .populate('feedPosts')
+             .populate('articles', 'title url createdAt createdBy icon')
+             .populate('createdBy', 'facebook.id facebook.name')
+             .populate('members', 'facebook.id facebook.name')
+             .exec(function(err, doc) {
                 if (err) {
-                    console.log('could not save post after updat: ' + err);
+                    console.log('err in executing the population: ' + err);
                     callback({error: err});
                     return;
                 }
 
-                console.log('feedPost updated successfuly');
-                callback({feedPostId: savedPost._id});
-            });
+                if(!doc) {
+                    console.log('doc is null?!?');
+                    callback({error: 'null doc'});
+                    return;
+                }
+
+                // now within feedPost, have to populate the article / highlight ref:
+                FeedPost.populate(doc.feedPosts, [{path: 'article', select: '-createdBy'},
+                          {path: 'highlight', select: '-createdBy'},
+                          {path: 'createdBy', select: 'facebook.id facebook.name'}],
+                          function(err, data) {
+
+                    if (err) {
+                        console.log('error feedpost pop: ' + err);
+                        callback({error: err});
+                        return;
+                    }
+
+                    // populate the createdBy field for articles:
+                    Article.populate(doc.articles,
+                            {
+                              path: 'createdBy',
+                              select: 'facebook.id facebook.name'
+                            }, function(err, popArticle) {
+                                if (err) {
+                                    console.log('error article pop: ' + err);
+                                    callback({error: err});
+                                    return;
+                                }
+
+                                console.log('articles and feeds are populated! Returning the group:');
+                                console.log("User List data: %j", doc);
+                                callback({group: doc});
+                            });
+                });
+             });
+     },
+
+     getUserInfo: function(user, callback) {
+        callback({name: user.facebook.name, id: user.facebook.id});
+     },
+
+     getArticle: function(user, articleId, callback) {
+        Article.findOne({_id: articleId}, function (err, obj) {
+            if (err || !obj) {
+                console.log('error: ' + err);
+                callback({error: err});
+                return;
+            }
+
+            // article found:
+            console.log('article found: ' + obj.title);
+            callback({article: obj});
         });
      },
-}
+
+     // for use when selecting a highlight within an article:
+     getHighlight: function(user, highlightId, callback) {
+        Highlight.findOne({highlightId: highlightId}, function (err, obj) {
+            if (err || !obj) {
+                console.log('no highlight found: ' + err);
+                callback({error: err});
+                return;
+            }
+
+            // highlight found:
+            console.log('highlight found: ' + obj._id);
+            callback({highlight: obj});
+        });
+     },
+};
 
 module.exports = DB;
 
-// testing out groups fetch and group save:
-// getting user, and then saving a group for the user:
+// // testing out the highlight saving / deleting:
 // User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
-//         console.log('about to save a dummy article!');
-//         var dummyArticle = {
-//             articleId: 'dummyArticle2!',
-//             groupId: 'poopopo',
-//             content: 'aksld;fjakl;fjklajfk;lasjdkfl;ajdklf;j',
-//             title: 'dummyArticle! dude',
-//             url: 'www.xnote.io',
-//         }
-//         // saving a dummy article:
-//         DB.addArticle(user, dummyArticle, function(poop) {
+//
+//         // console.log('got user!');
+//         //
+//         // DB.getGroup(user, 'testPoopGroup', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         // DB.addGroup(user, {
+//         //     title: 'pooping the grouping',
+//         //     groupId: 'testPoopGroup',
+//         // }, function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         // var articleId = '5599e642f836bb36631e2e9c';
+//         // DB.getArticle(user, articleId, function(poop) {
+//         //     console.log('article.title: ' + poop.article.title);
+//         // });
+//
+//         //
+//         DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
 //             console.log('poop: ' + Object.keys(poop));
 //         });
+//
+//
+//
+//         // var dummyGroup = {
+//         //     title: 'dummy group thing!',
+//         //     groupId: 'dummyGroup1'
+//         // }
 //         //
+//         // DB.addGroup(user, dummyGroup, function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         // // adding note:
+//         // var dummyNote = {
+//         //     noteId: 'dummyNote1',
+//         //     content: 'dummy note content',
+//         // }
+//         //
+//         // console.log('about to add note');
+//         // DB.addNote(user, dummyNote, 'pooplight', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         //
+//         // console.log('about to save a dummy highlight!');
+//         // var dummyHighlight = {
+//         //     articleId: 'dummyArticle2!',
+//         //     highlightId: 'pooplight',
+//         //     groupId: 'poopopo',
+//         //     clippedText: 'poop is the secret of my energy!',
+//         // }
+//         //
+//         // // saving a dummy highlight:
+//         // DB.addHighlight(user, dummyHighlight, function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
 //         // // going to delete the dummy article added above:
-//         // DB.deleteArticle(user, 'dummyArticle!', function(poop) {
+//         // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
 //     }
 // });
-
-
-// testing out the highlight saving / deleting:
-User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
-    if (err) {
-        console.log('pooped in getting user!');
-    } else {
-
-        // adding note:
-        var dummyNote = {
-            noteId: 'dummyNote1',
-            content: 'dummy note content',
-        }
-
-        console.log('about to add note');
-        DB.addNote(user, dummyNote, 'pooplight', function(poop) {
-            console.log('poop: ' + Object.keys(poop));
-        });
-
-        //
-        // console.log('about to save a dummy highlight!');
-        // var dummyHighlight = {
-        //     articleId: 'dummyArticle2!',
-        //     highlightId: 'pooplight',
-        //     groupId: 'poopopo',
-        //     clippedText: 'poop is the secret of my energy!',
-        // }
-        //
-        // // saving a dummy highlight:
-        // DB.addHighlight(user, dummyHighlight, function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-        // // going to delete the dummy article added above:
-        // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-    }
-});

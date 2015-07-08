@@ -38,6 +38,11 @@ var ChatContainer = React.createClass({
 
 	render: function() {
 		var messages = this.state.messages;
+
+		if (!messages) {
+				return (<div className="chat-container"></div>);
+		}
+
 		if (messages.length == 0) {
 			return (
 				<div className="chat-container">
@@ -47,6 +52,7 @@ var ChatContainer = React.createClass({
 				</div>
 			)
 		}
+
 		var messages = messages.map(function(message) {
 			return (
 				<div>

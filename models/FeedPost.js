@@ -38,21 +38,17 @@ feedPostSchema.pre('remove', function(next) {
 
 feedPostSchema.post('save', function(doc) {
     // update the parent group's refs
-    mongoose.models['Group'].findOne({groupId: doc.groupId}, function(err, obj) {
-        // update the ref for this and save:
-        if (err || !obj) {
-            console.log('error in getting the group: ' + err);
-            return;
-        }
-        obj.feedPosts.push(doc);
-        obj.save(function(err, savedGroup) {
-            if (!err) {
+    mongoose.models['Group'].findOneAndUpdate({groupId: doc.groupId},
+        {$push: {'feedPosts': doc}},
+        {},
+        function (error, savedGroup) {
+            if (!error) {
                 console.log('group saved in FeedPost.post!')
             } else {
                 console.log('group NOT saved in FeedPost.post!: ' + err);
             }
         });
-    });
+
 });
 
 module.exports = mongoose.model('FeedPost', feedPostSchema);
