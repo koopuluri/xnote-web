@@ -18,6 +18,7 @@ var articleSchema = mongoose.Schema({
     url: String,
     articleId: String,
     groupId: String,
+    icon: String,
     serialization: {type: String, default: ''}
 });
 
@@ -36,22 +37,17 @@ articleSchema.pre('remove', function(next) {
 });
 
 articleSchema.post('save', function(doc) {
-    // update the parent group's refs
-    mongoose.models['Group'].findOne({groupId: doc.groupId}, function(err, obj) {
-        // update the ref for this and save:
-        if (err || !obj) {
-            console.log('error in getting the group: ' + err);
-            return;
-        }
-        obj.articles.push(doc);
-        obj.save(function(err, savedGroup) {
-            if (!err) {
-                console.log('group saved in Article.post!')
-            } else {
-                console.log('group NOT saved in Article.post!: ' + err);
-            }
-        });
-    });
+    // UPDATE the parent group's refs (remember don't SAVE!);
+    mongoose.models['Group'].findOneAndUpdate({groupId: doc.groupId},
+      {$push: {'articles': doc}},
+      {},
+      function (error, savedGroup) {
+          if (!error) {
+              console.log('group saved in Article.post!')
+          } else {
+              console.log('group NOT saved in Article.post!: ' + err);
+          }
+      });
 });
 
 

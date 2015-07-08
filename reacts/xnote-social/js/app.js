@@ -1,14 +1,17 @@
 window.React = require('react');
 var GroupData = require('./MockData');
-var GroupAPI = require('./utils/GroupAPI');
-var GroupSideBar = require('./components/GroupSideBar.react');
+var API = require('./utils/API')
+var MainContainer = require('./components/MainContainer.react');
 var injectTapEventPlugin = require("react-tap-event-plugin");
+var Actions = require('./actions/GroupActions');
 
 //Load mock group data into local storage
 GroupData.init();
 
 //Load mock API call
-GroupAPI.getGroupData();
+// GroupAPI.getGroupData();
+
+
 
 //Needed for onTouchTap
 //Can go away when react 1.0 release
@@ -16,10 +19,15 @@ GroupAPI.getGroupData();
 //https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
 
-var groupId = $('.group-id-span').attrs('id');
+var groupId = $('.group-id-span').attr('id');
+console.log('got groupId: ' + groupId);
+
+// set the group associated with the groupId in the stores:
+Actions.fetchAndSetGroup(groupId);
+
 
 //Render Flux Group App
 React.render(
-	<GroupSideBar groupId=groupId/>,
+	<MainContainer />,
 	document.getElementById('group-container')
 );

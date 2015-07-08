@@ -1,0 +1,1 @@
+console.error("ReactifyError: /home/vignesh/Xnote/xnote-web/reacts/xnote-social/js/components/FeedPost.react.js: Parse Error: Line 26: Unexpected token ; while parsing file: /home/vignesh/Xnote/xnote-web/reacts/xnote-social/js/components/FeedPost.react.js")

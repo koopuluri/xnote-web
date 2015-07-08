@@ -20,8 +20,8 @@
     "socket.io": "*",
 
     "mongoose" : "~3.8.1",
-    "passport" : "^0.1.17",
-    "passport-facebook" : "^1.0.2",
+    "passport" : "~0.1.17",
+    "passport-facebook" : "~1.0.2",
     "connect-flash" : "~0.1.1",
     "bcrypt-nodejs" : "latest",
     "morgan": "~1.0.0",
