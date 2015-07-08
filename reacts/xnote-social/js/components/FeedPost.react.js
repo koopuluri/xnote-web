@@ -3,18 +3,17 @@ var GroupActions = require('../actions/GroupActions');
 var Constants = require('../constants/Constants');
 var GroupStore = require('../stores/GroupStore');
 var GroupUtils = require('../utils/GroupUtils');
+var NoteComponent = require('./NoteComponent.react');
 
 var mui = require('material-ui');
 var Card = mui.Card;
 var CardTitle = mui.CardTitle;
 var CardText = mui.CardText;
+var CardActions = mui.CardActions;
 var List = mui.List;
-var ListItem = mui.ListItem;
-var ListDivider = mui.ListDivider;
 var Colors = mui.Styles.Colors;
 var TextField = mui.TextField;
 var FlatButton = mui.FlatButton;
-var DropDownIcon = mui.DropDownIcon;
 
 var ARTICLE = 'ArticleFeedPost';
 var HIGHLIGHT = 'HighlightFeedPost';
@@ -23,7 +22,7 @@ var FeedPost = React.createClass({
 
 	getInitialState: function() {
 		return {
-			currentUser : GroupStore.getCurrentUser();
+			currentUser : GroupStore.getCurrentUser()
 		}
 	},
 
@@ -37,7 +36,7 @@ var FeedPost = React.createClass({
 
 	_onChange: function() {
 		this.setState(this.getInitialState());
-	}
+	},
 
 	_addComment: function() {
 		var highlightId = this.props.post.highlight.highlightId;
@@ -52,12 +51,6 @@ var FeedPost = React.createClass({
 				highlightId: highlightId
 			}
 			GroupActions.addNote(highlightId, note);
-		}
-	},
-
-	_menuOptions: function(e, key, payload) {
-		if(payload.text === "Delete") {
-			GroupActions.deleteNote(payload.payload);
 		}
 	},
 
@@ -102,44 +95,20 @@ var FeedPost = React.createClass({
 			var self = this;
 			var highlight = post.highlight;
 			var notes = highlight.notes.map(function(note) {
-				var noteOptions = [
-  					{ payload: note, text: 'Delete' },
-				];
-				var options = null
-				if (this.state.currentUser.facebook.id === note.createdBy.facebook.id) {
-					var options = 
-					<DropDownIcon 
-						menuItems={noteOptions}
-						closeOnMenuItemTouchTap = {true}
-						onChange = {self._menuOptions}> + </DropDownIcon>
-				}
-				var secondaryText =
-					<p style = {
-						{
-							fontSize : 10,
-							lineHeight : "10px",
-						}	
-					}> {note.createdAt} </p>
 				return (
-					<div>
-						<ListItem
-							secondaryText = {secondaryText}
-							disableTouchTap	= {true}
-							rightIconButton={options}
-							style = {
-								{
-									fontSize : 16,
-									lineHeight : "10px",
-									backgroundColor : Colors.green50
-								}
-							}>
-							<p className = 'post-note-username' style = {{fontSize : 12}}>{note.createdBy.facebook.name}</p>
-							<p className = 'post-note-content'>{note.content}</p>
-						</ListItem>
-						<ListDivider />
+					<NoteComponent note={note} user = {self.state.currentUser} />
+				);
+			});
+
+			var noteList = null;
+			if (highlight.notes.length > 0) {
+				noteList = 
+					<div className = "post-comments">
+						<List>
+							{notes}
+						</List>
 					</div>
-					);
-				});
+			}
 			return (
 				<Card>
 					<CardTitle
@@ -170,21 +139,15 @@ var FeedPost = React.createClass({
         					}>
         					<p>Added a highlight: </p>
 							<p className = "post-clipped-text"> '' {highlight.clippedText} '' </p>
-							<div className = "post-comments">
-								<List>
-									{notes}
-								</List>
-							</div>
-							<div className = 'note-form'>
-									<TextField
-	  									hintText="Post Note"
-	  									ref = 'postNote' />
-	  								<FlatButton
-	  									linkButton = {false}
-	  									label="Post"
-	  									primary={true}
-	  									onClick = {this._addComment} />
-							</div>
+							{noteList}
+							<TextField
+	  							hintText="Post Note"
+	  							ref = 'postNote' />
+	  						<FlatButton
+	  							linkButton = {false}
+	  							label="Post"
+	  							primary={true}
+	  							onClick = {this._addComment} />
 						</CardText>
 				</Card>
 			);

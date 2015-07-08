@@ -14,6 +14,7 @@ function addNote(note) {
 		if(_feed[i].type === 'HighlightFeedPost') {
 			if(_feed[i].highlight.highlightId === note.highlightId) {
 				_feed[i].highlight.notes.unshift(note);
+				console.log(note);
 			}
 		}
 	}
@@ -57,21 +58,21 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 
 		//Return posts
 		getFeed: function() {
-				return _feed;
+			return _feed;
 		},
 
 		//Emit Change event
 		emitChange: function() {
-				this.emit(CHANGE);
+			this.emit(CHANGE);
 		},
 
 		//Add change listener
 		addChangeListener: function(callback) {
-				this.on(CHANGE, callback);
+			this.on(CHANGE, callback);
 		},
 
 		removeChangeListener: function(callback) {
-				this.removeListener(CHANGE, callback);
+			this.removeListener(CHANGE, callback);
 		}
 });
 
@@ -79,24 +80,24 @@ GroupDispatcher.register(function(payload) {
 		var action = payload.action;
 
 		switch(action.actionType) {
-				case GroupConstants.SET_FEED:
-					_feed = action.feed;
-					break;
+			case GroupConstants.SET_FEED:
+				_feed = action.feed;
+				break;
 
 			case GroupConstants.ADD_NOTE:
-					addNote(action.note);
-					break;
+				addNote(action.note);
+				break;
 
 			case GroupConstants.EDIT_NOTE:
-					editNote(action.note);
-					break;
+				editNote(action.note);
+				break;
 
 			case GroupConstants.DELETE_NOTE:
-					deleteNote(action.note);
-					break;
+				deleteNote(action.note);
+				break;
 
 			default:
-					return true;
+				return true;
 		}
 		FeedStore.emitChange();
 		return true;

@@ -13,9 +13,9 @@ var FeedContainer = React.createClass({
 
 		//get initial state from stores
 		getInitialState: function() {
-				return {
-						feed: FeedStore.getFeed(),
-				}
+			return {
+				feed: FeedStore.getFeed(),
+			}
 		},
 
 		componentDidMount: function() {

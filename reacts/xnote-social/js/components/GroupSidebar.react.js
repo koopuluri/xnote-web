@@ -18,7 +18,7 @@ function getNotifsState() {
 }
 
 
-var GroupContainer = React.createClass({
+var GroupSidebar = React.createClass({
 
     getInitialState: function() {
         return getNotifsState();
@@ -52,28 +52,30 @@ var GroupContainer = React.createClass({
         }
         
         return (
-            <Tabs
-                tabItemContainerStyle = {containerStyle}
-                className = 'discussion-view-tabs'>
+            <div className = "group-sidebar-container">
+                <Tabs
+                    tabItemContainerStyle = {containerStyle}
+                    className = 'discussion-view-tabs'>
 
-                <Tab label= {chatLabel}
-                    style = {contentStyle}
-                    route = 'chat'
-                    onActive = {this._onActive}> 
-                    <div> 
-                        <ChatContainer />
-                    </div>
-                </Tab>
+                    <Tab label= {chatLabel}
+                        style = {contentStyle}
+                       route = 'chat'
+                        onActive = {this._onActive}> 
+                        <div> 
+                            <ChatContainer />
+                        </div>
+                    </Tab>
 
-                <Tab label= {feedLabel}
-                    style = {contentStyle}
-                    route = 'feed'
-                    onActive = {this._onActive}>
-                    <div>
-                        <FeedContainer />
-                    </div> 
-                </Tab>
-            </Tabs> 
+                    <Tab label= {feedLabel}
+                        style = {contentStyle}
+                        route = 'feed'
+                        onActive = {this._onActive}>
+                        <div>
+                            <FeedContainer />
+                        </div> 
+                    </Tab>
+                </Tabs> 
+            </div>
         );
     },
 
@@ -90,4 +92,4 @@ var GroupContainer = React.createClass({
     },
 });
 
-module.exports = GroupContainer;
+module.exports = GroupSidebar;
