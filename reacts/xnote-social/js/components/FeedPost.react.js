@@ -3,7 +3,7 @@ var GroupActions = require('../actions/GroupActions');
 
 var mui = require('material-ui');
 var Card = mui.Card;
-var CardTitle = mui.CardTitle;
+var CardHeader = mui.CardHeader;
 var CardText = mui.CardText;
 var List = mui.List;
 var ListItem = mui.ListItem;
@@ -29,7 +29,7 @@ var FeedPost = React.createClass({
 			var article = post.object
 			return (
 				<Card>
-          			<CardTitle title={article.createdBy.name} />
+          			<CardHeader title={article.createdBy.name} />
           			<CardText>
             			<p>Added an article {article.title} </p>
             			<p>{article.url} </p>
@@ -50,7 +50,7 @@ var FeedPost = React.createClass({
 			});
 			return (
 				<Card>
-					<CardTitle title = {highlight.createdBy.name} />
+					<CardHeader title = {highlight.createdBy.name} />
 					<CardText>
 						<p className = 'post-note-type'> Added a note </p>
 						<p className = "post-clipped-text"> '' {highlight.clippedText} '' </p>
