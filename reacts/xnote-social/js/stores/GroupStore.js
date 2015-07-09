@@ -22,6 +22,10 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
         return _user;
     },
 
+    getGroupId: function() {
+        return _group.groupId;
+    },
+
   	//emit change event
   	emitChange: function() {
   		this.emit('groupChange');

@@ -8,8 +8,16 @@ module.exports = {
 				});
 		},
 
+		addArticleFromUrl: function(url, groupId, callback) {
+				$.post('/_add_article_from_url', {
+						groupId: groupId,
+						url: url
+				}, function(data, status) {
+						callback(data);
+				});
+		},
+
 		getArticle: function(articleId, callback) {
-				console.log('getArticle!!!!: ' + articleId);
 				$.get('/_article', {
 						articleId: articleId
 				}, function(data, status) {
@@ -25,9 +33,10 @@ module.exports = {
 				});
 		},
 
-		addHighlightForArticle: function(highlight, callback) {
+		addHighlightForArticle: function(highlight, newSerialization, callback) {
 				$.post('/_add_highlight', {
-						highlight: highlight
+						highlight: highlight,
+						serialization: newSerialization
 				}, function(obj) {
 						callback(obj);
 				});

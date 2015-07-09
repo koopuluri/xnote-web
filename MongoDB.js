@@ -159,22 +159,24 @@ var DB = {
             }
 
             console.log('feedPost for article successfuly created!');
-            callback({feedPostId: savedObject._id});
+            article.createdBy = article.createdBy.facebook;
+            callback({article: article});
         });
      },
 
 
      // ========================= HIGHLIGHT ====================================
 
-
-     addHighlight: function(user, highlight, callback) {
+     addHighlight: function(user, highlight, newSerialization, callback) {
         var self = this;
+        var articleId = highlight.articleId;
         var light = Highlight({
             createdBy: user._id,
             highlightId: highlight.highlightId,
             articleId: highlight.articleId,
             clippedText: highlight.clippedText,
-            groupId: highlight.groupId
+            groupId: highlight.groupId,
+            selection: highlight.selection
         });
 
         light.save(function (err, savedHighlight) {
@@ -185,8 +187,22 @@ var DB = {
             }
 
             console.log('highlight successfuly saved');
-            // now creating a feedPost for this highlight:
-            self._addFeedPostForHighlight(user, savedHighlight, callback);
+
+            // now updati/ng the article serialization:
+            Article.findOneAndUpdate({_id: articleId},
+                {serialization: newSerialization},
+                function(err, obj) {
+                    if (err) {
+                        console.log('article could not be updated!: ' + err);
+                        callback({error: 'poop'});
+                        return;
+                    }
+
+                    console.log('article serialization updtated!!!');
+                    // now creating a feedPost for the highlight:
+                    self._addFeedPostForHighlight(user, savedHighlight, callback);
+                });
+
         });
      },
 
@@ -203,7 +219,6 @@ var DB = {
 
          post.save(function (err, savedObject) {
              if (err) {
-
                  console.log('feedPost for highlight save error: ' + err);
                  callback({error: err});
                  return;
@@ -245,7 +260,7 @@ var DB = {
 
      // ========================= NOTE =========================================
 
-     addNote: function(user, noteObj, highlightId, callback) {
+     addNote: function(user, highlightId, noteObj, callback) {
         var self = this;
         var note = {
             createdBy: user,
@@ -296,6 +311,20 @@ var DB = {
                     .exec(function (err, populatedUser) {
                         callback({groups: populatedUser.groups});
         });
+     },
+
+     getHighlight: function(user, highlightId, callback) {
+        Highlight.findOne({highlightId: highlightId})
+                  .populate('createdBy', 'facebook.id facebook.name')
+                  .populate('notes.createdBy', 'facebook.id facebook.name')
+                  .exec(function(err, doc) {
+                      if (err) {
+                          console.log('highlight populate error; ' + err);
+                          callback({error: 'highlight getting messed up'});
+                          return;
+                      }
+                      callback({highlight: doc});
+                  });
      },
 
      // populate:
@@ -371,92 +400,80 @@ var DB = {
         });
      },
 
-     // for use when selecting a highlight within an article:
-     getHighlight: function(user, highlightId, callback) {
-        Highlight.findOne({highlightId: highlightId}, function (err, obj) {
-            if (err || !obj) {
-                console.log('no highlight found: ' + err);
-                callback({error: err});
-                return;
-            }
-
-            // highlight found:
-            console.log('highlight found: ' + obj._id);
-            callback({highlight: obj});
-        });
-     },
 };
 
 module.exports = DB;
 
-// testing out the highlight saving / deleting:
-User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
-    if (err) {
-        console.log('pooped in getting user!');
-    } else {
-
-        // console.log('got user!');
-        //
-        // DB.getGroup(user, 'testPoopGroup', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-        // DB.addGroup(user, {
-        //     title: 'pooping the grouping',
-        //     groupId: 'testPoopGroup',
-        // }, function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-        // var articleId = '5599e642f836bb36631e2e9c';
-        // DB.getArticle(user, articleId, function(poop) {
-        //     console.log('article.title: ' + poop.article.title);
-        // });
-
-        //
-        // DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-
-
-        // var dummyGroup = {
-        //     title: 'dummy group thing!',
-        //     groupId: 'dummyGroup1'
-        // }
-        //
-        // DB.addGroup(user, dummyGroup, function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-        // // adding note:
-        // var dummyNote = {
-        //     noteId: 'dummyNote1',
-        //     content: 'dummy note content',
-        // }
-        //
-        // console.log('about to add note');
-        // DB.addNote(user, dummyNote, 'pooplight', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-        //
-        // console.log('about to save a dummy highlight!');
-        // var dummyHighlight = {
-        //    articleId: 'dummyArticle2!',
-        //    highlightId: 'pooplight',
-        //    groupId: 'testPoopGroup',
-        //    clippedText: 'poop is the secret of my energy!',
-        // }
-        //
-        // // saving a dummy highlight:
-        // DB.addHighlight(user, dummyHighlight, function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-        // // going to delete the dummy article added above:
-        // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-    }
-});
+// // testing out the highlight saving / deleting:
+// User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
+//     if (err) {
+//         console.log('pooped in getting user!');
+//     } else {
+//
+//         // console.log('got user!');
+//         //
+//         // DB.getGroup(user, 'testPoopGroup', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         // DB.addGroup(user, {
+//         //     title: 'pooping the grouping',
+//         //     groupId: 'testPoopGroup',
+//         // }, function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         // var articleId = '5599e642f836bb36631e2e9c';
+//         // DB.getArticle(user, articleId, function(poop) {
+//         //     console.log('article.title: ' + poop.article.title);
+//         // });
+//
+//         //
+//         // DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//
+//
+//         // var dummyGroup = {
+//         //     title: 'dummy group thing!',
+//         //     groupId: 'dummyGroup1'
+//         // }
+//         //
+//         // DB.addGroup(user, dummyGroup, function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         // // adding note:
+//         // var dummyNote = {
+//         //     noteId: 'dummyNote1',
+//         //     content: 'dummy note content',
+//         // }
+//         //
+//         // console.log('about to add note');
+//         // DB.addNote(user, dummyNote, 'pooplight', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//
+//         //
+//         // console.log('about to save a dummy highlight!');
+//         var dummyHighlight = {
+//            articleId: '559cdcc98b120d12312b2315',
+//            highlightId: 'pooplight',
+//            groupId: 'testPoopGroup',
+//            clippedText: 'poop is the secret of my energy!',
+//            selection: {},
+//            notes: []
+//         }
+//
+//         // saving a dummy highlight:
+//         DB.addHighlight(user, dummyHighlight, '', function(poop) {
+//             console.log('poop: ' + Object.keys(poop));
+//         });
+//
+//         // // going to delete the dummy article added above:
+//         // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//     }
+// });

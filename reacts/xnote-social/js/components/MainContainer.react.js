@@ -20,6 +20,9 @@ var MainContainer = React.createClass({
         return {
             selectedArticleId: '559cdcc98b120d12312b2315'
         }
+        // return {
+        //     selectedArticleId: null
+        // }
     },
 
     childContextTypes : {

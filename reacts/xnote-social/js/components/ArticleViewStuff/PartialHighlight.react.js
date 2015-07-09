@@ -68,12 +68,13 @@ var PartialHighlight = React.createClass({
 	},
 
 	componentWillUnmount: function() {
+			console.log('partial note unmount: ' + this.props.highlightId);
 			PartialHighlightStore.removeChangeListener(this._onChange);
 	},
 
-
 	// renderring the note:
 	render: function() {
+		console.log('PartialHighlight.render()');
 		// the highlighted text for the note:
 		var elementInnerHtml = this.props.content;
 		var bgColor = (this.state.isSelected || this.state.isHovered) ? "#FFFF7F" : "#87cefa";

@@ -18,6 +18,16 @@ var highlightSchema = mongoose.Schema({
     articleId: String,
     groupId: String,
     clippedText: String,
+    
+    selection: {
+        startOffset: Number,
+        endOffset: Number,
+        startPath: String,
+        endPath: String,
+        isBackwards: Boolean,
+        isCollapsed: Boolean
+    },
+
     notes: [
         {
             createdBy: {

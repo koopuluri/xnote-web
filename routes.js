@@ -113,7 +113,8 @@ module.exports = function(app, passport) {
 
     app.post('/_add_article_from_url', isLoggedIn, function(req, res) {
         var url = req.body.url;
-        DB.addArticleFromUrl(req.user, url, _dbCallback(res));
+        var groupId = req.body.groupId;
+        DB.addArticleFromUrl(req.user, groupId, url, _dbCallback(res));
     });
 
     app.post('/_delete_article', isLoggedIn, function(req, res) {
@@ -130,7 +131,8 @@ module.exports = function(app, passport) {
 
     app.post('/_add_highlight', isLoggedIn, function(req, res) {
         var highlightObj = req.body.highlight;
-        DB.addHighlight(req.user, highlightObj, _dbCallback(res));
+        var serialization = req.body.serialization;
+        DB.addHighlight(req.user, highlightObj, serialization, _dbCallback(res));
     });
 
     app.post('/_remove_highlight', isLoggedIn, function(req, res) {

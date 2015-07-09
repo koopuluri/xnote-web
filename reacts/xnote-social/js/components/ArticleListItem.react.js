@@ -40,9 +40,6 @@ var ArticleListItem = React.createClass({
 
     render: function() {
         var article = this.props.article;
-        if (article.icon) {
-            console.log('ICON!!!');
-        }
         return (
             <Card className='article-list-item'>
             <CardActions>

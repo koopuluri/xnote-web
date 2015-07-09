@@ -2,6 +2,10 @@ var KeyMirror = require('react/lib/keyMirror');
 
 //Define action constants
 module.exports = KeyMirror({
+
+	CONTENT_ADD_ARTICLE: null,
+	CONTENT_SET_PARSING: null,
+
 	RECEIVE_CHAT: null,
 	RECEIVE_FEED: null,
 	ADD_NOTE: null,

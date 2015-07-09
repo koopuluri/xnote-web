@@ -51,8 +51,7 @@ var FeedPost = React.createClass({
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
-				noteId: GroupUtils.generateUUID(),
-				highlightId: highlightId
+				noteId: GroupUtils.generateUUID()
 			}
 			this.state.actions.addNote(highlightId, note);
 		}

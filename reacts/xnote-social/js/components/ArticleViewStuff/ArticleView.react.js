@@ -16,6 +16,8 @@ var NO_ARTICLE_SELECTED_MESSAGE = 'No content selected. You can add content from
 var ERROR_MESSAGE_NO_USER = 'Content not found.';
 var ERROR_MESSAGE_WITH_USER = 'Content not found. Select different content or add some.'
 
+var HACK_NUM = 0;
+
 var ArticleView = React.createClass({
 
 	getInitialState: function() {
@@ -33,8 +35,31 @@ var ArticleView = React.createClass({
 	// listener callbacks:
 	_onArticleChange: function() {
 		// reset article:
-		Annotator.clearAllHighlightsAndComponents();
+	//	Annotator.clearAllHighlightsAndComponents();
+		var article = ContentStore.getSelectedArticle();
+		if ((article && !this.state.article) || (!article && this.state.article) || (!article && !this.state.article)) {
+				HACK_NUM = 0;
+		} else if (article && this.state.article) {
+				if (article._id != this.state.article._id) {
+						HACK_NUM = 0;
+				}
+		} else {
+				// don't change the hack num!
+		}
+		
 		this.setState(this.getInitialState());
+	},
+
+	componentDidUpdate: function() {
+			if (HACK_NUM === 0) {
+					Annotator.clearAllHighlightsAndComponents();
+					var article = this.state.article;
+					if (article && article.serialization) {
+							console.log('DESERIALIZE!!!');
+							Annotator.deserialize(article.serialization);
+					}
+					HACK_NUM++;
+			}
 	},
 
 	componentDidMount: function() {
@@ -45,13 +70,6 @@ var ArticleView = React.createClass({
 		}
 	},
 
-	componentDidUpdate: function() {
-			// deserializing:
-			if (this.state.article && this.state.article.serialization) {
-					Annotator.deserialize(this.state.article.serialization);
-			}
-	},
-
 	componentWillUnmount: function() {
 			console.log('ArticleViewUnmounting');
 			// remove listener and highlights:
@@ -60,6 +78,7 @@ var ArticleView = React.createClass({
 	},
 
 	render: function() {
+			console.log('ArticleView.RENDER()');
 			return (
 				<Paper style={{margin: '2px'}} zDepth={1}>
 						{this.getRenderredInnerThing()}
@@ -180,8 +199,9 @@ var ArticleView = React.createClass({
 			// adding a highlight:
 			newHighlight = {
 					highlightId: NoteUtils.generateUUID(),
-					articleId: this.state.article.id,
-					selectedHtml: this.state.selection.toHtml(),
+					articleId: this.state.article._id,
+					groupId: GroupStore.getGroupId(),
+					clippedText: this.state.selection.toHtml(),
 					createdAt: new Date() / 1000,
 					selection: Annotator.getSelectionInfo(this.state.selection),
 					createdBy: this.state.currentUser,
@@ -189,9 +209,11 @@ var ArticleView = React.createClass({
 					article: this.state.article
 			}
 
+			console.log(newHighlight);
+
 			Annotator.addHighlight(newHighlight);
 
-			Actions.addHighlight(newHighlight, this.state.article.id, Annotator.serialize());
+			Actions.addHighlight(newHighlight, Annotator.serialize());
 
 			this.setState({selection: null});
 	},
