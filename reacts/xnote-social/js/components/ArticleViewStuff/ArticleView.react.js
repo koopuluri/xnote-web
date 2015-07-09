@@ -9,6 +9,9 @@ var Loading = require('./Loading.react');
 var ContentStore = require('../../stores/ContentStore');
 var GroupStore = require('../../stores/GroupStore');
 
+var mui = require('material-ui');
+var Paper = mui.Paper;
+
 var NO_ARTICLE_SELECTED_MESSAGE = 'No content selected. You can add content from the menu on the left.'
 var ERROR_MESSAGE_NO_USER = 'Content not found.';
 var ERROR_MESSAGE_WITH_USER = 'Content not found. Select different content or add some.'
@@ -57,6 +60,14 @@ var ArticleView = React.createClass({
 	},
 
 	render: function() {
+			return (
+				<Paper style={{margin: '2px'}} zDepth={1}>
+						{this.getRenderredInnerThing()}
+				</Paper>
+			);
+	},
+
+	getRenderredInnerThing: function() {
 		var article = this.state.article;
 
 

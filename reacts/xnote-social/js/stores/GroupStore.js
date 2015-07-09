@@ -4,8 +4,6 @@ var GroupConstants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _group = {};
-// var _user = null;
-
 var _user = {facebook: {name: 'Karthik Uppuluri', id: 'dkl;ajkl;dfj;'}};
 
 

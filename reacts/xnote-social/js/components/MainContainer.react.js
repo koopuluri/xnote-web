@@ -1,11 +1,12 @@
 var React = require('react');
-var GroupSideBar = require('./GroupSideBar.react');
+var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
 var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
 
 var ArticleView = require('../components/ArticleViewStuff/ArticleView.react');
 var Discussion = require('../components/ArticleViewStuff/Discussion.react');
+var AddArticleButton = require('../components/AddArticleButton.react');
 
 var mui = require('material-ui');
 var ThemeManager = new mui.Styles.ThemeManager();
@@ -16,13 +17,11 @@ var Colors = mui.Styles.Colors;
 
 var MainContainer = React.createClass({
 
-
     getInitialState: function() {
         return {
-            selectedArticleId: ContentStore.getSelectedArticleId()
+            selectedArticleId: '559cdcc98b120d12312b2315'
         }
     },
-
 
     childContextTypes : {
         muiTheme: React.PropTypes.object
@@ -39,7 +38,6 @@ var MainContainer = React.createClass({
             primary1Color: Colors.green500,
             accent1Color: Colors.green500,
         });
-        ThemeManager.setSpacing(10);
     },
 
     componentDidMount: function() {
@@ -56,12 +54,14 @@ var MainContainer = React.createClass({
                 <div className="main-container">
                     <ContentView />
                     <AppToolbar />
-                    <GroupSideBar />
+                    <GroupSidebar />
+                    <AddArticleButton />
                 </div>
             );
         }  else {
             return (
                 <div className="container">
+                    <AppToolbar />
                     <div className="row">
                         <div className="article-view col-md-8">
                             <ArticleView articleId={this.state.selectedArticleId} />

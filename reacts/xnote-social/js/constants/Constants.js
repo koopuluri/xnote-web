@@ -45,6 +45,10 @@ module.exports = KeyMirror({
 
 
 	FEED_POST_ARTICLE: 'ArticleFeedPost',
-	FEED_POST_HIGHLIGHT: 'HighlightFeedPost'
+	FEED_POST_HIGHLIGHT: 'HighlightFeedPost',
 
+	RECEIVE_CHAT_NOTIFS: null,
+	RECEIVE_FEED_NOTIFS: null,
+	RESET_CHAT_NOTIFS: null,
+	RESET_FEED_NOTIFS: null
 });

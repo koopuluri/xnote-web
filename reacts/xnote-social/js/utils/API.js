@@ -1,4 +1,3 @@
-
 module.exports = {
 
 		getGroup: function(groupId, callback) {

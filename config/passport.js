@@ -47,7 +47,7 @@ module.exports = function(passport) {
             console.log('token: ' + token);
             console.log('profile.id: ' + profile.id);
             User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
-                console.log('User.findOne area: ' + Object.keys(user));
+                //console.log('User.findOne area: ' + Object.keys(user));
 
                 if (user) {
                     return done(null, user);

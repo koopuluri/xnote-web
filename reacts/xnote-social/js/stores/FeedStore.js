@@ -12,8 +12,9 @@ var CHANGE = 'feedStoreChange';
 function addNote(note) {
 	for(var i = 0; i < _feed.length; i++) {
 		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].object.highlightId === note.highlightId) {
-				_feed[i].object.notes.unshift(note);
+			if(_feed[i].highlight.highlightId === note.highlightId) {
+				_feed[i].highlight.notes.unshift(note);
+				console.log(note);
 			}
 		}
 	}
@@ -23,11 +24,11 @@ function addNote(note) {
 function editNote(note) {
 	for(var i = 0; i < _feed.length; i++) {
 		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].object.highlightId === note.highlightId) {
-				var notes = _feed[i].object.notes
+			if(_feed[i].highlight.highlightId === note.highlightId) {
+				var notes = _feed[i].highlight.notes
 				for(var j = 0; j < notes.length; j++) {
-					if(notes[i].noteId === note.noteId) {
-						notes[i] = note;
+					if(notes[j].noteId === note.noteId) {
+						notes[j] = note;
 					}
 				}
 			}
@@ -40,11 +41,12 @@ function editNote(note) {
 function deleteNote(note) {
 	for(var i = 0; i < _feed.length; i++) {
 		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].object.highlightId === note.highlightId) {
-				var notes = _feed[i].object.notes
+			if(_feed[i].highlight.highlightId === note.highlightId) {
+				var notes = _feed[i].highlight.notes
 				for(var j = 0; j < notes.length; j++) {
-					if(notes[i].noteId === note.noteId) {
-						notes.splice(i, 1);
+					if(notes[j].noteId === note.noteId) {
+						notes.splice(j, 1);
+						console.log(notes);
 					}
 				}
 			}
@@ -56,21 +58,21 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 
 		//Return posts
 		getFeed: function() {
-				return _feed;
+			return _feed;
 		},
 
 		//Emit Change event
 		emitChange: function() {
-				this.emit(CHANGE);
+			this.emit(CHANGE);
 		},
 
 		//Add change listener
 		addChangeListener: function(callback) {
-				this.on(CHANGE, callback);
+			this.on(CHANGE, callback);
 		},
 
 		removeChangeListener: function(callback) {
-				this.removeListener(CHANGE, callback);
+			this.removeListener(CHANGE, callback);
 		}
 });
 
@@ -78,24 +80,24 @@ GroupDispatcher.register(function(payload) {
 		var action = payload.action;
 
 		switch(action.actionType) {
-				case GroupConstants.SET_FEED:
-					_feed = action.feed;
-					break;
+			case GroupConstants.SET_FEED:
+				_feed = action.feed;
+				break;
 
 			case GroupConstants.ADD_NOTE:
-					addNote(action.note);
-					break;
+				addNote(action.note);
+				break;
 
 			case GroupConstants.EDIT_NOTE:
-					editNote(action.note);
-					break;
+				editNote(action.note);
+				break;
 
 			case GroupConstants.DELETE_NOTE:
-					deleteNote(action.note);
-					break;
+				deleteNote(action.note);
+				break;
 
 			default:
-					return true;
+				return true;
 		}
 		FeedStore.emitChange();
 		return true;
