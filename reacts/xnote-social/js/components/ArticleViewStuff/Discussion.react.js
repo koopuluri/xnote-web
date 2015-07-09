@@ -99,6 +99,14 @@ var Discussion = React.createClass({
     render: function() {
           var comp;
 
+          if (this.state.error) {
+              return (<p> error brah </p>);
+          }
+
+          if (this.state.isLoading) {
+              return (<Loading />);
+          }
+          
           if (this.state.highlight) {
 
               var post = {
@@ -107,7 +115,7 @@ var Discussion = React.createClass({
                   createdBy: {facebook: {name: 'Karthik Uppuluri', id: 'dkjsfkjs'}}
               }
 
-              comp = <FeedPost post={post} />
+              comp = <FeedPost post={post} actions="Article"/>
           } else {
               comp = 'Fuck you';
           }

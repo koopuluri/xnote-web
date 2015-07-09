@@ -35,6 +35,9 @@ module.exports = KeyMirror({
 	SET_HOVER_HIGHLIGHT: null,
 	SET_SELECT_PARTIAL_HIGHLIGHT: null,
 
+	DISCUSSION_ADD_NOTE: null,
+	DISCUSSION_DELETE_NOTE: null,
+
 	BASE_HIGHLIGHT_CLASS: "xnote-note",
 
 

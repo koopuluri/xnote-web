@@ -4,14 +4,7 @@ var GroupConstants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _group = {};
-
-//TODO: REMOVE DUMMY USER FROM GROUP STORE
-var _user = {
-  facebook : {
-    name: 'Vignesh Prasad',
-    id: 'asdfasdf'
-  }
-};
+var _user = {facebook: {name: 'Karthik Uppuluri', id: 'dkl;ajkl;dfj;'}};
 
 
 var GroupStore = _.extend({}, EventEmitter.prototype, {

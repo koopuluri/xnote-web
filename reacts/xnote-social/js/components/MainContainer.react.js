@@ -16,10 +16,9 @@ var Colors = mui.Styles.Colors;
 
 var MainContainer = React.createClass({
 
-
     getInitialState: function() {
         return {
-            selectedArticleId: ContentStore.getSelectedArticleId()
+            selectedArticleId: '559cdcc98b120d12312b2315'
         }
     },
 
@@ -61,6 +60,7 @@ var MainContainer = React.createClass({
         }  else {
             return (
                 <div className="container">
+                    <AppToolbar />
                     <div className="row">
                         <div className="article-view col-md-8">
                             <ArticleView articleId={this.state.selectedArticleId} />

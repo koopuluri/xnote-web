@@ -13,7 +13,7 @@ var NoteComponent = React.createClass ({
 
 	_menuOptions: function(e, key, payload) {
 		if(payload.text === "Delete") {
-			GroupActions.deleteNote(payload.payload);
+			this.props.actions.deleteNote(payload.payload);
 		}
 	},
 
@@ -25,11 +25,11 @@ var NoteComponent = React.createClass ({
 		];
 		var options = null
 		if (this.props.user.facebook.id === note.createdBy.facebook.id) {
-			var options = 
-				<DropDownIcon 
+			var options =
+				<DropDownIcon
 					menuItems={noteOptions}
 					closeOnMenuItemTouchTap = {true}
-					onChange = {self._menuOptions}> + 
+					onChange = {self._menuOptions}> +
 				</DropDownIcon>
 		}
 		var secondaryText =
@@ -37,7 +37,7 @@ var NoteComponent = React.createClass ({
 				{
 					fontSize : 10,
 					lineHeight : "10px",
-				}	
+				}
 			}> {note.createdAt} </p>
 		return (
 			<div>

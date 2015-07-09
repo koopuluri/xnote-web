@@ -4,6 +4,7 @@ var GroupStore = require('../stores/GroupStore');
 var mui = require('material-ui');
 
 var Toolbar = mui.Toolbar;
+var AppBar = mui.AppBar;
 var ToolbarGroup = mui.ToolbarGroup;
 var ThemeManager = new mui.Styles.ThemeManager();
 var Colors = mui.Styles.Colors;
@@ -53,19 +54,17 @@ var AppToolbar = React.createClass({
 
 
     render: function() {
-        if (!this.state.selectedArticle) {
+        if (true) {
             return (
-              <Toolbar className="app-toolbar">
+              <Toolbar zDepth={2} className="app-toolbar">
                   <ToolbarGroup key={0} float="left">
-                      <mui.FontIcon className="mui-icon-sort" />
-                      <mui.ToolbarTitle text={this.state.title} />
+                      <mui.FontIcon className="mui-icon-sort"> Dash </mui.FontIcon>
                   </ToolbarGroup>
                   <ToolbarGroup key={1} float="right">
-                      <mui.ToolbarTitle text="Options" />
-                      <mui.FontIcon className="icon-navigation-refresh" />
-                      <mui.DropDownIcon iconClassName="icon-navigation-expand-more" menuItems={MENU_ITEMS} />
-                      <mui.ToolbarSeparator />
-                      <mui.RaisedButton label="Create Broadcast" primary={true} />
+                      <mui.FontIcon className="icon-navigation-refresh">chat</mui.FontIcon>
+                      <mui.FontIcon>feed</mui.FontIcon>
+
+                      <mui.DropDownIcon iconClassName="icon-navigation-expand-more" menuItems={MENU_ITEMS}> d </mui.DropDownIcon>
                   </ToolbarGroup>
               </Toolbar>
             );

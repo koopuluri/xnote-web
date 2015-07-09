@@ -43,14 +43,14 @@ var GroupSidebar = React.createClass({
 
         var chatLabel = 'Chat'
         if(this.state.chatNotifs > 0) {
-            var chatLabel = 'Chat (' + this.state.chatNotifs + ')'     
+            var chatLabel = 'Chat (' + this.state.chatNotifs + ')'
         }
-        
+
         var feedLabel = 'Feed'
         if(this.state.feedNotifs > 0) {
-            var feedLabel = 'Feed (' + this.state.feedNotifs + ')'     
+            var feedLabel = 'Feed (' + this.state.feedNotifs + ')'
         }
-        
+
         return (
             <div className = "group-sidebar-container">
                 <Tabs
@@ -60,8 +60,8 @@ var GroupSidebar = React.createClass({
                     <Tab label= {chatLabel}
                         style = {contentStyle}
                        route = 'chat'
-                        onActive = {this._onActive}> 
-                        <div> 
+                        onActive = {this._onActive}>
+                        <div>
                             <ChatContainer />
                         </div>
                     </Tab>
@@ -72,9 +72,9 @@ var GroupSidebar = React.createClass({
                         onActive = {this._onActive}>
                         <div>
                             <FeedContainer />
-                        </div> 
+                        </div>
                     </Tab>
-                </Tabs> 
+                </Tabs>
             </div>
         );
     },

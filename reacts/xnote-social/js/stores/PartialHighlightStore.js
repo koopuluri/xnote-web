@@ -42,12 +42,12 @@ AppDispatcher.register(function(payload) {
 
   switch(action.actionType) {
 
-    case XnoteConstants.SELECT_PARTIAL_HIGHLIGHT:
-        _selectedHighlightId = action.id;
+    case XnoteConstants.SET_SELECT_PARTIAL_HIGHLIGHT:
+        _selectedHighlightId = action.highlightId;
         break;
 
     case XnoteConstants.SET_HOVER_HIGHLIGHT:
-        _hoverHighlightId = action.id;
+        _hoverHighlightId = action.highlightId;
         break;
 
     default:
