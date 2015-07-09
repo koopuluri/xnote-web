@@ -19,15 +19,15 @@ var ERROR_MESSAGE_WITH_USER = 'Content not found. Select different content or ad
 var ArticleView = React.createClass({
 
 	getInitialState: function() {
-			return {
-					article: ContentStore.getSelectedArticle(),
-					isLoading: ContentStore.getLoading(),
-					selection: null,
-					selectionCoordinates: [],
-					owner: '',
-					currentUser: GroupStore.getCurrentUser(),
-					isError: null
-	 		};
+		return {
+			article: ContentStore.getSelectedArticle(),
+			isLoading: ContentStore.getLoading(),
+			selection: null,
+			selectionCoordinates: [],
+			owner: '',
+			currentUser: GroupStore.getCurrentUser(),
+			isError: null
+ 		};
 	},
 
 	// listener callbacks:

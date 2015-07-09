@@ -1,6 +1,7 @@
 var React = require('react');
 var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
+var ArticleToolbar = require('./ArticleViewStuff/ArticleToolbar.react');
 var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
 var AddArticle = require('./AddArticle.react');
@@ -18,7 +19,7 @@ var MainContainer = React.createClass({
 
     getInitialState: function() {
         return {
-            selectedArticleId: '559cdcc98b120d12312b2315'
+            selectedArticleId: null
         }
     },
 
@@ -34,9 +35,26 @@ var MainContainer = React.createClass({
 
     componentWillMount: function() {
         ThemeManager.setPalette({
-            primary1Color: Colors.green500,
+            primary1Color: '#FFFFFF',
             accent1Color: Colors.green500,
+            focusColor: Colors.green500
         });
+        ThemeManager.setComponentThemes({
+            appBar: {
+                textColor: Colors.green500,
+                height: 30
+            },
+            menuSubheader: {
+                textColor: Colors.green500,
+            },
+            flatButton: {
+                primaryTextColor: Colors.green500,
+                secondaryTextColor: Colors.green500,
+            },
+            textField: {
+                focusColor: Colors.green500
+            }
+        })
     },
 
     componentDidMount: function() {
@@ -60,8 +78,8 @@ var MainContainer = React.createClass({
         }  else {
             return (
                 <div className="container">
-                    <AppToolbar />
-                    <div className="row">
+                    <ArticleToolbar />
+                    <div className="article-container">
                         <div className="article-view col-md-8">
                             <ArticleView articleId={this.state.selectedArticleId} />
                         </div>

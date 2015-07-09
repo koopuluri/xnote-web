@@ -145,7 +145,7 @@ var FeedPost = React.createClass({
 								<p className = "post-clipped-text"> '' {highlight.clippedText} '' </p>
 								{noteList}
 								<TextField
-		  							hintText="Post Note"
+		  							hintText=">  Post Note"
 		  							ref = 'postNote' />
 		  						<FlatButton
 		  							linkButton = {false}

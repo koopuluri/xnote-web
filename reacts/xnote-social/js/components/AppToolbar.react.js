@@ -3,72 +3,97 @@ var ContentStore = require('../stores/ContentStore');
 var GroupStore = require('../stores/GroupStore');
 var mui = require('material-ui');
 
-var Toolbar = mui.Toolbar;
 var AppBar = mui.AppBar;
-var ToolbarGroup = mui.ToolbarGroup;
-var ThemeManager = new mui.Styles.ThemeManager();
+var FlatButton = mui.FlatButton;
+var LeftNav = mui.LeftNav;
+var Menu = mui.Menu;
+var MenuItem = mui.MenuItem;
 var Colors = mui.Styles.Colors;
 
-var MENU_ITEMS = [
-  { payload: '1', text: 'Download' },
-  { payload: '2', text: 'More Info' }
-];
+var GROUPS_PAGE = "GroupsPage";
+var LOGOUT = "Logout";
+
+function getState() {
+    return {
+        groupTitle: GroupStore.getGroupTitle(),
+        members: GroupStore.getGroupMembers()
+    }
+}
 
 var AppToolbar = React.createClass({
-
     getInitialState: function() {
-        return {
-            selectedArticle: ContentStore.getSelectedArticle(),
-            title: GroupStore.getGroupTitle()
-        }
+      return getState();
     },
 
     componentDidMount: function() {
-        var self = this;
-        ContentStore.addChangeListener(function() {
-            self.setState({selectedArticle: ContentStore.getSelectedArticle()});
-        });
-
-        GroupStore.addChangeListener(function() {
-            self.setState({title: GroupStore.getGroupTitle()});
-        });
+      GroupStore.addChangeListener(this._onChange);
     },
 
-    childContextTypes : {
-        muiTheme: React.PropTypes.object
+    componentWillUnmount: function() {
+      GroupStore.removeListener(this._onChange);
     },
 
-    getChildContext: function() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
+    _onChange: function() {
+      this.setState(getState());
     },
 
-    componentWillMount: function() {
-        ThemeManager.setPalette({
-            primary1Color: Colors.green500,
-            accent1Color: Colors.green500,
-        });
-        ThemeManager.setSpacing(10);
+    _showMenuBar: function() {
+      this.refs.menuBar.toggle();
     },
 
+    _onLeftNavChange: function(e, selectedIndex, menuItem) {
+      if(menuItem.payload === GROUPS_PAGE) {
+        
+      } else if (menuItem.payload === LOGOUT) {
+        
+      }
+    },
 
     render: function() {
-        if (true) {
-            return (
-              <Toolbar zDepth={2} className="app-toolbar">
-                  <ToolbarGroup key={0} float="left">
-                      <mui.FontIcon className="mui-icon-sort"> Dash </mui.FontIcon>
-                  </ToolbarGroup>
-                  <ToolbarGroup key={1} float="right">
-                      <mui.FontIcon className="icon-navigation-refresh">chat</mui.FontIcon>
-                      <mui.FontIcon>feed</mui.FontIcon>
-
-                      <mui.DropDownIcon iconClassName="icon-navigation-expand-more" menuItems={MENU_ITEMS}> d </mui.DropDownIcon>
-                  </ToolbarGroup>
-              </Toolbar>
-            );
+      var members = [];
+      if (this.state.members) {
+        var members = this.state.members.map(function(member) {
+          return ({
+            text: member.facebook.name
+          });
+        });
+      }
+      var menuItems = [
+        { type: MenuItem.Types.SUBHEADER, text: 'Members' },
+      ]
+      var menuItems = menuItems.concat(members);
+      menuItems.push(
+        { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
+        { 
+          payload: LOGOUT, 
+          text: 'Logout', 
+        },
+        { 
+          payload: GROUPS_PAGE,
+          text: 'Back to Groups', 
         }
+      );
+      if (true) {
+        return (
+          <div>
+              <AppBar className="app-toolbar"
+                  title= {
+                    <FlatButton primary={true} label={this.state.groupTitle} disabled={true}> </FlatButton>
+                  }
+                  zDepth={1}
+                  showMenuIconButton = {true}
+                  onLeftIconButtonTouchTap = {this._showMenuBar}>
+              </AppBar>
+              <LeftNav 
+                docked={false}
+                menuItems = {menuItems}
+                ref = 'menuBar'
+                onChange={this._onLeftNavChange}>
+              </LeftNav>
+          </div>
+        );
+
+      }
     }
 });
 

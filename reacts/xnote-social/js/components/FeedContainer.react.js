@@ -56,7 +56,7 @@ var FeedContainer = React.createClass({
 		},
 
 		_onChange: function() {
-				this.setState(this.getInitialState());
+			this.setState(this.getInitialState());
 		}
 
 });

@@ -33,8 +33,8 @@ var AddArticle = React.createClass({
     render: function() {
     	var self = this;
     	var addArticleActions = [
-  			{ text: 'Cancel' },
-  			{ text: 'Add', onTouchTap: self._onArticleSubmit }
+  			{ text: 'Cancel', primary: true },
+  			{ text: 'Add', onTouchTap: self._onArticleSubmit, primary: true}
 		];
         return (
         	<div>
@@ -46,7 +46,7 @@ var AddArticle = React.createClass({
   					<div>
   						<TextField
   							fullWidth = {true}
-  							hintText="Paste URL here"
+  							hintText="> Paste URL here"
 	  						ref = 'addArticle' />
 	  				</div>
 				</Dialog>

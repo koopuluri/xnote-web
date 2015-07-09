@@ -43,6 +43,7 @@ GroupDispatcher.register(function(payload) {
 
 		case GroupConstants.SET_GROUP:
   			_group = action.group;
+        console.log(_group);
   			break;
 
     case GroupConstants.SET_GROUP_TITLE:

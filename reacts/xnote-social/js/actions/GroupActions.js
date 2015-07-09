@@ -97,10 +97,10 @@ var GroupActions = {
 			});
 		},
 
-		chat: function(content) {
+		chat: function(message) {
 			GroupDispatcher.handleAction({
 				actionType: Constants.CHAT_MESSAGE,
-				content: content
+				content: message
 			});
 		},
 

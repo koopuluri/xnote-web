@@ -9,15 +9,7 @@ function loadChatData(data) {
 	_chat = data;
 }
 
-function chat(content) {
-	var message = {
-		createdBy: {
-			name: 'Vignesh',
-			id: '1231'
-		},
-		createdAt: 50,
-		content: content,
-	}
+function chat(message) {
 	_chat.unshift(message);
 }
 
@@ -52,7 +44,7 @@ GroupDispatcher.register(function(payload) {
 			break;
 
 		case GroupConstants.CHAT_MESSAGE:
-			chat(action.content);
+			chat(action.message);
 			break;
 
 		default:

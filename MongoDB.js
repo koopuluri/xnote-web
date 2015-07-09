@@ -414,9 +414,9 @@ User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
         // });
 
         //
-        // DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
+        //DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
         //     console.log('poop: ' + Object.keys(poop));
-        // });
+        //});
 
 
 

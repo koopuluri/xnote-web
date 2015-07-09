@@ -11,7 +11,7 @@ var Actions = {
         });
     },
 
-    _setSelectedArticleId: function(articleId) {
+    setSelectedArticleId: function(articleId) {
         GroupDispatcher.handleAction({
             actionType: Constants.SET_SELECTED_ARTICLE_ID,
             articleId: articleId
@@ -34,7 +34,6 @@ var Actions = {
                 self._setSelectedArticleId(null);  // turning off the loading.
                 return;
             }
-
             // got article:
             console.log('got article! ' + Object.keys(data.article));
             self._setSelectedArticle(data.article);
