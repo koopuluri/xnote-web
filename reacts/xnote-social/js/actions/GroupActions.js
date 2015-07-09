@@ -64,6 +64,13 @@ var GroupActions = {
 				});
 		},
 
+		addArticle: function(url) {
+			//GroupDispatcher.handleAction({
+			//	actionType: Constans.ADD_ARTICLE,
+			//	action: action
+			//})
+		},
+
 		addFeedObject: function(obj) {
 
 		},
@@ -94,13 +101,6 @@ var GroupActions = {
 			GroupDispatcher.handleAction({
 				actionType: Constants.CHAT_MESSAGE,
 				content: content
-			});
-		},
-
-		setViewMode: function(data) {
-			GroupDispatcher.handleAction({
-				actionType: Constants.SET_VIEW_MODE,
-				data: data
 			});
 		},
 

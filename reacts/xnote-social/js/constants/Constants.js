@@ -7,10 +7,7 @@ module.exports = KeyMirror({
 	ADD_NOTE: null,
 	EDIT_NOTE: null,
 	DELETE_NOTE: null,
-	SET_VIEW_MODE: null,
 	CHAT_MESSAGE: null,
-	SIDEBAR_CHAT_VIEW: null,
-	SIDEBAR_FEED_VIEW: null,
 
 	RECEIVE_CHAT_NOTIFS: null,
 	RECEIVE_FEED_NOTIFS: null,

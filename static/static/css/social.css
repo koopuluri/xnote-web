@@ -24,7 +24,9 @@
 }
 
 .add-article-button {
-  
+  position: absolute;
+  bottom: 24px;
+  left: calc(100% - 72px);
 }
 
 

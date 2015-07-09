@@ -27,6 +27,10 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
         return false;
     },
 
+    getParsing: function() {
+        return false;
+    },
+
   	//emit change event
   	emitChange: function() {
   		this.emit(CHANGE);

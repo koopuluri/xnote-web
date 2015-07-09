@@ -3,15 +3,14 @@ var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
 var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
+var AddArticle = require('./AddArticle.react');
 
 var ArticleView = require('../components/ArticleViewStuff/ArticleView.react');
 var Discussion = require('../components/ArticleViewStuff/Discussion.react');
-var AddArticleButton = require('../components/AddArticleButton.react');
 
 var mui = require('material-ui');
 var ThemeManager = new mui.Styles.ThemeManager();
 var Colors = mui.Styles.Colors;
-
 //Using material UI themes
 //http://material-ui.com/#/customization/themes
 
@@ -56,7 +55,7 @@ var MainContainer = React.createClass({
                     <ContentView />
                     <AppToolbar />
                     <GroupSidebar />
-                    <AddArticleButton />
+                    <AddArticle />
                 </div>
             );
         }  else {
