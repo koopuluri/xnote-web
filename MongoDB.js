@@ -394,19 +394,18 @@ User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
     if (err) {
         console.log('pooped in getting user!');
     } else {
-
         // console.log('got user!');
         //
         // DB.getGroup(user, 'testPoopGroup', function(poop) {
         //     console.log('poop: ' + Object.keys(poop));
         // });
 
-        // DB.addGroup(user, {
+        //DB.addGroup(user, {
         //     title: 'pooping the grouping',
         //     groupId: 'testPoopGroup',
         // }, function(poop) {
         //     console.log('poop: ' + Object.keys(poop));
-        // });
+        //});
 
         // var articleId = '5599e642f836bb36631e2e9c';
         // DB.getArticle(user, articleId, function(poop) {
@@ -436,9 +435,9 @@ User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
         // }
         //
         // console.log('about to add note');
-        // DB.addNote(user, dummyNote, 'pooplight', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
+        //DB.addNote(user, dummyNote, 'pooplight', function(poop) {
+         //    console.log('poop: ' + Object.keys(poop));
+         //});
 
         //
         // console.log('about to save a dummy highlight!');
