@@ -6,6 +6,13 @@ var _ = require('underscore');
 var _group = {};
 var _user = {facebook: {name: 'Karthik Uppuluri', id: 'dkl;ajkl;dfj;'}};
 
+var _friends = [
+  {facebook: {name: 'Nikhil Deshmudre', id: 'dkl;ajkl;dfj;'}},
+  {facebook: {name: 'Nikhil Harithas', id: 'adsfasdfas'}},
+  {facebook: {name: 'Nikhil Karajgikar', id: '89kjasdfas'}},
+  {facebook: {name: 'Vignesh Prasad', id: 'uahsdfkasudk'}},
+]
+
 
 var GroupStore = _.extend({}, EventEmitter.prototype, {
 
@@ -20,6 +27,10 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
 
     getCurrentUser: function() {
         return _user;
+    },
+
+    getFriends: function() {
+        return _friends;
     },
 
   	//emit change event

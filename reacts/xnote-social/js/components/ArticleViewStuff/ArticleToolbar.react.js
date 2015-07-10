@@ -47,27 +47,11 @@ var ArticleToolbar = React.createClass({
       this.refs.menuBar.toggle();
     },
 
-    _onLeftNavChange: function(e, selectedIndex, menuItem) {
-      if(menuItem.payload === GROUPS_PAGE) {
-        ArticleActions._setSelectedArticleId(null);
-      } else if (menuItem.payload === LOGOUT) {
-      
-      }
+    _onBackButtonPressed: function(e, selectedIndex, menuItem) {
+      ArticleActions._setSelectedArticleId(null);
     },
 
     render: function() {
-      var menuItems = [
-        { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
-        { 
-          text: 'Logout', 
-          payload: LOGOUT
-        },
-        { 
-          text: 'Back to ' + this.state.groupTitle, 
-          payload: GROUP_PAGE
-        },
-      ];
-
       var chatLabel = 'Chat'
       if(this.state.chatNotifs > 0) {
         var chatLabel = 'Chat (' + this.state.chatNotifs + ')'
@@ -87,15 +71,20 @@ var ArticleToolbar = React.createClass({
                   }
                   zDepth={2}
                   showMenuIconButton = {true}
-                  onLeftIconButtonTouchTap = {this._showMenuBar} >
+                  onLeftIconButtonTouchTap = {this._onBackButtonPressed}
+                  iconElementLeft = {
+                    <FlatButton 
+                      primary={true} 
+                      label='<-- Back'
+                      style= {
+                        {
+                          paddingTop : 8
+                        }
+                      } />
+                  } >
                   <FlatButton primary={true} label={chatLabel}> </FlatButton>
                   <FlatButton primary={true} label={feedLabel}> </FlatButton>
               </AppBar>
-              <LeftNav 
-                docked={false}
-                menuItems = {menuItems}
-                ref = 'menuBar'
-                onChange={this._onLeftNavChange}/>
           </div>
         );
 
