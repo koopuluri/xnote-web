@@ -22,6 +22,9 @@ var IconButton = mui.IconButton;
 var GROUP_PAGE = "GroupPage";
 var LOGOUT = "Logout";
 
+var ARTICLE = 'ArticleFeedPost';
+var HIGHLIGHT = 'HighlightFeedPost';
+
 function getState() {
   return {
     chatNotifs: NotificationStore.getChatNotifs(),
@@ -71,8 +74,13 @@ var ArticleToolbar = React.createClass({
       });
 
       var feedMenu = this.state.feed.map(function(post) {
-        var feedText = post.createdBy.facebook.name;
+        var feedText = post.createdBy.facebook.name + ' ';
         console.log(post);
+        if (post.type === ARTICLE) {
+          feedText = feedText + 'added an article : ' + post.article.title;
+        } else if(post.type === HIGHLIGHT) {
+
+        }
         return (
           <MenuItem 
             primaryText = {feedText}/>
