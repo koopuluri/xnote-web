@@ -157,8 +157,10 @@ var FeedPost = React.createClass({
 	        							fontSize: 16,
 	        						}
 	        					}>
-	        					{postText}
-								{noteList}
+	        					<div>
+	        						{postText}
+									{noteList}
+								</div>
 								<TextField
 		  							hintText=">  Post Note"
 		  							ref = 'postNote' />
