@@ -93,7 +93,7 @@ var FeedPost = React.createClass({
         					}
         				}>
         				<p>Added an article: {article.title}</p>
-          				<a href={article.url}>{article.url}</a>
+          				<p>{article.url}</p>
         			</CardText>
       			</Card>
 			);
