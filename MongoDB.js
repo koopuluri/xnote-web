@@ -435,11 +435,11 @@ User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
         //     console.log('poop: ' + Object.keys(poop));
         // });
 
-        //DB.addGroup(user, {
-        //     title: 'pooping the grouping',
-        //     groupId: 'testPoopGroup',
-        // }, function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
+        // DB.addGroup(user, {
+        //      title: 'pooping the grouping',
+        //      groupId: 'testPoopGroup',
+        //  }, function(poop) {
+        //      console.log('poop: ' + Object.keys(poop));
         //});
 
         // var articleId = '5599e642f836bb36631e2e9c';

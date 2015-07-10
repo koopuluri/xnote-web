@@ -34,9 +34,6 @@ var MainContainer = React.createClass({
 
     _onChange: function() {
         this.setState(this.getInitialState());
-        while(true) {
-            console.log('fuck you');
-        }
     },
 
     componentWillUnmount: function() {
@@ -127,6 +124,7 @@ var MainContainer = React.createClass({
                     <ContentView />
                     <AppToolbar />
                     <GroupSidebar />
+                    <AddArticle />
                 </div>
             );
         }  else {

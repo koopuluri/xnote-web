@@ -71,7 +71,15 @@ var ArticleToolbar = React.createClass({
                   zDepth={2}
                   showMenuIconButton = {true}
                   iconElementLeft = {
-                  <button onClick={this._onBackButtonPressed}>Back</button>
+                  <FlatButton 
+                    label='Back'
+                    primary={true}
+                    onClick={this._onBackButtonPressed}
+                    style = {
+                      {
+                        padding: 8
+                      }
+                    } />
                   } >
                   <FlatButton primary={true} label={chatLabel}> </FlatButton>
                   <FlatButton primary={true} label={feedLabel}> </FlatButton>
