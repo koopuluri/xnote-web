@@ -26,11 +26,9 @@ var Actions = {
     },
 
     fetchAndSetArticle: function(articleId) {
-        console.log('fetchAndSetArticle: ' + articleId);
         var self = this;
         API.getArticle(articleId, function(data) {
             if (data.error) {
-                console.log('fetchAndSetArticle error!');
                 self._setSelectedArticleId(null);  // turning off the loading.
                 return;
             }
@@ -60,7 +58,6 @@ var Actions = {
         var self = this;
         API.getHighlight(highlightId, function(obj) {
             if (obj.error) {
-                console.log('fetchAndSetHighlight errored!');
                 self._setDiscussionLoading(false);
                 return;
             }
@@ -73,19 +70,16 @@ var Actions = {
     addNoteToHighlight: function(note, highlightId) {
         API.addNoteToHighlight(note, highlightId, function(obj) {
             if (obj.error) {
-                console.log("error adding note to highlight: " + obj.error);
                 return;
             }
 
             // added successfuly:
-            console.log('note succcessfuly added to highlight! ' + note.content);
         });
     },
 
     addHighlight: function(highlight) {
         API.addHighlight(highlight, function(obj) {
             if (obj.error) {
-                console.log('adding highlight error: ' + obj.error);
             }
         });
     },

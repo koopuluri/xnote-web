@@ -6,6 +6,13 @@ var _ = require('underscore');
 var _group = {};
 var _user = {facebook: {name: 'Karthik Uppuluri', id: 'dkl;ajkl;dfj;'}};
 
+var _friends = [
+  {facebook: {name: 'Nikhil Deshmudre', id: 'dkl;ajkl;dfj;'}},
+  {facebook: {name: 'Nikhil Harithas', id: 'adsfasdfas'}},
+  {facebook: {name: 'Nikhil Karajgikar', id: '89kjasdfas'}},
+  {facebook: {name: 'Vignesh Prasad', id: 'uahsdfkasudk'}},
+]
+
 
 var GroupStore = _.extend({}, EventEmitter.prototype, {
 
@@ -24,6 +31,10 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
 
     getGroupId: function() {
         return _group.groupId;
+    },
+
+    getFriends: function() {
+        return _friends;
     },
 
   	//emit change event
@@ -47,7 +58,6 @@ GroupDispatcher.register(function(payload) {
 
 		case GroupConstants.SET_GROUP:
   			_group = action.group;
-        console.log(_group);
   			break;
 
     case GroupConstants.SET_GROUP_TITLE:
@@ -65,4 +75,5 @@ GroupDispatcher.register(function(payload) {
 	return true;
 })
 
+GroupStore.setMaxListeners(0);
 module.exports = GroupStore;

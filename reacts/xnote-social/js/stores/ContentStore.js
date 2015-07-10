@@ -8,12 +8,15 @@ var _selectedArticle = null;
 var _selectedArticleId = null;
 var _isParsing = false;
 
+var _viewNumber = 5;
+
 var CHANGE = 'contentStoreChange';
+var ARTICLE_ID_CHANGE = 'contentArticleIdChange';
 
 var ContentStore = _.extend({}, EventEmitter.prototype, {
 
   	getArticleList: function() {
-        return _articleList;
+        return _articleList.slice(0, _viewNumber);
     },
 
     getParsing: function() {
@@ -30,6 +33,18 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
 
     getLoading: function() {
         return false;
+    },
+
+    emitArticleIdChange: function() {
+        this.emit(ARTICLE_ID_CHANGE);
+    },
+
+    addArticleIdChangeListener: function(callback) {
+        this.on(ARTICLE_ID_CHANGE, callback);
+    },
+
+    removeArticleIdChangeListener: function(callback) {
+        this.removeListener(ARTICLE_ID_CHANGE, callback);
     },
 
   	//emit change event
@@ -53,7 +68,6 @@ GroupDispatcher.register(function(payload) {
 
       case Constants.CONTENT_SET_PARSING:
           _isParsing = action.isParsing;
-          console.log('content store set parsing: ' + action.isParsing + '::::::' + _isParsing);
           break;
 
   		case Constants.SET_ARTICLE_LIST:
@@ -70,8 +84,8 @@ GroupDispatcher.register(function(payload) {
 
       case Constants.SET_SELECTED_ARTICLE_ID:
           _selectedArticleId = action.articleId;
-          console.log('selectedArticleId set!' + action.articleId);
-          break;
+          ContentStore.emitArticleIdChange();
+          return true;
 
   		default:
   			return true;

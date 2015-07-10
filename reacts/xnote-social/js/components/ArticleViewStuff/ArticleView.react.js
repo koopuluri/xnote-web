@@ -22,13 +22,13 @@ var ArticleView = React.createClass({
 
 	getInitialState: function() {
 		return {
-			article: ContentStore.getSelectedArticle(),
-			isLoading: ContentStore.getLoading(),
-			selection: null,
-			selectionCoordinates: [],
-			owner: '',
-			currentUser: GroupStore.getCurrentUser(),
-			isError: null
+				article: ContentStore.getSelectedArticle(),
+				isLoading: ContentStore.getLoading(),
+				selection: null,
+				selectionCoordinates: [],
+				owner: '',
+				currentUser: GroupStore.getCurrentUser(),
+				isError: null
  		};
 	},
 
@@ -46,7 +46,7 @@ var ArticleView = React.createClass({
 		} else {
 				// don't change the hack num!
 		}
-		
+
 		this.setState(this.getInitialState());
 	},
 
@@ -55,7 +55,6 @@ var ArticleView = React.createClass({
 					Annotator.clearAllHighlightsAndComponents();
 					var article = this.state.article;
 					if (article && article.serialization) {
-							console.log('DESERIALIZE!!!');
 							Annotator.deserialize(article.serialization);
 					}
 					HACK_NUM++;
@@ -63,22 +62,19 @@ var ArticleView = React.createClass({
 	},
 
 	componentDidMount: function() {
-		// adding listener:
-		ContentStore.addChangeListener(this._onArticleChange);
-		if (this.props.articleId) {
-				Actions.fetchAndSetArticle(this.props.articleId);
-		}
+			// adding listener:
+			ContentStore.addChangeListener(this._onArticleChange);
+			if (this.props.articleId) {
+					Actions.fetchAndSetArticle(this.props.articleId);
+			}
 	},
 
 	componentWillUnmount: function() {
-			console.log('ArticleViewUnmounting');
 			// remove listener and highlights:
-			ArticleStore.removeChangeListener(this._onArticleChange);
-			Annotator.clearHighlights();
+			ContentStore.removeChangeListener(this._onArticleChange);
 	},
 
 	render: function() {
-			console.log('ArticleView.RENDER()');
 			return (
 				<Paper style={{margin: '2px'}} zDepth={1}>
 						{this.getRenderredInnerThing()}
@@ -88,7 +84,6 @@ var ArticleView = React.createClass({
 
 	getRenderredInnerThing: function() {
 		var article = this.state.article;
-
 
 		var errorStyle = {marginTop: '20%', marginLeft: '35%'};
 
@@ -134,7 +129,6 @@ var ArticleView = React.createClass({
 		}
 
 		var content = this.state.article.content;
-		console.log('article.content: ' + Object.keys(this.state.article));
 		var classNameString = '';
 		var formRender = this.state.displayForm;
 		var buttonRender = this.state.selection !== null;
@@ -209,8 +203,6 @@ var ArticleView = React.createClass({
 					article: this.state.article
 			}
 
-			console.log(newHighlight);
-
 			Annotator.addHighlight(newHighlight);
 
 			Actions.addHighlight(newHighlight, Annotator.serialize());
@@ -224,8 +216,6 @@ var ArticleView = React.createClass({
 					this.setState({selection: null});
 			}
 	}
-
-
 });
 
 module.exports = ArticleView;

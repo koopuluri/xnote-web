@@ -19,14 +19,17 @@ var AddArticle = React.createClass({
 				};
 		},
 
-		componentDidMount: function() {
-				console.log('AddArticle.compIdmong');
-				var self = this;
-				ContentStore.addChangeListener(function() {
-						console.log('change heard!!!: ' + ContentStore.getParsing());
-						self.setState(self.getInitialState());
+		_onChange: function() {
+			this.setState(this.getInitialState());
+		},
 
-				});
+		componentDidMount: function() {
+				var self = this;
+				ContentStore.addChangeListener(this._onChange);
+		},
+
+		componentWillMount: function() {
+				ContentStore.removeChangeListener(this._onChange);
 		},
 
 		_openDialog: function() {
@@ -44,7 +47,6 @@ var AddArticle = React.createClass({
 
 		render: function() {
 				if (this.state.isParsing) {
-						console.log('AddArticle.rendering the loading!');
 						return this.renderLoading();
 				}
 
@@ -68,7 +70,7 @@ var AddArticle = React.createClass({
   			{ text: 'Add', onTouchTap: self._onArticleSubmit, primary: true}
 		];
         return (
-        	<div>
+        	<div className = "add-article-container">
         		<Dialog
         				title = "Add Article"
 		  					actions={addArticleActions}
@@ -85,7 +87,6 @@ var AddArticle = React.createClass({
 	            	<FloatingActionButton
 	            		onTouchTap = {this._openDialog} />
     	        </div>
-
     	    </div>
         );
     }

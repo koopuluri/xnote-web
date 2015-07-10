@@ -7,37 +7,37 @@ var API = require('../utils/API');
 var GroupActions = {
 
 		_setUser: function(user) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_USER,
-						user: user
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_USER,
+				user: user
+			});
 		},
 
 		_setGroup: function(group) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_GROUP,
-						group: group
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_GROUP,
+				group: group
+			});
 		},
 
 		_setArticleList: function(articleList) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_ARTICLE_LIST,
-						articleList: articleList
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_ARTICLE_LIST,
+				articleList: articleList
+			});
 		},
 
 		_setFeed: function(feedPosts) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_FEED,
-						feed: feedPosts
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_FEED,
+				feed: feedPosts
+			});
 		},
 
 		_setChat: function(chat) {
 			GroupDispatcher.handleAction({
-					actionType: Constants.RECEIVE_CHAT,
-					data: chat
+				actionType: Constants.RECEIVE_CHAT,
+				data: chat
 			});
 		},
 
@@ -51,7 +51,7 @@ var GroupActions = {
 				API.getGroup(groupId, function(result) {
 						if (result.error) {
 								// do nothing for now.
-								console.log('fetch and set group error');
+
 						}
 						// set the group:
 						var group = result.group
@@ -80,7 +80,7 @@ var GroupActions = {
 			var self = this;
 			API.addArticleFromUrl(url, groupId, function(data) {
 					if (data.error) {
-							console.log('error parsing article! ' + data.error);
+
 							return;
 					}
 
@@ -116,10 +116,10 @@ var GroupActions = {
 		},
 
 		chat: function(message) {
-				GroupDispatcher.handleAction({
-					actionType: Constants.CHAT_MESSAGE,
-					content: message
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.CHAT_MESSAGE,
+				message: message
+			});
 		},
 
 		resetChatNotifs: function() {
@@ -148,7 +148,6 @@ var GroupActions = {
 		},
 
 		socketReceiveNote: function(note, highlightId, postNotifCount) {
-				console.log('receiveNote: ' + Constants.SOCKET_RECEIVE_NOTE);
 				GroupDispatcher.handleAction({
 						actionType: Constants.SOCKET_RECEIVE_NOTE,
 						note: note,

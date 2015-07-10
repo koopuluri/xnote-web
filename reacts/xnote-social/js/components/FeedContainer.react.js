@@ -8,14 +8,13 @@ var ListItem = mui.ListItem;
 var ListDivider = mui.ListDivider;
 var Colors = mui.Styles.Colors;
 
-
 var FeedContainer = React.createClass({
 
 		//get initial state from stores
 		getInitialState: function() {
-			return {
-				feed: FeedStore.getFeed(),
-			}
+				return {
+					feed: FeedStore.getFeed()
+				}
 		},
 
 		componentDidMount: function() {
@@ -25,6 +24,7 @@ var FeedContainer = React.createClass({
 		componentWillUnmount: function() {
 			FeedStore.removeChangeListener(this._onChange);
 		},
+
 
 		render: function() {
 			var feed = this.state.feed;

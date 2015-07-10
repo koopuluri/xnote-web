@@ -25,18 +25,27 @@ var MainContainer = React.createClass({
 
     getInitialState: function() {
         return {
-            selectedArticleId: ContentStore.getSelectedArticleId(),
+            selectedArticleId: ContentStore.getSelectedArticleId()
         }
         // return {
         //     selectedArticleId: null
         // }
     },
 
+    _onChange: function() {
+        this.setState(this.getInitialState());
+        while(true) {
+            console.log('fuck you');
+        }
+    },
+
+    componentWillUnmount: function() {
+        ContentStore.removeArticleIdChangeListener(this._onChange);
+    },
+
     componentDidMount: function() {
         var self = this;
-        ContentStore.addChangeListener(function() {
-            self.setState(self.getInitialState());
-        });
+        ContentStore.addArticleIdChangeListener(this._onChange);
 
         // setting the socket to receive posts and chat:
         var socket = io.connect();
@@ -48,8 +57,6 @@ var MainContainer = React.createClass({
         });
 
         socket.on('note:' + groupId, function(obj) {
-            console.log('SOCKET NOTE:');
-            console.log(obj);
             var postNotifCount = NotifStore.getFeedNotifs();
 
             // going to grab the current feed list
@@ -65,7 +72,6 @@ var MainContainer = React.createClass({
                 if (post.type === 'HighlightFeedPost' && post.highlight.highlightId === obj.highlightId) {
                     if (i+1 > postNotifCount) {
                         GroupActions.incrementFeedNotifs();
-                        console.log('feed notifs incremented!!!');
                     }
                 }
             }
@@ -74,7 +80,6 @@ var MainContainer = React.createClass({
         });
 
         socket.on('chat:'+groupId, function(chat) {
-            console.log('socket chat: ' + chat);
             GroupActions.socketReceiveChat(chat);
         });
 
@@ -122,7 +127,6 @@ var MainContainer = React.createClass({
                     <ContentView />
                     <AppToolbar />
                     <GroupSidebar />
-                    <AddArticle />
                 </div>
             );
         }  else {

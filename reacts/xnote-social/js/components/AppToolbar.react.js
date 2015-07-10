@@ -1,23 +1,39 @@
 var React = require('react');
 var ContentStore = require('../stores/ContentStore');
 var GroupStore = require('../stores/GroupStore');
-var mui = require('material-ui');
 
+
+var mui = require('material-ui');
+var Dialog = mui.Dialog;
 var AppBar = mui.AppBar;
 var FlatButton = mui.FlatButton;
 var LeftNav = mui.LeftNav;
 var Menu = mui.Menu;
 var MenuItem = mui.MenuItem;
 var Colors = mui.Styles.Colors;
+var List = mui.List;
+var ListItem = mui.ListItem;
+var TextField = mui.TextField;
+var Avatar = mui.Avatar;
 
 var GROUPS_PAGE = "GroupsPage";
 var LOGOUT = "Logout";
+var ADD_MEMBER = "Add Member"
 
 function getState() {
     return {
         groupTitle: GroupStore.getGroupTitle(),
-        members: GroupStore.getGroupMembers()
+        members: GroupStore.getGroupMembers(),
+        friends: GroupStore.getFriends(),
+        queryList: GroupStore.getFriends()
     }
+}
+
+var getOnAddFunction = function(member) {
+  return function() {
+    this.refs.addMemberQuery.clearValue();
+    this.refs.addMemberDialog.dismiss();
+  }
 }
 
 var AppToolbar = React.createClass({
@@ -42,11 +58,38 @@ var AppToolbar = React.createClass({
     },
 
     _onLeftNavChange: function(e, selectedIndex, menuItem) {
-      if(menuItem.payload === GROUPS_PAGE) {
+      switch (menuItem.payload) {
+        case ADD_MEMBER:
+          this.refs.addMemberDialog.show();
+          break;
 
-      } else if (menuItem.payload === LOGOUT) {
+        case LOGOUT:
+          break;
 
+        case GROUPS_PAGE:
+          break;
       }
+
+    },
+
+    _onAddMember: function(member) {
+
+    },
+
+    _onQueryChange: function() {
+      var query = this.refs.addMemberQuery.getValue();
+      query = query.toLowerCase();
+      var friends = this.state.friends;
+      var queryList = [];
+      for (var i = 0; i < friends.length; i++) {
+          var name = friends[i].facebook.name.toLowerCase();
+          if (name.includes(query)) {
+              queryList.push(friends[i]);
+          }
+      }
+      this.setState({
+          queryList: queryList
+      });
     },
 
     render: function() {
@@ -71,8 +114,31 @@ var AppToolbar = React.createClass({
         {
           payload: GROUPS_PAGE,
           text: 'Back to Groups',
+        },
+        {
+          payload: ADD_MEMBER,
+          text: 'Add Member'
         }
       );
+      var self = this;
+      var addMemberActions = [
+        { text: 'Cancel', primary: true },
+      ];
+      var counter = 0;
+      var queryList = this.state.queryList.map(function(queryListItem) {
+        counter ++;
+        if (counter <= 5) {
+          return (
+            <div>
+              <ListItem
+                avatar = {<Avatar>A</Avatar>}
+                onTouchTap = {getOnAddFunction(queryListItem)}>
+                {queryListItem.facebook.name}
+              </ListItem>
+            </div>
+          );
+        }
+      });
       if (true) {
         return (
           <div>
@@ -90,6 +156,20 @@ var AppToolbar = React.createClass({
                 ref = 'menuBar'
                 onChange={this._onLeftNavChange}>
               </LeftNav>
+              <Dialog
+                title = "Add Member"
+                ref = "addMemberDialog"
+                actions={addMemberActions}
+                modal={true}>
+                  <TextField
+                    fullWidth = {true}
+                    hintText="> Add Member"
+                    ref = 'addMemberQuery'
+                    onChange = {this._onQueryChange}/>
+                  <List>
+                    {queryList}
+                  </List>
+              </Dialog>
           </div>
         );
 

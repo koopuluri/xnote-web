@@ -77,7 +77,7 @@ AppDispatcher.register(function(payload) {
             addNote(action.note);
         } else {
             // do nothing.
-            console.log('no note added in discStore.');
+
         }
         break;
 
@@ -86,7 +86,7 @@ AppDispatcher.register(function(payload) {
         if (_highlight && action.highlightId === _highlight.highlightId) {
             // time to add the note to this highlight:
             _highlight.notes.unshift(action.note);
-            console.log('note added through socket to the discussion!');
+            
         }
         break;
 

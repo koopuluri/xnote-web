@@ -12,6 +12,7 @@ var Actions = {
     },
 
     _setSelectedArticleId: function(articleId) {
+        console.log('_setSelectedArticleId: ' + articleId);
         GroupDispatcher.handleAction({
             actionType: Constants.SET_SELECTED_ARTICLE_ID,
             articleId: articleId
@@ -71,28 +72,23 @@ var Actions = {
     fetchAndSetHighlight: function(highlightId) {
         this._setDiscussionLoading(true);
         this.setPartialHighlight(highlightId);
-        console.log('fetch and set highlight ' + highlightId);
         var self = this;
         API.getHighlight(highlightId, function(obj) {
             if (obj.error) {
-                console.log('fetchAndSetHighlight errored!');
                 self._setDiscussionLoading(false);
                 return;
             }
 
             // got highlight:
-            console.log('got highlight!');
             self._setDiscussionLoading(false);
             self.setHighlight(obj.highlight);
         });
     },
 
     deleteNote: function(highlightId, noteId) {
-        console.log('deleteNote: ' + highlightId);
     },
 
     addNote: function(highlightId, note) {
-        console.log('addNOte(): ' + highlightId);
         GroupDispatcher.handleAction({
             actionType: Constants.DISCUSSION_ADD_NOTE,
             highlightId: highlightId,
@@ -106,7 +102,6 @@ var Actions = {
             }
 
             // added successfuly:
-            console.log('note succcessfuly added to highlight! ' + note.content);
         });
     },
 
@@ -118,7 +113,7 @@ var Actions = {
         this.setPartialHighlight(highlight.highlightId);
         API.addHighlightForArticle(highlight, newSerialization, function(obj) {
             if (obj.error) {
-                console.log('adding highlight error: ' + obj.error);
+                
             }
         });
     },

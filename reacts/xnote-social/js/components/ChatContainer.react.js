@@ -41,103 +41,74 @@ var ChatContainer = React.createClass({
 
 	_chat: function() {
 		var content = this.refs.sendMessage.getValue();
+		this.refs.sendMessage.clearValue();
 		var message = {
-			createdBy: this.state.currentUser,
-			createdAt: GroupUtils.getTimestamp(),
-			content: content,
-			messageId: GroupUtils.generateUUID(),		
+				createdBy: this.state.currentUser,
+				createdAt: GroupUtils.getTimestamp(),
+				content: content,
+				messageId: GroupUtils.generateUUID()
 		}
 		GroupActions.chat(message);
 	},
 
 	render: function() {
 		var messages = this.state.messages;
-
-		if (!messages) {
-				return (<div className="chat-container"></div>);
-		}
+		var self = this;
 
 		if (messages.length == 0) {
-			return (
-				<div className="chat-container">
-					<List>
-					<ListItem disableTouchTap = {true}>
-					<Card>
-						<CardTitle
-        					subtitle = "You have no chat messages."
-        					style = {
-	        					{
-        							padding: 10
-        						}
-	        				}	
-        					titleStyle = {
-	        					{
-	        						fontSize: 14,
-        							lineHeight: '14px'
-        						}
-							}
-							subtitleStyle = {
-								{
-									fontSize: 10
-								}
-							} />
-						<CardText
-							style = {
-        						{
-        							padding: 10,
-        							fontSize: 16,
-        						}
-        					}>
-							<TextField
-  								hintText="Send Message"
-  								ref = 'sendMessage' />
-  							<FlatButton
-	  							linkButton = {false}
-  								label="Send"
-  								primary={true}
-  								onClick = {this._chat} />
-						</CardText>
-					</Card>
-					</ListItem>
-					</List>
-				</div>
-			)
+			var messages =
+				<CardTitle
+        			title = "You have no chat messages."
+        			style = {
+	        			{
+        					padding: 10
+        				}
+	        		}
+        			titleStyle = {
+	        			{
+	        				fontSize: 14,
+        					lineHeight: '14px'
+        				}
+					}
+					subtitleStyle = {
+						{
+							fontSize: 10
+						}
+					} />
+		} else {
+			var messages = messages.map(function(message) {
+				return (
+					<div>
+						<ChatPost
+							message={message}
+							user = {self.state.currentUser}/>
+					</div>
+				);
+			});
 		}
 
-		var messages = messages.map(function(message) {
-			return (
-				<div>
-					<ListItem>
-						<ChatPost message={message}/>
-					</ListItem>
-				</div>
-			);
-		})
-
-		var ButtonLabelStyle = {
-      		container: {
-        		textAlign: 'center',
-      		},
-      		buttonLabel: {
-        		padding: '0px 0px 0px 0px'
-      		}
-		}
 		return (
-			<div className = "chat-container">
-				<List>
-					{messages}
-				</List>
-				<div className = 'chat-form'>
-					<TextField
-  						hintText="Send Message"
-  						ref = 'sendMessage' />
-  					<FlatButton
-  						fullWidth = {false}
-  						linkButton = {false}
-  						label="Send"
-  						primary={true}
-  						onClick = {this._chat} />
-				</div>
+			<div className = 'chat-container'>
+				<div className ='chat-messages'>
+					<Card className = 'chat-messages-card'>
+        				<List>
+							{messages}
+						</List>
+					</Card>
+					</div>
+					<div className = 'chat-form'>
+					<Card>
+						<TextField
+  							hintText="> Send Message"
+  							ref = 'sendMessage' />
+  						<FlatButton
+	  						fullWidth = {false}
+  							linkButton = {false}
+  							label="Send"
+  							primary={true}
+  							onClick = {this._chat} />
+  					</Card>
+					</div>
 			</div>
 		);
 	},

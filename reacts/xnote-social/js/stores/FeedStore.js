@@ -59,7 +59,6 @@ function deleteNote(note) {
 				for(var j = 0; j < notes.length; j++) {
 					if(notes[j].noteId === note.noteId) {
 						notes.splice(j, 1);
-						console.log(notes);
 					}
 				}
 			}
@@ -71,7 +70,7 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 
 		//Return posts
 		getFeed: function() {
-			return _feed;
+			return _feed.slice(0, 3);
 		},
 
 		//Emit Change event
@@ -110,7 +109,6 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.SOCKET_RECEIVE_POST:
-				console.log('feed store received POST!');
 				_feed.unshift(action.post);
 				break;
 

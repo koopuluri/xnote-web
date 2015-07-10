@@ -1,6 +1,6 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var EventEmitter = require('events').EventEmitter;
-var GroupConstants = require('../constants/Constants');
+var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _chat = [];
@@ -39,14 +39,14 @@ GroupDispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
 
-		case GroupConstants.RECEIVE_CHAT:
+		case Constants.RECEIVE_CHAT:
 			loadChatData(action.data);
 			break;
 
-		case GroupConstants.CHAT_MESSAGE:
+		case Constants.CHAT_MESSAGE:
 			chat(action.message);
 			break;
-
+			
 		default:
 			return true;
 	}

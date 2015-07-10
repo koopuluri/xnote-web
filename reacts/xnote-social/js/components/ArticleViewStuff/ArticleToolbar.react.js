@@ -36,7 +36,7 @@ var ArticleToolbar = React.createClass({
 
     componentWillUnmount: function() {
       NotificationStore.removeChangeListener(this._onChange);
-      GroupStore.removeListener(this._onChange);
+      GroupStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
@@ -47,27 +47,11 @@ var ArticleToolbar = React.createClass({
       this.refs.menuBar.toggle();
     },
 
-    _onLeftNavChange: function(e, selectedIndex, menuItem) {
-      if(menuItem.payload === GROUPS_PAGE) {
-        ArticleActions.setSelectedArticleId(null);
-      } else if (menuItem.payload === LOGOUT) {
-      
-      }
+    _onBackButtonPressed: function(e, selectedIndex, menuItem) {
+      ArticleActions._setSelectedArticleId(null);
     },
 
     render: function() {
-      var menuItems = [
-        { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
-        { 
-          text: 'Logout', 
-          payload: LOGOUT
-        },
-        { 
-          text: 'Back to ' + this.state.groupTitle, 
-          payload: GROUP_PAGE
-        },
-      ];
-
       var chatLabel = 'Chat'
       if(this.state.chatNotifs > 0) {
         var chatLabel = 'Chat (' + this.state.chatNotifs + ')'
@@ -78,7 +62,6 @@ var ArticleToolbar = React.createClass({
         var feedLabel = 'Feed (' + this.state.feedNotifs + ')'
       }
 
-      if (true) {
         return (
           <div>
               <AppBar className="article-toolbar"
@@ -87,19 +70,14 @@ var ArticleToolbar = React.createClass({
                   }
                   zDepth={2}
                   showMenuIconButton = {true}
-                  onLeftIconButtonTouchTap = {this._showMenuBar} >
+                  iconElementLeft = {
+                  <button onClick={this._onBackButtonPressed}>Back</button>
+                  } >
                   <FlatButton primary={true} label={chatLabel}> </FlatButton>
                   <FlatButton primary={true} label={feedLabel}> </FlatButton>
               </AppBar>
-              <LeftNav 
-                docked={false}
-                menuItems = {menuItems}
-                ref = 'menuBar'
-                onChange={this._onLeftNavChange}/>
           </div>
         );
-
-      }
     }
 });
 

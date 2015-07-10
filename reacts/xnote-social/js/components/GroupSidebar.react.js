@@ -51,13 +51,15 @@ var GroupSidebar = React.createClass({
         return (
             <div className = "group-sidebar-container">
                 <Tabs
+                    style = {{'height': '100%'}}
                     className = 'discussion-view-tabs'>
-
-                    <Tab label= {chatLabel}
+                    <Tab
+                        className = 'chat-tab'
+                        label= {chatLabel}
                         style = {contentStyle}
-                       route = 'chat'
+                        route = 'chat'
                         onActive = {this._onActive}>
-                        <div>
+                        <div className = 'chat-container-container'>
                             <ChatContainer />
                         </div>
                     </Tab>
@@ -66,9 +68,7 @@ var GroupSidebar = React.createClass({
                         style = {contentStyle}
                         route = 'feed'
                         onActive = {this._onActive}>
-                        <div>
                             <FeedContainer />
-                        </div>
                     </Tab>
                 </Tabs>
             </div>

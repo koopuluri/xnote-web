@@ -75,7 +75,6 @@ GroupDispatcher.register(function(payload) {
 
 		case Constants.INCREMENT_FEED_NOTIFS:
 				_feedNotifs++;
-				console.log('feed notifs incremented due to NOTE ADDED!!!!');
 				break;
 
 		default:
