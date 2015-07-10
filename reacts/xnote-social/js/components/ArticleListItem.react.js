@@ -3,8 +3,8 @@ var React = require('react');
 var ArticleActions = require('../actions/ArticleActions');
 
 var mui = require('material-ui');
-var Card = mui.Card;
-var CardTitle = mui.CardTitle;
+var List = mui.List;
+var ListItem = mui.ListItem;
 var CardHeader = mui.CardHeader;
 var Avatar = mui.Avatar;
 var CardActions = mui.CardActions;
@@ -23,19 +23,18 @@ var ArticleListItem = React.createClass({
 
     render: function() {
         var article = this.props.article;
-        if (article.icon) {
-            console.log('ICON!!!');
-        }
         return (
-            <Card className='article-list-item'>
-            <CardActions>
-                <FlatButton onClick={this._onClick} label={article.title}/>
-            </CardActions>
-
-                <CardHeader
-                    subtitle={<a href={article.url}>{article.url}</a>}
-                    avatar={<Avatar src={article.icon}/>}/>
-            </Card>
+            <ListItem
+                leftAvatar={<Avatar src={article.icon}/>}
+                secondaryText={
+                    <div>
+                        <p> {article.createdAt} </p>
+                    </div>
+                }
+                secondaryTextLines={2}
+                onTouchTap = {this._onClick}>
+                {article.title}
+            </ListItem>
         );
     }
 });

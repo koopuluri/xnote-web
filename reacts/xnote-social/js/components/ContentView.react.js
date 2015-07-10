@@ -5,6 +5,9 @@ var ContentStore = require('../stores/ContentStore');
 
 var ThemeManager = new mui.Styles.ThemeManager();
 var Colors = mui.Styles.Colors;
+var List = mui.List;
+var Card = mui.Card;
+var CardText = mui.CardText;
 
 //Using material UI themes
 //http://material-ui.com/#/customization/themes
@@ -28,13 +31,17 @@ var ContentView = React.createClass({
 
         var articles = this.state.articleList.map(function(article) {
             return (
-               <ArticleListItem article={article} />
+                <ArticleListItem article={article} />
             );
         });
 
         return (
             <div className="content-view">
-                {articles}
+                <Card>
+                    <List>
+                        {articles}  
+                    </List>
+                </Card>
             </div>
         );
     }

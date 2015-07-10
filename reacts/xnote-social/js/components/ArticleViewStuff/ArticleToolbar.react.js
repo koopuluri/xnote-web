@@ -49,7 +49,7 @@ var ArticleToolbar = React.createClass({
 
     _onLeftNavChange: function(e, selectedIndex, menuItem) {
       if(menuItem.payload === GROUPS_PAGE) {
-        ArticleActions.setSelectedArticleId(null);
+        ArticleActions._setSelectedArticleId(null);
       } else if (menuItem.payload === LOGOUT) {
       
       }

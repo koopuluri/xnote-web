@@ -11,7 +11,7 @@ var Actions = {
         });
     },
 
-    setSelectedArticleId: function(articleId) {
+    _setSelectedArticleId: function(articleId) {
         GroupDispatcher.handleAction({
             actionType: Constants.SET_SELECTED_ARTICLE_ID,
             articleId: articleId

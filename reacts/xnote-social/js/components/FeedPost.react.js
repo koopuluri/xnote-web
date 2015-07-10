@@ -8,6 +8,7 @@ var NoteComponent = require('./NoteComponent.react');
 
 var mui = require('material-ui');
 var Card = mui.Card;
+var CardHeader = mui.CardHeader;
 var CardTitle = mui.CardTitle;
 var CardText = mui.CardText;
 var CardActions = mui.CardActions;
@@ -15,6 +16,7 @@ var List = mui.List;
 var Colors = mui.Styles.Colors;
 var TextField = mui.TextField;
 var FlatButton = mui.FlatButton;
+var Avatar = mui.Avatar;
 
 var ARTICLE = 'ArticleFeedPost';
 var HIGHLIGHT = 'HighlightFeedPost';
@@ -64,7 +66,8 @@ var FeedPost = React.createClass({
 			var article = post.article;
 			return (
 				<Card>
-        			<CardTitle
+        			<CardHeader
+        				avatar={<Avatar>A</Avatar>}
         				title={post.createdBy.facebook.name}
         				subtitle = {article.createdAt}
         				style = {
@@ -75,7 +78,7 @@ var FeedPost = React.createClass({
         				titleStyle = {
         					{
 	        					fontSize: 14,
-        						lineHeight: '14px'
+        						lineHeight: '24px'
         					}
 						}
 						subtitleStyle = {
@@ -105,18 +108,32 @@ var FeedPost = React.createClass({
 				});
 
 				var noteList = null;
-				if (highlight.notes.length > 0) {
+				var postOwner = post.createdBy.facebook.name;
+				var postText = 
+					<div>
+						<p>Added a highlight: </p>
+						<p> '' {highlight.clippedText} '' </p>
+					</div>
+				var noteLength = highlight.notes.length;
+				if (noteLength > 0) {
 					noteList =
 						<div className = "post-comments">
 							<List>
 								{notes}
 							</List>
 						</div>
+					postOwner = highlight.notes[noteLength - 1].createdBy.facebook.name;
+					postText = 
+						<div>
+							<p>Added a note '' {highlight.notes[noteLength - 1].content} '' </p>
+							<p>For the highlight '' {highlight.clippedText} '' </p>
+						</div>
 				}
 				return (
 					<Card>
-						<CardTitle
-							title = {post.createdBy.facebook.name}
+						<CardHeader
+							avatar={<Avatar>A</Avatar>}
+							title = {postOwner}
 							subtitle = {highlight.lastModifiedTimestamp}
 							style = {
 	        					{
@@ -126,7 +143,7 @@ var FeedPost = React.createClass({
 	        				titleStyle = {
 	        					{
 				        			fontSize: 14,
-	        						lineHeight: '14px'
+	        						lineHeight: '24px'
 	        					}
 							}
 							subtitleStyle = {
@@ -141,8 +158,7 @@ var FeedPost = React.createClass({
 	        							fontSize: 16,
 	        						}
 	        					}>
-	        					<p>Added a highlight: </p>
-								<p className = "post-clipped-text"> '' {highlight.clippedText} '' </p>
+	        					{postText}
 								{noteList}
 								<TextField
 		  							hintText=">  Post Note"

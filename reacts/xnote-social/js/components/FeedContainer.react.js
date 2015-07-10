@@ -26,6 +26,7 @@ var FeedContainer = React.createClass({
 			FeedStore.removeChangeListener(this._onChange);
 		},
 
+
 		render: function() {
 			var feed = this.state.feed;
 			if (feed.length == 0) {

@@ -37,7 +37,7 @@ var AddArticle = React.createClass({
   			{ text: 'Add', onTouchTap: self._onArticleSubmit, primary: true}
 		];
         return (
-        	<div>
+        	<div className = "add-article-container">
         		<Dialog
         			title = "Add Article"
   					actions={addArticleActions}
@@ -50,10 +50,10 @@ var AddArticle = React.createClass({
 	  						ref = 'addArticle' />
 	  				</div>
 				</Dialog>
-            	<div className='add-article-button'>
+				<div className ='add-article-button'>
 	            	<FloatingActionButton
-	            		onTouchTap = {this._openDialog} />
-    	        </div>
+		            	onTouchTap = {this._openDialog} />
+	            </div>
     	    </div>
         );
     }

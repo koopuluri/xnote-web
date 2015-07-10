@@ -1,7 +1,7 @@
 .group-sidebar-container {
   position: fixed;
   width: 37%;
-  overflow: scroll;
+  height: 100%;
   top: 35px;
 }
 
@@ -14,18 +14,13 @@
   left: 0px;
 }
 
-.article-list-item {
-  margin: 2px;
-  margin-top:3px;
-}
-
 .content-view {
   position: fixed;
   width: 60%;
-  height: calc(100% - 57px);
+  height: calc(100% - 40px);
   top: 40px;
   right: 0;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .article-container {
@@ -34,7 +29,30 @@
 }
 
 .add-article-button {
-  position: absolute;
+  position: fixed;
   bottom: 24px;
-  left: calc(100% - 72px);
+  right: 24px;
+}
+
+.feed-container {
+  overflow-y : scroll;
+  height: 100%;
+  width: 100%;
+}
+
+.chat-container, .chat-messages {
+  height: 100%;
+  width: 100%;
+}
+
+.chat-messages-card {
+  overflow-y : scroll;
+  height: calc(100% - 24px);
+  width: 100%;
+}
+
+.chat-form {
+  width:100%;
+  position: relative;
+  bottom: 0px;
 }

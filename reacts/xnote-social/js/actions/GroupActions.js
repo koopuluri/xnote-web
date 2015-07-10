@@ -7,37 +7,37 @@ var API = require('../utils/API');
 var GroupActions = {
 
 		_setUser: function(user) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_USER,
-						user: user
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_USER,
+				user: user
+			});
 		},
 
 		_setGroup: function(group) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_GROUP,
-						group: group
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_GROUP,
+				group: group
+			});
 		},
 
 		_setArticleList: function(articleList) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_ARTICLE_LIST,
-						articleList: articleList
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_ARTICLE_LIST,
+				articleList: articleList
+			});
 		},
 
 		_setFeed: function(feedPosts) {
-				GroupDispatcher.handleAction({
-						actionType: Constants.SET_FEED,
-						feed: feedPosts
-				});
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_FEED,
+				feed: feedPosts
+			});
 		},
 
 		_setChat: function(chat) {
 			GroupDispatcher.handleAction({
-					actionType: Constants.RECEIVE_CHAT,
-					data: chat
+				actionType: Constants.RECEIVE_CHAT,
+				data: chat
 			});
 		},
 
@@ -100,7 +100,7 @@ var GroupActions = {
 		chat: function(message) {
 			GroupDispatcher.handleAction({
 				actionType: Constants.CHAT_MESSAGE,
-				content: message
+				message: message
 			});
 		},
 
