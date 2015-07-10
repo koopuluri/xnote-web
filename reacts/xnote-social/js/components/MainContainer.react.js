@@ -1,9 +1,16 @@
 var React = require('react');
 var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
+var ArticleToolbar = require('./ArticleViewStuff/ArticleToolbar.react');
+
 var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
+var NotifStore = require('../stores/NotificationStore');
+var FeedStore = require('../stores/FeedStore');
+var GroupStore = require('../stores/GroupStore');
 var AddArticle = require('./AddArticle.react');
+
+var GroupActions = require('../actions/GroupActions');
 
 var ArticleView = require('../components/ArticleViewStuff/ArticleView.react');
 var Discussion = require('../components/ArticleViewStuff/Discussion.react');
@@ -18,11 +25,59 @@ var MainContainer = React.createClass({
 
     getInitialState: function() {
         return {
-            selectedArticleId: '559cdcc98b120d12312b2315'
+            selectedArticleId: ContentStore.getSelectedArticleId(),
         }
         // return {
         //     selectedArticleId: null
         // }
+    },
+
+    componentDidMount: function() {
+        var self = this;
+        ContentStore.addChangeListener(function() {
+            self.setState(self.getInitialState());
+        });
+
+        // setting the socket to receive posts and chat:
+        var socket = io.connect();
+        var groupId = this.props.groupId;
+
+        //receiving posts:
+        socket.on('feedPost:' + groupId, function(post) {
+            GroupActions.socketReceivePost(post);
+        });
+
+        socket.on('note:' + groupId, function(obj) {
+            console.log('SOCKET NOTE:');
+            console.log(obj);
+            var postNotifCount = NotifStore.getFeedNotifs();
+
+            // going to grab the current feed list
+            // Let 'i' be the index of the highlightId for this note in that feed list (from top)
+            // if 'i' + 1 > postNotifCount, that means that this highlihgt has already been seen,
+            // and there's no notification for this highlight; so we will increment the feedNotifCount.
+            // if this highlight is unseen (implying one of the feedNotifcounts is for this highlight),
+            // then we will NOT increment the feedNotifCount.
+
+            var feedList = FeedStore.getFeed();
+            for (var i = 0; i < feedList.length; i++) {
+                var post = feedList[i];
+                if (post.type === 'HighlightFeedPost' && post.highlight.highlightId === obj.highlightId) {
+                    if (i+1 > postNotifCount) {
+                        GroupActions.incrementFeedNotifs();
+                        console.log('feed notifs incremented!!!');
+                    }
+                }
+            }
+
+            GroupActions.socketReceiveNote(obj.note, obj.highlightId, postNotifCount);
+        });
+
+        socket.on('chat:'+groupId, function(chat) {
+            console.log('socket chat: ' + chat);
+            GroupActions.socketReceiveChat(chat);
+        });
+
     },
 
     childContextTypes : {
@@ -37,16 +92,26 @@ var MainContainer = React.createClass({
 
     componentWillMount: function() {
         ThemeManager.setPalette({
-            primary1Color: Colors.green500,
+            primary1Color: '#FFFFFF',
             accent1Color: Colors.green500,
+            focusColor: Colors.green500
         });
-    },
-
-    componentDidMount: function() {
-        var self = this;
-        ContentStore.addChangeListener(function() {
-            self.setState(self.getInitialState());
-        });
+        ThemeManager.setComponentThemes({
+            appBar: {
+                textColor: Colors.green500,
+                height: 30
+            },
+            menuSubheader: {
+                textColor: Colors.green500,
+            },
+            flatButton: {
+                primaryTextColor: Colors.green500,
+                secondaryTextColor: Colors.green500,
+            },
+            textField: {
+                focusColor: Colors.green500
+            }
+        })
     },
 
     render: function() {
@@ -63,8 +128,8 @@ var MainContainer = React.createClass({
         }  else {
             return (
                 <div className="container">
-                    <AppToolbar />
-                    <div className="row">
+
+                    <div className="article-container">
                         <div className="article-view col-md-8">
                             <ArticleView articleId={this.state.selectedArticleId} />
                         </div>
@@ -72,6 +137,7 @@ var MainContainer = React.createClass({
                             <Discussion />,
                         </div>
                     </div>
+                    <ArticleToolbar />
 
                 </div>
             );

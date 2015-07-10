@@ -1,23 +1,36 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var GroupConstants = require('../constants/Constants');
+var Actions = require('../actions/GroupActions');
 var _ = require('underscore');
 
 var _feed = [];
 var CHANGE = 'feedStoreChange';
 
-
+// got from: http://stackoverflow.com/a/5306832:
+Array.prototype.move = function (old_index, new_index) {
+    if (new_index >= this.length) {
+        var k = new_index - this.length;
+        while ((k--) + 1) {
+            this.push(undefined);
+        }
+    }
+    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+    return this; // for testing purposes
+};
 
 //Method to add a note to a post
-function addNote(note) {
-	for(var i = 0; i < _feed.length; i++) {
-		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].highlight.highlightId === note.highlightId) {
-				_feed[i].highlight.notes.unshift(note);
-				console.log(note);
-			}
+function addNote(highlightId, note) {
+		for(var i = 0; i < _feed.length; i++) {
+				if(_feed[i].type === 'HighlightFeedPost') {
+						if(_feed[i].highlight.highlightId === highlightId) {
+								_feed[i].highlight.notes.unshift(note);
+
+								// now need to put this post at the top:
+								_feed.move(i, 0);
+						}
+				}
 		}
-	}
 }
 
 //Method to edit a note in a post
@@ -81,11 +94,11 @@ GroupDispatcher.register(function(payload) {
 
 		switch(action.actionType) {
 			case GroupConstants.SET_FEED:
-				_feed = action.feed;
+				_feed = action.feed.reverse();
 				break;
 
 			case GroupConstants.ADD_NOTE:
-				addNote(action.note);
+				addNote(action.highlightId, action.note);
 				break;
 
 			case GroupConstants.EDIT_NOTE:
@@ -95,6 +108,18 @@ GroupDispatcher.register(function(payload) {
 			case GroupConstants.DELETE_NOTE:
 				deleteNote(action.note);
 				break;
+
+			case GroupConstants.SOCKET_RECEIVE_POST:
+				console.log('feed store received POST!');
+				_feed.unshift(action.post);
+				break;
+
+			case GroupConstants.SOCKET_RECEIVE_NOTE:
+					var toUpdate  = addNote(action.highlightId, action.note);
+					if (toUpdate) {
+							Actions.incrementFeedNotifs();
+					}
+					break;
 
 			default:
 				return true;

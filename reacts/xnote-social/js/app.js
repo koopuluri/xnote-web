@@ -11,8 +11,6 @@ GroupData.init();
 //Load mock API call
 // GroupAPI.getGroupData();
 
-
-
 //Needed for onTouchTap
 //Can go away when react 1.0 release
 //Check this repo:
@@ -28,6 +26,6 @@ Actions.fetchAndSetGroup(groupId);
 
 //Render Flux Group App
 React.render(
-	<MainContainer />,
+	<MainContainer groupId={groupId}/>,
 	document.getElementById('group-container')
 );

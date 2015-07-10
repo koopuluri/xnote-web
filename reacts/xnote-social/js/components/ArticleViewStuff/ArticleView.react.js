@@ -21,15 +21,15 @@ var HACK_NUM = 0;
 var ArticleView = React.createClass({
 
 	getInitialState: function() {
-			return {
-					article: ContentStore.getSelectedArticle(),
-					isLoading: ContentStore.getLoading(),
-					selection: null,
-					selectionCoordinates: [],
-					owner: '',
-					currentUser: GroupStore.getCurrentUser(),
-					isError: null
-	 		};
+		return {
+			article: ContentStore.getSelectedArticle(),
+			isLoading: ContentStore.getLoading(),
+			selection: null,
+			selectionCoordinates: [],
+			owner: '',
+			currentUser: GroupStore.getCurrentUser(),
+			isError: null
+ 		};
 	},
 
 	// listener callbacks:

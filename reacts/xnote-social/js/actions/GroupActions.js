@@ -109,30 +109,77 @@ var GroupActions = {
 		},
 
 		deleteNote: function(note) {
-			GroupDispatcher.handleAction({
-				actionType: Constants.DELETE_NOTE,
-				note: note
-			});
+				GroupDispatcher.handleAction({
+					actionType: Constants.DELETE_NOTE,
+					note: note
+				});
 		},
 
-		chat: function(content) {
-			GroupDispatcher.handleAction({
-				actionType: Constants.CHAT_MESSAGE,
-				content: content
-			});
+		chat: function(message) {
+				GroupDispatcher.handleAction({
+					actionType: Constants.CHAT_MESSAGE,
+					content: message
+				});
 		},
 
 		resetChatNotifs: function() {
-			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_CHAT_NOTIFS
-			})
+				GroupDispatcher.handleAction({
+						actionType: Constants.RESET_CHAT_NOTIFS
+				});
 		},
 
 		resetFeedNotifs: function() {
-			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_FEED_NOTIFS
-			})
+				GroupDispatcher.handleAction({
+						actionType: Constants.RESET_FEED_NOTIFS
+				});
 		},
+
+		incrementFeedNotifs: function() {
+				GroupDispatcher.handleAction({
+						actionType: Constants.INCREMENT_FEED_NOTIFS
+				});
+		},
+
+		socketReceivePost: function(post) {
+				GroupDispatcher.handleAction({
+						actionType: Constants.SOCKET_RECEIVE_POST,
+						post: post
+				});
+		},
+
+		socketReceiveNote: function(note, highlightId, postNotifCount) {
+				console.log('receiveNote: ' + Constants.SOCKET_RECEIVE_NOTE);
+				GroupDispatcher.handleAction({
+						actionType: Constants.SOCKET_RECEIVE_NOTE,
+						note: note,
+						highlightId: highlightId,
+				});
+		},
+
+		socketReceiveChat: function(chat) {
+				// do nothing for now...
+		}
 }
 
 module.exports = GroupActions;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+''

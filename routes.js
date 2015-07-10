@@ -1,9 +1,64 @@
 var DB = require('./MongoDB');
 
 var  _dbCallback = function(res) {
-        return function(dbOutput) {
-            res.send(dbOutput);
+    return function(dbOutput) {
+        res.send(dbOutput);
+    }
+};
+
+
+var _callbackNoteAdd = function(user, res, io) {
+    return function(dbOutput) {
+        if (!dbOutput.error) {
+            var note = dbOutput.note;
+            note.createdBy = null;
+            var highlightId = dbOutput.highlightId;
+            var groupId = dbOutput.groupId;
+            note.createdBy = {facebook: user.facebook};
+
+            // now emitting through socket for the group channel:
+            io.emit('note:' + groupId, {note: note, highlightId: highlightId, groupId: dbOutput.groupId});
+            console.log('note emitted!');
         }
+
+        res.send(dbOutput);
+    };
+};
+
+
+var _callbackPostAdd = function(user, res, io) {
+    return function(dbOutput) {
+        if (!dbOutput.error) {
+            // dbOutput guaranteed to have 'feedPost'
+            // emit socket change:
+
+            var feedPost = dbOutput.feedPost.toObject();
+            feedPost.createdBy = {facebook: user.facebook};
+
+            if (feedPost.type === 'HighlightFeedPost') {
+                var highlight = dbOutput.highlight.toObject();
+                highlight.createdBy = {facebook: user.facebook};
+                feedPost.highlight = highlight;
+            } else if (feedPost.type === 'ArticleFeedPost') {
+                var article = dbOutput.article.toObject();
+                article.content = '';
+                article.createdBy = {facebook: user.facebook};
+                feedPost.article = article;
+            } else {
+                console.log('INVALID POST TYPE: ' + feedPost.type);
+            }
+
+            var groupId = feedPost.groupId;
+            io.emit('feedPost:' + groupId, feedPost);
+        }
+
+        res.send(dbOutput);
+    };
+};
+
+
+var _callbackChatAdd = function(res, io) {
+
 };
 
 module.exports = function(app, passport) {
@@ -114,7 +169,7 @@ module.exports = function(app, passport) {
     app.post('/_add_article_from_url', isLoggedIn, function(req, res) {
         var url = req.body.url;
         var groupId = req.body.groupId;
-        DB.addArticleFromUrl(req.user, groupId, url, _dbCallback(res));
+        DB.addArticleFromUrl(req.user, groupId, url, _callbackPostAdd(req.user, res, req.io));
     });
 
     app.post('/_delete_article', isLoggedIn, function(req, res) {
@@ -126,13 +181,13 @@ module.exports = function(app, passport) {
 
     app.get('/_highlight', isLoggedIn, function(req, res) {
         var highlightId = req.query.highlightId;
-        DB.getHighlight(req.user, highlightId, _dbCallback(res));
+        DB.getHighlight(req.user, highlightId, _dbCallback(res), req.io);
     });
 
     app.post('/_add_highlight', isLoggedIn, function(req, res) {
         var highlightObj = req.body.highlight;
         var serialization = req.body.serialization;
-        DB.addHighlight(req.user, highlightObj, serialization, _dbCallback(res));
+        DB.addHighlight(req.user, highlightObj, serialization, _callbackPostAdd(req.user, res, req.io));
     });
 
     app.post('/_remove_highlight', isLoggedIn, function(req, res) {
@@ -145,7 +200,7 @@ module.exports = function(app, passport) {
     app.post('/_add_note', isLoggedIn, function(req, res) {
         var note = req.body.note;
         var highlightId = req.body.highlightId;
-        DB.addNote(req.user, highlightId, note, _dbCallback(res));
+        DB.addNote(req.user, highlightId, note, _callbackNoteAdd(req.user, res, req.io));
     });
 
     app.post('/_delete_note', isLoggedIn, function(req, res) {

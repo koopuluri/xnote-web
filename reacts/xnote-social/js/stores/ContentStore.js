@@ -57,7 +57,7 @@ GroupDispatcher.register(function(payload) {
           break;
 
   		case Constants.SET_ARTICLE_LIST:
-    			_articleList = action.articleList;
+    			_articleList = action.articleList.reverse();
     			break;
 
       case Constants.CONTENT_ADD_ARTICLE:

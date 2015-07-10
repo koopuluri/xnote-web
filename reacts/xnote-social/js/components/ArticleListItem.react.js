@@ -15,23 +15,6 @@ var Colors = mui.Styles.Colors;
 // expected prop:
 // - article
 var ArticleListItem = React.createClass({
-    childContextTypes : {
-        muiTheme: React.PropTypes.object
-    },
-
-    getChildContext: function() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
-    },
-
-    componentWillMount: function() {
-        ThemeManager.setPalette({
-            primary1Color: Colors.green500,
-            accent1Color: Colors.green500,
-        });
-        ThemeManager.setSpacing(10);
-    },
 
     _onClick: function() {
         console.log('_onClick! articleId: ' + this.props.article._id);

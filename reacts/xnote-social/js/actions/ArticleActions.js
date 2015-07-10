@@ -33,7 +33,6 @@ var Actions = {
                 self._setSelectedArticleId(null);  // turning off the loading.
                 return;
             }
-
             // got article:
             self._setSelectedArticle(data.article);
         });

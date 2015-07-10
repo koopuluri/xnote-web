@@ -18,15 +18,6 @@ function addNote(note) {
     _lastAddedNoteId = note.noteId;
 }
 
-function editNote(noteId, newNoteContent) {
-    var notes = _highlight.notes;
-    for (var i = 0; i < notes.length; i++) {
-        if (notes[i].noteId == noteId) {
-            // editing the content of this note:
-            notes[i].content = newNoteContent;
-        }
-    }
-}
 
 var DiscussionStore = _.extend({}, EventEmitter.prototype, {
     getHighlight: function() {
@@ -91,14 +82,14 @@ AppDispatcher.register(function(payload) {
         break;
 
 
-    case XnoteConstants.NOTE_EDIT:
-        if (action.highlightId == _highlight.highlightId) {
-            editNote(action.noteId, action.content);
-        } else {
-            // do nothing.
-            console.log('no note added in discStore.');
+    case XnoteConstants.SOCKET_RECEIVE_NOTE:
+        if (_highlight && action.highlightId === _highlight.highlightId) {
+            // time to add the note to this highlight:
+            _highlight.notes.unshift(action.note);
+            console.log('note added through socket to the discussion!');
         }
         break;
+
 
     default:
         return true;

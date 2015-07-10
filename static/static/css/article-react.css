@@ -377,7 +377,6 @@ input, textarea {
     border-color: #d3d3d3;
 }
 
-
 .poop-article-container {
     height: 100%;
     padding: 20px;
@@ -385,7 +384,7 @@ input, textarea {
 }
 
 .article-view {
-  top: 56px;
+  top: 39px;
   position: fixed;
   overflow: scroll;
   height: 100%;
@@ -409,7 +408,7 @@ input, textarea {
     margin-left: 0px;*/
 
     left: 0;
-    top: 56px;
+    top: 39px;
 
     height: 100%;
     padding: 0px;

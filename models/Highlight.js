@@ -18,7 +18,7 @@ var highlightSchema = mongoose.Schema({
     articleId: String,
     groupId: String,
     clippedText: String,
-    
+
     selection: {
         startOffset: Number,
         endOffset: Number,
@@ -34,6 +34,12 @@ var highlightSchema = mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'
             },
+
+            owner: {
+                name: String,
+                id: String
+            },
+            
             noteId: String,
             content: String,
             createdAt: {type: Date, default: Date.now},

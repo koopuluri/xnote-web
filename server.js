@@ -7,7 +7,7 @@ var port     = process.env.PORT || 8080;
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
-
+var http = require('http');
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
@@ -33,10 +33,22 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // Set /static as our static content dir
 app.use("/", express.static(__dirname + "/static"));
 
+var io = null;
+
+// middleware to pass on the io:
+app.use(function(req, res, next) {
+    req.io = io;
+    next();
+});
+
+
+
 // routes ======================================================================
 require('./routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 require('./config/passport')(passport); // pass passport for configuration
 
 // launch ======================================================================
-app.listen(port);
-console.log('The magic happens on port ' + port);
+var server = http.createServer(app).listen(port, function() {
+    console.log('Express server listening on port ' + port);
+    io = require('socket.io').listen(this);
+});

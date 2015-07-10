@@ -44,7 +44,9 @@ module.exports = KeyMirror({
 
 	BASE_HIGHLIGHT_CLASS: "xnote-note",
 
-
+	SOCKET_RECEIVE_NOTE: null,
+	SOCKET_RECEIVE_POST: null,
+	
 	FEED_POST_ARTICLE: 'ArticleFeedPost',
 	FEED_POST_HIGHLIGHT: 'HighlightFeedPost',
 

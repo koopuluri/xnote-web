@@ -33,9 +33,6 @@ var GroupSidebar = React.createClass({
     },
 
     render: function() {
-        var containerStyle = {
-            backgroundColor: "#FFFFFF",
-        }
 
         var contentStyle = {
             color: Colors.green500,
@@ -54,7 +51,6 @@ var GroupSidebar = React.createClass({
         return (
             <div className = "group-sidebar-container">
                 <Tabs
-                    tabItemContainerStyle = {containerStyle}
                     className = 'discussion-view-tabs'>
 
                     <Tab label= {chatLabel}

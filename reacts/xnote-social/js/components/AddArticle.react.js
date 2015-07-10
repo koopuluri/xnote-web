@@ -64,24 +64,23 @@ var AddArticle = React.createClass({
     renderFAB: function() {
     	var self = this;
     	var addArticleActions = [
-  			{ text: 'Cancel' },
-  			{ text: 'Add', onTouchTap: self._onArticleSubmit }
+  			{ text: 'Cancel', primary: true },
+  			{ text: 'Add', onTouchTap: self._onArticleSubmit, primary: true}
 		];
         return (
         	<div>
         		<Dialog
-        			title = "Add Article"
-	  					actions={addArticleActions}
-	  					ref = "addArticleDialog"
-	  					modal={true}>
-			  					<div>
-			  						<TextField
-			  							fullWidth = {true}
-			  							hintText="Paste URL here"
-				  						ref = 'addArticle' />
-				  				</div>
+        				title = "Add Article"
+		  					actions={addArticleActions}
+		  					ref = "addArticleDialog"
+		  					modal={true}>
+		  					<div>
+		  						<TextField
+		  							fullWidth = {true}
+		  							hintText="> Paste URL here"
+			  						ref = 'addArticle' />
+			  				</div>
 						</Dialog>
-
             	<div className='add-article-button'>
 	            	<FloatingActionButton
 	            		onTouchTap = {this._openDialog} />

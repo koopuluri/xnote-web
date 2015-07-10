@@ -2,11 +2,16 @@
   position: fixed;
   width: 37%;
   overflow: scroll;
-  top: 57px;
+  top: 35px;
 }
 
 .app-toolbar {
   position: fixed;
+}
+
+.article-toolbar {
+  position: fixed;
+  left: 0px;
 }
 
 .article-list-item {
@@ -18,19 +23,18 @@
   position: fixed;
   width: 60%;
   height: calc(100% - 57px);
-  top: 57px;
+  top: 40px;
   right: 0;
   overflow: scroll;
+}
+
+.article-container {
+  position: fixed;
+  top: 35px;
 }
 
 .add-article-button {
   position: absolute;
   bottom: 24px;
   left: calc(100% - 72px);
-}
-
-
-.main-contianer {
-    width: 100%;
-    height: 100%;
 }
