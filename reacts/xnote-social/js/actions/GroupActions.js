@@ -48,14 +48,11 @@ var GroupActions = {
 
 		fetchAndSetGroup: function(groupId) {
 				var self = this;
-				console.log('API: ' + Object.keys(API));
 				API.getGroup(groupId, function(result) {
 						if (result.error) {
 								// do nothing for now.
-								console.log('fetch and set group error');
-						}
 
-						console.log('got group!');
+						}
 						// set the group:
 						var group = result.group
 						self._setGroup(group);
@@ -64,11 +61,32 @@ var GroupActions = {
 				});
 		},
 
-		addArticle: function(url) {
-			//GroupDispatcher.handleAction({
-			//	actionType: Constans.ADD_ARTICLE,
-			//	action: action
-			//})
+		_setContentIsParsing(isParsing) {
+				GroupDispatcher.handleAction({
+					actionType: Constants.CONTENT_SET_PARSING,
+					isParsing: isParsing
+				});
+		},
+
+		_addArticle: function(article) {
+				GroupDispatcher.handleAction({
+					actionType: Constants.CONTENT_ADD_ARTICLE,
+					article: article
+				});
+		},
+
+		addArticleFromUrl: function(url, groupId) {
+			this._setContentIsParsing(true);
+			var self = this;
+			API.addArticleFromUrl(url, groupId, function(data) {
+					if (data.error) {
+
+							return;
+					}
+
+					self._addArticle(data.article);
+					self._setContentIsParsing(false);
+			});
 		},
 
 		addFeedObject: function(obj) {
@@ -91,10 +109,10 @@ var GroupActions = {
 		},
 
 		deleteNote: function(note) {
-			GroupDispatcher.handleAction({
-				actionType: Constants.DELETE_NOTE,
-				note: note
-			});
+				GroupDispatcher.handleAction({
+					actionType: Constants.DELETE_NOTE,
+					note: note
+				});
 		},
 
 		chat: function(message) {
@@ -105,17 +123,62 @@ var GroupActions = {
 		},
 
 		resetChatNotifs: function() {
-			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_CHAT_NOTIFS
-			})
+				GroupDispatcher.handleAction({
+						actionType: Constants.RESET_CHAT_NOTIFS
+				});
 		},
 
 		resetFeedNotifs: function() {
-			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_FEED_NOTIFS
-			})
+				GroupDispatcher.handleAction({
+						actionType: Constants.RESET_FEED_NOTIFS
+				});
 		},
+
+		incrementFeedNotifs: function() {
+				GroupDispatcher.handleAction({
+						actionType: Constants.INCREMENT_FEED_NOTIFS
+				});
+		},
+
+		socketReceivePost: function(post) {
+				GroupDispatcher.handleAction({
+						actionType: Constants.SOCKET_RECEIVE_POST,
+						post: post
+				});
+		},
+
+		socketReceiveNote: function(note, highlightId, postNotifCount) {
+				GroupDispatcher.handleAction({
+						actionType: Constants.SOCKET_RECEIVE_NOTE,
+						note: note,
+						highlightId: highlightId,
+				});
+		},
+
+		socketReceiveChat: function(chat) {
+				// do nothing for now...
+		}
 }
 
 module.exports = GroupActions;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+''

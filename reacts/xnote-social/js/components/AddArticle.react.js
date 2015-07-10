@@ -1,36 +1,69 @@
 var React = require('react');
 var GroupActions = require('../actions/GroupActions');
 var ContentStore = require('../stores/ContentStore');
+var GroupStore = require('../stores/GroupStore');
 
 var mui = require('material-ui');
 var FloatingActionButton = mui.FloatingActionButton;
 var Dialog = mui.Dialog;
 var FlatButton = mui.FlatButton;
 var TextField = mui.TextField;
+var CircularProgress = mui.CircularProgress;
 
 
 var AddArticle = React.createClass({
 
-	getInitialState: function() {
-		return ({
-			isParsing: ContentStore.getParsing()
-		});
-	},
+		getInitialState: function() {
+				return {
+					isParsing: ContentStore.getParsing()
+				};
+		},
 
-	_openDialog: function() {
-		this.refs.addArticleDialog.show();
-	},
+		_onChange: function() {
+			this.setState(this.getInitialState());
+		},
 
-	_onArticleSubmit: function() {
-		url = this.refs.addArticle.getValue();
-		if(url) {
-			this.refs.addArticle.clearValue();
-			this.refs.addArticleDialog.dismiss();
-			GroupActions.addArticle(url);
-		}
-	},
+		componentDidMount: function() {
+				var self = this;
+				ContentStore.addChangeListener(this._onChange);
+		},
 
-    render: function() {
+		componentWillMount: function() {
+				ContentStore.removeChangeListener(this._onChange);
+		},
+
+		_openDialog: function() {
+				this.refs.addArticleDialog.show();
+		},
+
+		_onArticleSubmit: function() {
+				url = this.refs.addArticle.getValue();
+				if(url) {
+						this.refs.addArticle.clearValue();
+						this.refs.addArticleDialog.dismiss();
+						GroupActions.addArticleFromUrl(url, GroupStore.getGroupId());
+				}
+		},
+
+		render: function() {
+				if (this.state.isParsing) {
+						return this.renderLoading();
+				}
+
+				return this.renderFAB();
+		},
+
+
+		// for when the article is parsing:
+		renderLoading: function() {
+				return (
+						<div className="add-article-button">
+								<CircularProgress mode="indeterminate" />
+						</div>
+				);
+		},
+
+    renderFAB: function() {
     	var self = this;
     	var addArticleActions = [
   			{ text: 'Cancel', primary: true },
@@ -39,21 +72,21 @@ var AddArticle = React.createClass({
         return (
         	<div className = "add-article-container">
         		<Dialog
-        			title = "Add Article"
-  					actions={addArticleActions}
-  					ref = "addArticleDialog"
-  					modal={true}>
-  					<div>
-  						<TextField
-  							fullWidth = {true}
-  							hintText="> Paste URL here"
-	  						ref = 'addArticle' />
-	  				</div>
-				</Dialog>
-				<div className ='add-article-button'>
+        				title = "Add Article"
+		  					actions={addArticleActions}
+		  					ref = "addArticleDialog"
+		  					modal={true}>
+		  					<div>
+		  						<TextField
+		  							fullWidth = {true}
+		  							hintText="> Paste URL here"
+			  						ref = 'addArticle' />
+			  				</div>
+						</Dialog>
+            	<div className='add-article-button'>
 	            	<FloatingActionButton
-		            	onTouchTap = {this._openDialog} />
-	            </div>
+	            		onTouchTap = {this._openDialog} />
+    	        </div>
     	    </div>
         );
     }

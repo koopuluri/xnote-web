@@ -6,13 +6,21 @@ var _ = require('underscore');
 var _articleList = [];
 var _selectedArticle = null;
 var _selectedArticleId = null;
+var _isParsing = false;
+
+var _viewNumber = 5;
 
 var CHANGE = 'contentStoreChange';
+var ARTICLE_ID_CHANGE = 'contentArticleIdChange';
 
 var ContentStore = _.extend({}, EventEmitter.prototype, {
 
   	getArticleList: function() {
-        return _articleList;
+        return _articleList.slice(0, _viewNumber);
+    },
+
+    getParsing: function() {
+        return _isParsing;
     },
 
     getSelectedArticle: function() {
@@ -27,8 +35,16 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
         return false;
     },
 
-    getParsing: function() {
-        return false;
+    emitArticleIdChange: function() {
+        this.emit(ARTICLE_ID_CHANGE);
+    },
+
+    addArticleIdChangeListener: function(callback) {
+        this.on(ARTICLE_ID_CHANGE, callback);
+    },
+
+    removeArticleIdChangeListener: function(callback) {
+        this.removeListener(ARTICLE_ID_CHANGE, callback);
     },
 
   	//emit change event
@@ -47,32 +63,36 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
 });
 
 GroupDispatcher.register(function(payload) {
-	var action = payload.action;
-	switch(action.actionType) {
+  	var action = payload.action;
+  	switch(action.actionType) {
 
-		case Constants.SET_ARTICLE_LIST:
-  			_articleList = action.articleList;
-  			break;
+      case Constants.CONTENT_SET_PARSING:
+          _isParsing = action.isParsing;
+          break;
 
-    case Constants.ADD_ARTICLE:
-        _articleList.push(action.article);
-        break;
+  		case Constants.SET_ARTICLE_LIST:
+    			_articleList = action.articleList.reverse();
+    			break;
 
-    case Constants.SET_SELECTED_ARTICLE:
-        _selectedArticle = action.article;
-        break;
+      case Constants.CONTENT_ADD_ARTICLE:
+          _articleList.push(action.article);
+          break;
 
-    case Constants.SET_SELECTED_ARTICLE_ID:
-        _selectedArticleId = action.articleId;
-        console.log('selectedArticleId set!' + action.articleId);
-        break;
+      case Constants.SET_SELECTED_ARTICLE:
+          _selectedArticle = action.article;
+          break;
 
-		default:
-			return true;
-	}
+      case Constants.SET_SELECTED_ARTICLE_ID:
+          _selectedArticleId = action.articleId;
+          ContentStore.emitArticleIdChange();
+          return true;
 
-	ContentStore.emitChange();
-	return true;
+  		default:
+  			return true;
+  	}
+
+  	ContentStore.emitChange();
+  	return true;
 })
 
 module.exports = ContentStore;

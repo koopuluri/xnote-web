@@ -53,8 +53,7 @@ var FeedPost = React.createClass({
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
-				noteId: GroupUtils.generateUUID(),
-				highlightId: highlightId
+				noteId: GroupUtils.generateUUID()
 			}
 			this.state.actions.addNote(highlightId, note);
 		}
@@ -109,7 +108,7 @@ var FeedPost = React.createClass({
 
 				var noteList = null;
 				var postOwner = post.createdBy.facebook.name;
-				var postText = 
+				var postText =
 					<div>
 						<p>Added a highlight: </p>
 						<p> '' {highlight.clippedText} '' </p>
@@ -122,8 +121,8 @@ var FeedPost = React.createClass({
 								{notes}
 							</List>
 						</div>
-					postOwner = highlight.notes[noteLength - 1].createdBy.facebook.name;
-					postText = 
+					postOwner = highlight.notes[noteLength - 1].owner ? highlight.notes[noteLength - 1].owner.name : 'poopOwner';
+					postText =
 						<div>
 							<p>Added a note '' {highlight.notes[noteLength - 1].content} '' </p>
 							<p>For the highlight '' {highlight.clippedText} '' </p>

@@ -34,33 +34,6 @@ var Discussion = React.createClass({
     // simplify, simplify, simplify... ... ...
     _onChange: function() {
         this.setState(this.getInitialState());
-        // var disc = DiscussionStore.getDiscussion();
-        // var stateDisc = this.state.discussion;
-        // if (stateDisc) {
-        //     if (disc && disc.highlightId != stateDisc.highlightId) {
-        //         console.log('Discussion.GETINITIALSTATE with discId: ' + disc.highlightId);
-        //         //socket.on('discId:' + disc.highlightId, this._socketGotNote);
-        //     } else {
-        //         if (!disc) {
-        //             // do nothing.
-        //         }
-        //     }
-        // } else {
-        //     // now stateDisc is null.
-        //     if (disc) {
-        //         console.log('Discussion.GETINITIALSTATE with discId: ' + disc.highlightId);
-        //         //socket.on('discId:' + disc.highlightId, this._socketGotNote);
-        //     } else {
-        //         // do nothing.
-        //     }
-        // }
-        //
-        // this.setState({
-        //     discussion: disc,
-        //     error: DiscussionStore.getError(),
-        //     isLoading: DiscussionStore.getLoading()
-        // });
-
     },
 
     componentDidMount: function() {
@@ -106,7 +79,7 @@ var Discussion = React.createClass({
           if (this.state.isLoading) {
               return (<Loading />);
           }
-          
+
           if (this.state.highlight) {
 
               var post = {

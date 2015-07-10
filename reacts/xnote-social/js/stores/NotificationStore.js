@@ -69,6 +69,14 @@ GroupDispatcher.register(function(payload) {
 			resetFeedNotifs();
 			break;
 
+		case Constants.SOCKET_RECEIVE_POST:
+			_feedNotifs++;
+			break;
+
+		case Constants.INCREMENT_FEED_NOTIFS:
+				_feedNotifs++;
+				break;
+
 		default:
 			return true;
 	}

@@ -17,7 +17,6 @@ var Colors = mui.Styles.Colors;
 var ArticleListItem = React.createClass({
 
     _onClick: function() {
-        console.log('_onClick! articleId: ' + this.props.article._id);
         ArticleActions._setSelectedArticleId(this.props.article._id);
     },
 

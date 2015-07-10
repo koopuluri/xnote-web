@@ -54,11 +54,9 @@ Annotator = {
       for (var i = 0; i < partialNoteComponentNodes.length; i++) {
           var node = partialNoteComponentNodes[i];
           React.unmountComponentAtNode(node);
-          console.log('component unmounted!');
       }
 
       highlighter.removeAllHighlights();
-      console.log('all highlights cleared!');
   },
 
   // by: http://stackoverflow.com/a/3410557
@@ -101,6 +99,7 @@ Annotator = {
 
       // now renderring all partial notes:
       for (i = 0; i < highlightIds.length; i++) {
+
           var id = highlightIds[i];
           this._renderPartialHighlights(id);
       }
@@ -111,21 +110,19 @@ Annotator = {
 
 	// for a given highlight object, renders the PartialNotes associated with it.
 	_renderPartialHighlights: function(highId) {
-    console.log('Annotator._renderPartialHighlights');
-		// get all elements associated with this note:
-		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + "-" + highId;
-		var elements = $('.' + className);
-		elements.map(function(index) {
-  			// render PartialNote for this element:
-  			React.render(<PartialHighlight
-  							highlightId={highId}
-  							partialHighlightId={index}
-  							content={this.innerHTML} />, this);
+  		// get all elements associated with this note:
+  		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + "-" + highId;
+  		var elements = $('.' + className);
+  		elements.map(function(index) {
+    			// render PartialNote for this element:
+    			React.render(<PartialHighlight
+    							highlightId={highId}
+    							partialHighlightId={index}
+    							content={this.innerHTML} />, this);
 
-        // keeping references to the elements that the components are added to:
-        partialNoteComponentNodes.push(this);
-        console.log('added to partialNoteComponentNodes');
-		});
+          // keeping references to the elements that the components are added to:
+          partialNoteComponentNodes.push(this);
+  		});
 	},
 
   _highlightSelection: function(sel, id) {
@@ -142,11 +139,8 @@ Annotator = {
 	// - add rangy highlights.
 	// - add all PartialNotes associated with this note (len(partialNotes) == len(# rangy highlights));
 	addHighlight: function(highlight) {
-      console.log('about to add highlight!');
   		this.highlightFromSelectionInfo(highlight.selection, highlight.highlightId);
-      console.log('highlighted from selection!');
   		this._renderPartialHighlights(highlight.highlightId);
-      console.log('renderPartialHighlights completed!');
 	},
 
 	// deleting a note:

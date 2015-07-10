@@ -43,10 +43,10 @@ var ChatContainer = React.createClass({
 		var content = this.refs.sendMessage.getValue();
 		this.refs.sendMessage.clearValue();
 		var message = {
-			createdBy: this.state.currentUser,
-			createdAt: GroupUtils.getTimestamp(),
-			content: content,
-			messageId: GroupUtils.generateUUID(),		
+				createdBy: this.state.currentUser,
+				createdAt: GroupUtils.getTimestamp(),
+				content: content,
+				messageId: GroupUtils.generateUUID()
 		}
 		GroupActions.chat(message);
 	},
@@ -56,14 +56,14 @@ var ChatContainer = React.createClass({
 		var self = this;
 
 		if (messages.length == 0) {
-			var messages = 
+			var messages =
 				<CardTitle
         			title = "You have no chat messages."
         			style = {
 	        			{
         					padding: 10
         				}
-	        		}	
+	        		}
         			titleStyle = {
 	        			{
 	        				fontSize: 14,
@@ -74,13 +74,13 @@ var ChatContainer = React.createClass({
 						{
 							fontSize: 10
 						}
-					} />			
+					} />
 		} else {
 			var messages = messages.map(function(message) {
 				return (
 					<div>
-						<ChatPost 
-							message={message} 
+						<ChatPost
+							message={message}
 							user = {self.state.currentUser}/>
 					</div>
 				);

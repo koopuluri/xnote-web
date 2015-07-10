@@ -29,6 +29,10 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
         return _user;
     },
 
+    getGroupId: function() {
+        return _group.groupId;
+    },
+
     getFriends: function() {
         return _friends;
     },
@@ -54,7 +58,6 @@ GroupDispatcher.register(function(payload) {
 
 		case GroupConstants.SET_GROUP:
   			_group = action.group;
-        console.log(_group);
   			break;
 
     case GroupConstants.SET_GROUP_TITLE:
@@ -72,4 +75,5 @@ GroupDispatcher.register(function(payload) {
 	return true;
 })
 
+GroupStore.setMaxListeners(0);
 module.exports = GroupStore;

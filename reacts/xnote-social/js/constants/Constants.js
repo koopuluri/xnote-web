@@ -2,6 +2,10 @@ var KeyMirror = require('react/lib/keyMirror');
 
 //Define action constants
 module.exports = KeyMirror({
+
+	CONTENT_ADD_ARTICLE: null,
+	CONTENT_SET_PARSING: null,
+
 	RECEIVE_CHAT: null,
 	RECEIVE_FEED: null,
 	ADD_NOTE: null,
@@ -40,7 +44,9 @@ module.exports = KeyMirror({
 
 	BASE_HIGHLIGHT_CLASS: "xnote-note",
 
-
+	SOCKET_RECEIVE_NOTE: null,
+	SOCKET_RECEIVE_POST: null,
+	
 	FEED_POST_ARTICLE: 'ArticleFeedPost',
 	FEED_POST_HIGHLIGHT: 'HighlightFeedPost',
 

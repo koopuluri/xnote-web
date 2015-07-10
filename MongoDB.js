@@ -7,6 +7,7 @@ var FeedPost = require('./models/FeedPost');
 var Note = require('./models/Note');
 var Highlight = require('./models/Highlight');
 
+var async = require('async');
 var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
 
 
@@ -158,23 +159,26 @@ var DB = {
                 return;
             }
 
-            console.log('feedPost for article successfuly created!');
-            callback({feedPostId: savedObject._id});
+            console.log('feedPost for article successfuly created, now emitting something');
+            article.createdBy = article.createdBy.facebook;
+            savedObject.createdBy = user.facebook;
+            callback({article: article, feedPost: savedObject});
         });
      },
 
 
      // ========================= HIGHLIGHT ====================================
 
-
-     addHighlight: function(user, highlight, callback) {
+     addHighlight: function(user, highlight, newSerialization, callback) {
         var self = this;
+        var articleId = highlight.articleId;
         var light = Highlight({
             createdBy: user._id,
             highlightId: highlight.highlightId,
             articleId: highlight.articleId,
             clippedText: highlight.clippedText,
-            groupId: highlight.groupId
+            groupId: highlight.groupId,
+            selection: highlight.selection
         });
 
         light.save(function (err, savedHighlight) {
@@ -185,13 +189,29 @@ var DB = {
             }
 
             console.log('highlight successfuly saved');
-            // now creating a feedPost for this highlight:
-            self._addFeedPostForHighlight(user, savedHighlight, callback);
+
+            // now updati/ng the article serialization:
+            Article.findOneAndUpdate({_id: articleId},
+                {serialization: newSerialization},
+                function(err, obj) {
+                    if (err) {
+                        console.log('article could not be updated!: ' + err);
+                        callback({error: 'poop'});
+                        return;
+                    }
+
+                    console.log('article serialization updtated!!!');
+                    // now creating a feedPost for the highlight:
+                    self._addFeedPostForHighlight(user, savedHighlight, callback);
+                });
+
         });
      },
 
      _addFeedPostForHighlight: function(user, hl, callback) {
          var groupId = hl.groupId;
+         console.log('HIIIIIIIIIIIIIIIGH: ' + hl);
+         var hoolio = JSON.stringify(hl);
          var post = FeedPost({
              createdBy: user,
              lastModifiedTimestamp: {type: Date, default: Date.now},
@@ -203,14 +223,13 @@ var DB = {
 
          post.save(function (err, savedObject) {
              if (err) {
-
                  console.log('feedPost for highlight save error: ' + err);
                  callback({error: err});
                  return;
              }
 
-             console.log('feedPost for highlight successfuly created!');
-             callback({feedPostId: savedObject._id});
+             console.log('saved post for highlight and returning:');
+             callback({feedPost: savedObject, highlight: hl});
          });
      },
 
@@ -245,12 +264,13 @@ var DB = {
 
      // ========================= NOTE =========================================
 
-     addNote: function(user, noteObj, highlightId, callback) {
+     addNote: function(user, highlightId, noteObj, callback) {
         var self = this;
         var note = {
             createdBy: user,
             noteId: noteObj.noteId,
             content: noteObj.content,
+            owner: {name: user.facebook.name, id: user.facebook.id}
         };
 
         Highlight.findOneAndUpdate({highlightId: highlightId},
@@ -260,9 +280,23 @@ var DB = {
                 if (err) {
                     console.log('error in finding and updating the highlight: ' + err);
                     callback({error: err});
+                    return;
                 }
 
-                self._updateTimestampForHighlightFeedObject(savedHighlight._id, callback);
+                //self._updateTimestampForHighlightFeedObject(savedHighlight._id, callback);
+                FeedPost.findOneAndUpdate({highlight: savedHighlight._id},
+                    {$set: {'lastModifiedTimestamp': Date.now()}},
+                    {},
+                    function (err, savedFeedPost) {
+                        if (err) {
+                            console.log('error in finding and updating the FeedPost for highlight: ' + err);
+                            callback({error: err});
+                            return;
+                        }
+
+                        console.log('feedPost time updated: ' + savedFeedPost.lastModifiedTimestamp);
+                        callback({note: note, highlightId: highlightId, groupId: savedHighlight.groupId});
+                    });
             });
      },
 
@@ -298,60 +332,74 @@ var DB = {
         });
      },
 
-     // populate:
-     // - user: (facebook.id, facebook.name)
-     // - feedPost: (sub-populate the article / highlight ref within each feedPost)
-     // - articles: (title, url; sub-populate(createdBy));
-     getGroup: function(user, groupId, callback) {
-        Group.findOne({groupId: groupId})
-             .populate('feedPosts')
-             .populate('articles', 'title url createdAt createdBy icon')
-             .populate('createdBy', 'facebook.id facebook.name')
-             .populate('members', 'facebook.id facebook.name')
-             .exec(function(err, doc) {
-                if (err) {
-                    console.log('err in executing the population: ' + err);
-                    callback({error: err});
-                    return;
-                }
-
-                if(!doc) {
-                    console.log('doc is null?!?');
-                    callback({error: 'null doc'});
-                    return;
-                }
-
-                // now within feedPost, have to populate the article / highlight ref:
-                FeedPost.populate(doc.feedPosts, [{path: 'article', select: '-createdBy'},
-                          {path: 'highlight', select: '-createdBy'},
-                          {path: 'createdBy', select: 'facebook.id facebook.name'}],
-                          function(err, data) {
-
-                    if (err) {
-                        console.log('error feedpost pop: ' + err);
-                        callback({error: err});
-                        return;
-                    }
-
-                    // populate the createdBy field for articles:
-                    Article.populate(doc.articles,
-                            {
-                              path: 'createdBy',
-                              select: 'facebook.id facebook.name'
-                            }, function(err, popArticle) {
-                                if (err) {
-                                    console.log('error article pop: ' + err);
-                                    callback({error: err});
-                                    return;
-                                }
-
-                                console.log('articles and feeds are populated! Returning the group:');
-                                console.log("User List data: %j", doc);
-                                callback({group: doc});
-                            });
-                });
-             });
+     getHighlight: function(user, highlightId, callback) {
+        Highlight.findOne({highlightId: highlightId})
+                  .populate('createdBy', 'facebook.id facebook.name')
+                  .populate('notes.createdBy', 'facebook.id facebook.name')
+                  .exec(function(err, doc) {
+                      if (err) {
+                          console.log('highlight populate error; ' + err);
+                          callback({error: 'highlight getting messed up'});
+                          return;
+                      }
+                      callback({highlight: doc});
+                  });
      },
+
+     // populate:
+       // - user: (facebook.id, facebook.name)
+       // - feedPost: (sub-populate the article / highlight ref within each feedPost)
+       // - articles: (title, url; sub-populate(createdBy));
+       getGroup: function(user, groupId, callback) {
+          Group.findOne({groupId: groupId})
+               .populate('feedPosts')
+               .populate('articles', 'title url createdAt createdBy icon')
+               .populate('createdBy', 'facebook.id facebook.name')
+               .populate('members', 'facebook.id facebook.name')
+               .exec(function(err, doc) {
+                  if (err) {
+                      console.log('err in executing the population: ' + err);
+                      callback({error: err});
+                      return;
+                  }
+
+                  if(!doc) {
+                      console.log('doc is null?!?');
+                      callback({error: 'null doc'});
+                      return;
+                  }
+
+                  // now within feedPost, have to populate the article / highlight ref:
+                  FeedPost.populate(doc.feedPosts, [{path: 'article', select: '-createdBy'},
+                            {path: 'highlight', select: '-createdBy'},
+                            {path: 'createdBy', select: 'facebook.id facebook.name'}],
+                            function(err, data) {
+
+                      if (err) {
+                          console.log('error feedpost pop: ' + err);
+                          callback({error: err});
+                          return;
+                      }
+
+                      // populate the createdBy field for articles:
+                      Article.populate(doc.articles,
+                              {
+                                path: 'createdBy',
+                                select: 'facebook.id facebook.name'
+                              }, function(err, popArticle) {
+                                  if (err) {
+                                      console.log('error article pop: ' + err);
+                                      callback({error: err});
+                                      return;
+                                  }
+
+                                  console.log('articles and feeds are populated! Returning the group:');
+                                  console.log("User List data: %j", doc);
+                                  callback({group: doc});
+                              });
+                  });
+               });
+       },
 
      getUserInfo: function(user, callback) {
         callback({name: user.facebook.name, id: user.facebook.id});
@@ -371,23 +419,10 @@ var DB = {
         });
      },
 
-     // for use when selecting a highlight within an article:
-     getHighlight: function(user, highlightId, callback) {
-        Highlight.findOne({highlightId: highlightId}, function (err, obj) {
-            if (err || !obj) {
-                console.log('no highlight found: ' + err);
-                callback({error: err});
-                return;
-            }
-
-            // highlight found:
-            console.log('highlight found: ' + obj._id);
-            callback({highlight: obj});
-        });
-     },
 };
 
 module.exports = DB;
+
 
 // testing out the highlight saving / deleting:
 User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {

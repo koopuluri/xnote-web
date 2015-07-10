@@ -29,7 +29,6 @@ var PartialHighlight = React.createClass({
 			if (hoverHighlightId) {
 				isHovered = hoverHighlightId == this.props.highlightId;
 			}
-			//console.log('isHovered: ' + isHovered + ' ' + hoverHighlightId + ';' + this.props.highlightId);
 
 			if (selectedHighlightId) {
 				isSelected = selectedHighlightId == this.props.highlightId;
@@ -68,9 +67,9 @@ var PartialHighlight = React.createClass({
 	},
 
 	componentWillUnmount: function() {
+			console.log('PartialHighlight unmount!');
 			PartialHighlightStore.removeChangeListener(this._onChange);
 	},
-
 
 	// renderring the note:
 	render: function() {

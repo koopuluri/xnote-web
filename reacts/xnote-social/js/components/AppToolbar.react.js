@@ -31,7 +31,6 @@ function getState() {
 
 var getOnAddFunction = function(member) {
   return function() {
-    console.log(member);
     this.refs.addMemberQuery.clearValue();
     this.refs.addMemberDialog.dismiss();
   }
@@ -47,7 +46,7 @@ var AppToolbar = React.createClass({
     },
 
     componentWillUnmount: function() {
-      GroupStore.removeListener(this._onChange);
+      GroupStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
@@ -74,7 +73,7 @@ var AppToolbar = React.createClass({
     },
 
     _onAddMember: function(member) {
-      
+
     },
 
     _onQueryChange: function() {
@@ -83,13 +82,13 @@ var AppToolbar = React.createClass({
       var friends = this.state.friends;
       var queryList = [];
       for (var i = 0; i < friends.length; i++) {
-        var name = friends[i].facebook.name.toLowerCase();
-        if (name.includes(query)) {
-          queryList.push(friends[i]);
-        }
+          var name = friends[i].facebook.name.toLowerCase();
+          if (name.includes(query)) {
+              queryList.push(friends[i]);
+          }
       }
       this.setState({
-        queryList: queryList
+          queryList: queryList
       });
     },
 
@@ -108,13 +107,13 @@ var AppToolbar = React.createClass({
       var menuItems = menuItems.concat(members);
       menuItems.push(
         { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
-        { 
-          payload: LOGOUT, 
-          text: 'Logout', 
+        {
+          payload: LOGOUT,
+          text: 'Logout',
         },
-        { 
+        {
           payload: GROUPS_PAGE,
-          text: 'Back to Groups', 
+          text: 'Back to Groups',
         },
         {
           payload: ADD_MEMBER,
@@ -151,7 +150,7 @@ var AppToolbar = React.createClass({
                   showMenuIconButton = {true}
                   onLeftIconButtonTouchTap = {this._showMenuBar}>
               </AppBar>
-              <LeftNav 
+              <LeftNav
                 docked={false}
                 menuItems = {menuItems}
                 ref = 'menuBar'

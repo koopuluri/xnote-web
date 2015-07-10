@@ -20,11 +20,16 @@ var ContentView = React.createClass({
         }
     },
 
+    _onChange: function() {
+        this.setState(this.getInitialState());
+    },
+
     componentDidMount: function() {
-        var self = this;
-        ContentStore.addChangeListener(function() {
-            self.setState(self.getInitialState());
-        });
+        ContentStore.addChangeListener(this._onChange);
+    },
+
+    componentWillMount: function() {
+        ContentStore.removeChangeListener(this._onChange);
     },
 
     render: function() {
@@ -39,7 +44,7 @@ var ContentView = React.createClass({
             <div className="content-view">
                 <Card>
                     <List>
-                        {articles}  
+                        {articles}
                     </List>
                 </Card>
             </div>

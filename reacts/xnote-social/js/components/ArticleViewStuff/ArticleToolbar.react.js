@@ -36,7 +36,7 @@ var ArticleToolbar = React.createClass({
 
     componentWillUnmount: function() {
       NotificationStore.removeChangeListener(this._onChange);
-      GroupStore.removeListener(this._onChange);
+      GroupStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
@@ -62,7 +62,6 @@ var ArticleToolbar = React.createClass({
         var feedLabel = 'Feed (' + this.state.feedNotifs + ')'
       }
 
-      if (true) {
         return (
           <div>
               <AppBar className="article-toolbar"
@@ -71,24 +70,14 @@ var ArticleToolbar = React.createClass({
                   }
                   zDepth={2}
                   showMenuIconButton = {true}
-                  onLeftIconButtonTouchTap = {this._onBackButtonPressed}
                   iconElementLeft = {
-                    <FlatButton 
-                      primary={true} 
-                      label='<-- Back'
-                      style= {
-                        {
-                          paddingTop : 8
-                        }
-                      } />
+                  <button onClick={this._onBackButtonPressed}>Back</button>
                   } >
                   <FlatButton primary={true} label={chatLabel}> </FlatButton>
                   <FlatButton primary={true} label={feedLabel}> </FlatButton>
               </AppBar>
           </div>
         );
-
-      }
     }
 });
 

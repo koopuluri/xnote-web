@@ -16,47 +16,62 @@ var NO_ARTICLE_SELECTED_MESSAGE = 'No content selected. You can add content from
 var ERROR_MESSAGE_NO_USER = 'Content not found.';
 var ERROR_MESSAGE_WITH_USER = 'Content not found. Select different content or add some.'
 
+var HACK_NUM = 0;
+
 var ArticleView = React.createClass({
 
 	getInitialState: function() {
 		return {
-			article: ContentStore.getSelectedArticle(),
-			isLoading: ContentStore.getLoading(),
-			selection: null,
-			selectionCoordinates: [],
-			owner: '',
-			currentUser: GroupStore.getCurrentUser(),
-			isError: null
+				article: ContentStore.getSelectedArticle(),
+				isLoading: ContentStore.getLoading(),
+				selection: null,
+				selectionCoordinates: [],
+				owner: '',
+				currentUser: GroupStore.getCurrentUser(),
+				isError: null
  		};
 	},
 
 	// listener callbacks:
 	_onArticleChange: function() {
 		// reset article:
-		Annotator.clearAllHighlightsAndComponents();
+	//	Annotator.clearAllHighlightsAndComponents();
+		var article = ContentStore.getSelectedArticle();
+		if ((article && !this.state.article) || (!article && this.state.article) || (!article && !this.state.article)) {
+				HACK_NUM = 0;
+		} else if (article && this.state.article) {
+				if (article._id != this.state.article._id) {
+						HACK_NUM = 0;
+				}
+		} else {
+				// don't change the hack num!
+		}
+
 		this.setState(this.getInitialState());
 	},
 
-	componentDidMount: function() {
-		// adding listener:
-		ContentStore.addChangeListener(this._onArticleChange);
-		if (this.props.articleId) {
-				Actions.fetchAndSetArticle(this.props.articleId);
-		}
+	componentDidUpdate: function() {
+			if (HACK_NUM === 0) {
+					Annotator.clearAllHighlightsAndComponents();
+					var article = this.state.article;
+					if (article && article.serialization) {
+							Annotator.deserialize(article.serialization);
+					}
+					HACK_NUM++;
+			}
 	},
 
-	componentDidUpdate: function() {
-			// deserializing:
-			if (this.state.article && this.state.article.serialization) {
-					Annotator.deserialize(this.state.article.serialization);
+	componentDidMount: function() {
+			// adding listener:
+			ContentStore.addChangeListener(this._onArticleChange);
+			if (this.props.articleId) {
+					Actions.fetchAndSetArticle(this.props.articleId);
 			}
 	},
 
 	componentWillUnmount: function() {
-			console.log('ArticleViewUnmounting');
 			// remove listener and highlights:
-			ArticleStore.removeChangeListener(this._onArticleChange);
-			Annotator.clearHighlights();
+			ContentStore.removeChangeListener(this._onArticleChange);
 	},
 
 	render: function() {
@@ -69,7 +84,6 @@ var ArticleView = React.createClass({
 
 	getRenderredInnerThing: function() {
 		var article = this.state.article;
-
 
 		var errorStyle = {marginTop: '20%', marginLeft: '35%'};
 
@@ -115,7 +129,6 @@ var ArticleView = React.createClass({
 		}
 
 		var content = this.state.article.content;
-		console.log('article.content: ' + Object.keys(this.state.article));
 		var classNameString = '';
 		var formRender = this.state.displayForm;
 		var buttonRender = this.state.selection !== null;
@@ -180,8 +193,9 @@ var ArticleView = React.createClass({
 			// adding a highlight:
 			newHighlight = {
 					highlightId: NoteUtils.generateUUID(),
-					articleId: this.state.article.id,
-					selectedHtml: this.state.selection.toHtml(),
+					articleId: this.state.article._id,
+					groupId: GroupStore.getGroupId(),
+					clippedText: this.state.selection.toHtml(),
 					createdAt: new Date() / 1000,
 					selection: Annotator.getSelectionInfo(this.state.selection),
 					createdBy: this.state.currentUser,
@@ -191,7 +205,7 @@ var ArticleView = React.createClass({
 
 			Annotator.addHighlight(newHighlight);
 
-			Actions.addHighlight(newHighlight, this.state.article.id, Annotator.serialize());
+			Actions.addHighlight(newHighlight, Annotator.serialize());
 
 			this.setState({selection: null});
 	},
@@ -202,8 +216,6 @@ var ArticleView = React.createClass({
 					this.setState({selection: null});
 			}
 	}
-
-
 });
 
 module.exports = ArticleView;

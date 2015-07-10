@@ -13,7 +13,6 @@ var Actions = require('../../actions/ArticleActions');
 
 var AddNoteInput = React.createClass({
     render: function() {
-      console.log('textareaClassName: ' + this.props.textareaClassName);
         return (
             <div className="add-note-textarea-container">
                 <textarea placeholder="Add note..." rows="1" cols="1" name="text" className={this.props.textareaClassName}></textarea>
