@@ -15,6 +15,8 @@ var CardText = mui.CardText;
 var TextField = mui.TextField;
 var FlatButton = mui.FlatButton;
 
+var Colors = mui.Styles.Colors;
+
 function getChatState() {
 	return {
 		messages: ChatStore.getChat(),
@@ -88,18 +90,16 @@ var ChatContainer = React.createClass({
 		}
 
 		return (
-			<div className = 'chat-container'>
+			<div className = 'chat-container' style={{backgroundColor: Colors.white}}>
 				<div className ='chat-messages'>
-					<Card className = 'chat-messages-card'>
-        				<List>
-							{messages}
-						</List>
-					</Card>
+       				<List>
+						{messages}
+					</List>
 					</div>
 					<div className = 'chat-form'>
-					<Card>
-						<TextField
-  							hintText="> Send Message"
+					<TextField
+							hintText="> Send Message"
+							multiLine = {true}
   							ref = 'sendMessage' />
   						<FlatButton
 	  						fullWidth = {false}
@@ -107,7 +107,6 @@ var ChatContainer = React.createClass({
   							label="Send"
   							primary={true}
   							onClick = {this._chat} />
-  					</Card>
 					</div>
 			</div>
 		);

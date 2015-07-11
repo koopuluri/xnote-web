@@ -3,55 +3,46 @@ var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
-var _chat = [];
+var _message = '';
 
-function loadChatData(data) {
-	_chat = data;
+function setSnackbarMessage(message) {
+	_message = message;
 }
 
-function chat(message) {
-	_chat.unshift(message);
-}
-
-var ChatStore = _.extend({}, EventEmitter.prototype, {
+var SnackStore = _.extend({}, EventEmitter.prototype, {
 
 	//Get chat items
-	getChat: function() {
-		return _chat;
+	getMessage: function() {
+		return _message;
 	},
 
 	//emit change event
 	emitChange: function() {
-		this.emit('chat-change');
+		this.emit('SnackChange');
 	},
 
 	//Add change listener
 	addChangeListener: function(callback) {
-		this.on('chat-change', callback);
+		this.on('SnackChange', callback);
 	},
 
 	removeChangeListener: function(callback) {
-		this.removeListener('chat-change', callback);
+		this.removeListener('SnackChange', callback);
 	}
 });
 
 GroupDispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
-
-		case Constants.RECEIVE_CHAT:
-			loadChatData(action.data);
+		case Constants.SET_SNACKBAR_MESSAGE:
+			setSnackbarMessage(action.message);
 			break;
 
-		case Constants.CHAT_MESSAGE:
-			chat(action.message);
-			break;
-			
 		default:
 			return true;
 	}
-	ChatStore.emitChange();
+	SnackStore.emitChange();
 	return true;
 })
 
-module.exports = ChatStore;
+module.exports = SnackStore;

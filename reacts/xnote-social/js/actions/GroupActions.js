@@ -157,6 +157,13 @@ var GroupActions = {
 
 		socketReceiveChat: function(chat) {
 				// do nothing for now...
+		},
+
+		displaySnackMessage: function(message) {
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_SNACKBAR_MESSAGE,
+				message: message
+			})
 		}
 }
 

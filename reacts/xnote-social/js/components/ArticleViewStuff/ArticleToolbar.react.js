@@ -11,6 +11,8 @@ var ToolbarTitle = mui.ToolbarTitle;
 var ToolbarGroup = mui.ToolbarGroup;
 var LeftNav = mui.LeftNav;
 var MenuItem = require('material-ui/lib/menus/menu-item');
+var ListItem = mui.ListItem;
+var ListDivider = mui.ListDivider;
 var MenuDivider = require('material-ui/lib/menus/menu-divider');
 var FlatButton = mui.FlatButton;
 var Colors = mui.Styles.Colors;
@@ -71,54 +73,94 @@ var ArticleToolbar = React.createClass({
     render: function() {
 
       var chatMenu = this.state.chat.map(function(message) {
+        var messageOwner = message.createdBy.facebook.name;
         var messageText = message.createdBy.facebook.name + ' : ' + message.content;
-        if(messageText.length > 103) {
-          messageText = messageText.substring(0, 100) + '...'
+
+        //Counting characters to see if the list requires two or one line
+        var secondaryTextLines = 1;
+        if(messageText.length > 67) {
+          secondaryTextLines = 2;
         }
         return (
-          <div>
-          <MenuItem style={
-              {
-                fontSize: 12,
-                lineHeight: 2
-              }
-            }
-            primaryText = {messageText}/>
-          <MenuDivider />
-          </div>
+          <ListItem
+            secondaryTextLines={2}
+            style ={{width : 500}}
+            primaryText = {
+                  <p style = {
+                      {
+                        fontSize : 13,
+                        lineHeight : 1,
+                        fontWeight: 800,
+                        paddingBottom : 0,
+                      }
+                    }>
+                    {messageOwner}
+                  </p>}
+            secondaryText = {
+              <p style = {
+                    {
+                      paddingBottom : 0,
+                      fontSize : 16,
+                      fontColor : Colors.DarkBlack
+                    }
+                  }>
+                    {messageText}
+              </p>
+            }/>
         )
       });
 
       var feedMenu = this.state.feed.map(function(post) {
-        var feedText = post.createdBy.facebook.name + ' ';
+        var feedOwner = post.createdBy.facebook.name
         if (post.type === ARTICLE) {
-          feedText = feedText + 'added an article "' + post.article.title + '"';
+          var feedText = 'Added an article "' + post.article.title + '"';
         } else if(post.type === HIGHLIGHT) {
           highlight = post.highlight;
           noteLength = highlight.notes.length;
           if(noteLength > 0) {
-            postOwner = highlight.notes[noteLength - 1].owner ? highlight.notes[noteLength - 1].owner.name : 'poopOwner';
-            feedText = postOwner + ' added a note ';
+            feedOwner = highlight.notes[noteLength - 1].owner ? highlight.notes[noteLength - 1].owner.name : 'poopOwner';
+            feedText = 'Added a note ';
             feedText = feedText + '"' + highlight.notes[noteLength - 1].content + '" for the highlight ';
             feedText = feedText + '"' + highlight.clippedText + '"';
           } else {
-            feedText = feedText + ' added a highlight "' + highlight.clippedText + '"';
+            feedText = 'Added a highlight "' + highlight.clippedText + '"';
           }
         }
-        if(feedText.length > 103) {
-          feedText = feedText.substring(0, 100) + '...'
+
+        //Counting characters to see if the list requires two or one line
+        var secondaryTextLines = 1;
+        if(feedText.length > 67) {
+          secondaryTextLines = 2;
         }
         return (
           <div>
-          <MenuItem style={
-              {
-                fontSize: 12,
-                lineHeight: 2
-              }
+          <ListItem 
+            secondaryTextLines={secondaryTextLines}
+            style = {{width: 500}}
+            primaryText = {
+                <p style = {
+                      {
+                        fontSize : 13,
+                        lineHeight : 1,
+                        fontWeight: 800,
+                        paddingBottom : 0,
+                      }
+                    }>
+                    {feedOwner}
+                  </p>
+                }
+            secondaryText = {
+              <p style = {
+                    {
+                      paddingBottom : 0,
+                      fontSize : 16,
+                      fontColor : Colors.DarkBlack
+                    }
+                  }>
+                    {feedText}
+              </p>
             }
-            primaryText = {feedText}
             onClick = {getOnFeedPostClickedFunction(post)}/>
-          <MenuDivider />
           </div>
         )
       });

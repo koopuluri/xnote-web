@@ -2,6 +2,7 @@ var React = require('react');
 var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
 var ArticleToolbar = require('./ArticleViewStuff/ArticleToolbar.react');
+var SnackbarComponent = require('./SnackbarComponent.react');
 
 var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
@@ -125,6 +126,7 @@ var MainContainer = React.createClass({
                     <AppToolbar />
                     <GroupSidebar />
                     <AddArticle />
+                    <SnackbarComponent />
                 </div>
             );
         }  else {

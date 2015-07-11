@@ -72,17 +72,17 @@ var AddArticle = React.createClass({
         return (
         	<div className = "add-article-container">
         		<Dialog
-        				title = "Add Article"
-		  					actions={addArticleActions}
-		  					ref = "addArticleDialog"
-		  					modal={true}>
-		  					<div>
-		  						<TextField
-		  							fullWidth = {true}
-		  							hintText="> Paste URL here"
-			  						ref = 'addArticle' />
-			  				</div>
-						</Dialog>
+        			title = "Add Article"
+		  			actions={addArticleActions}
+		  			ref = "addArticleDialog"
+		  			modal={true}>
+		  			<div>
+		  				<TextField
+		  					fullWidth = {true}
+		  					hintText="> Paste URL here"
+			  				ref = 'addArticle' />
+			  		</div>
+				</Dialog>
             	<div className='add-article-button'>
 	            	<FloatingActionButton
 	            		onTouchTap = {this._openDialog} />

@@ -13,14 +13,22 @@ var CardTitle = mui.CardTitle;
 var CardText = mui.CardText;
 var CardActions = mui.CardActions;
 var List = mui.List;
+var ListItem = mui.ListItem;
 var Colors = mui.Styles.Colors;
 var TextField = mui.TextField;
 var FlatButton = mui.FlatButton;
 var Avatar = mui.Avatar;
+var IconButton = mui.IconButton;
 
 var ARTICLE = 'ArticleFeedPost';
 var HIGHLIGHT = 'HighlightFeedPost';
 
+
+var getFeedPostOnClick = function(post) {
+	return function() {
+	    //TODO: Call the function that redirects
+  	}
+}
 // props:
 // - post
 // - actions:
@@ -65,41 +73,47 @@ var FeedPost = React.createClass({
 			var article = post.article;
 			return (
 				<Card>
-        			<CardHeader
-        				avatar={<Avatar>A</Avatar>}
-        				title={post.createdBy.facebook.name}
-        				subtitle = {article.createdAt}
-        				style = {
-        					{
-        						padding: 10
-        					}
-        				}
-        				titleStyle = {
-        					{
-	        					fontSize: 14,
-        						lineHeight: '24px'
-        					}
+					<ListItem
+						leftAvatar = {<Avatar> A </Avatar>}
+						style = {{padding : 10}}
+						disabled = {true}
+						primaryText= {
+							<p style = {{ paddingLeft: 60, paddingTop: 8, fontWeight: 800, fontSize: 13}}> {post.createdBy.facebook.name} </p>
 						}
-						subtitleStyle = {
-							{
-								fontSize: 10
-							}
-						} />
+						secondaryText = {
+							<p style = {{ paddingLeft: 60, fontSize: 10}}> {article.createdAt} </p>
+						} 
+						rightIconButton = {
+							<FlatButton 
+								onClick = {getFeedPostOnClick(post)}
+								primary = {true}
+								style={{
+									height:40,
+								}}
+								label='ARTICLE' />
+							}/>
         			<CardText
         				style = {
-        					{
-        						padding: 10,
-        						fontSize: 16,
-        					}
-        				}>
-        				<p>Added an article: {article.title}</p>
-          				<p>{article.url}</p>
+	        				{
+	        					paddingLeft: 20,
+	        					paddingBottom: 0,
+	        					fontSize: 16,
+	        				}
+	        			}>
+        				<p>{article.title}</p>
+          				<p style = {{fontSize : 10, color : Colors.grey500}}>{article.url}</p>
         			</CardText>
       			</Card>
 			);
 		} else if (post.type === HIGHLIGHT) {
 				var self = this;
 				var highlight = post.highlight;
+				var highlightClippedText = '';
+				if (highlight.clippedText.length > 203) {
+					highlightClippedText = '"' + highlight.clippedText.substring(0, 200) + '... "';
+				} else {
+					highlightClippedText = '"' + highlight.clippedText + '"';
+				}
 				var notes = highlight.notes.map(function(note) {
 					return (
 						<NoteComponent actions={self.state.actions} note={note} user = {self.state.currentUser} />
@@ -107,66 +121,63 @@ var FeedPost = React.createClass({
 				});
 
 				var noteList = null;
-				var postOwner = post.createdBy.facebook.name;
-				var postText =
-					<div>
-						<p>Added a highlight: </p>
-						<p> '' {highlight.clippedText} '' </p>
-					</div>
 				var noteLength = highlight.notes.length;
 				if (noteLength > 0) {
 					noteList =
 						<div className = "post-comments">
-							<List>
-								{notes}
-							</List>
-						</div>
-					postOwner = highlight.notes[noteLength - 1].owner ? highlight.notes[noteLength - 1].owner.name : 'poopOwner';
-					postText =
-						<div>
-							<p>Added a note '' {highlight.notes[noteLength - 1].content} '' </p>
-							<p>For the highlight '' {highlight.clippedText} '' </p>
+							{notes}
 						</div>
 				}
 				return (
 					<Card>
-						<CardHeader
-							avatar={<Avatar>A</Avatar>}
-							title = {postOwner}
-							subtitle = {highlight.lastModifiedTimestamp}
-							style = {
-	        					{
-	        						padding: 10
-	        					}
-	        				}
-	        				titleStyle = {
-	        					{
-				        			fontSize: 14,
-	        						lineHeight: '24px'
-	        					}
+						<ListItem
+							leftAvatar = {<Avatar> A </Avatar>}
+							style = {{padding : 10}}
+							disabled = {true}
+							primaryText= {
+								<p style = {{ paddingLeft: 60, paddingTop: 8, fontWeight: 800, fontSize: 13}}> {post.createdBy.facebook.name} </p>
 							}
-							subtitleStyle = {
-								{
-									fontSize: 10
-								}
-							} />
+							secondaryText = {
+								<p style = {{ paddingLeft: 60, fontSize: 10}}> {highlight.lastModifiedTimestamp} </p>
+							} 
+							rightIconButton = {
+								<FlatButton 
+									onClick = {getFeedPostOnClick(post)}
+									primary = {true}
+									style={{
+										height:40,
+									}}
+									label='HIGHLIGHT' />
+							}/>
 							<CardText
 								style = {
 	        						{
-	        							padding: 10,
-	        							fontSize: 16,
+	        							paddingLeft: 20,
+	        							paddingBottom: 0,
+	        							fontSize: 15,
 	        						}
 	        					}>
 	        					<div>
-	        						{postText}
+	        						<p style={{padding : 5, fontSize : 16}}>
+	        							{highlightClippedText}
+	        						</p>
 									{noteList}
 								</div>
 								<TextField
+									style = {
+										{
+											fontSize : 12,
+											lineHeight : 2
+										}
+									}
 		  							hintText=">  Post Note"
 		  							ref = 'postNote' />
 		  						<FlatButton
 		  							linkButton = {false}
 		  							label="Post"
+		  							style = {{
+		  								lineHeight : 2
+		  							}}
 		  							primary={true}
 		  							onClick = {this._addComment} />
 							</CardText>

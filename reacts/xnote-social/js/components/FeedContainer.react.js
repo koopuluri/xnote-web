@@ -40,7 +40,7 @@ var FeedContainer = React.createClass({
 			var feed = feed.map(function(post) {
 				return (
 					<div>
-						<ListItem disableTouchTap = {true}>
+						<ListItem disabled = {true}>
 							<FeedPost post={post} />
 						</ListItem>
 					</div>
