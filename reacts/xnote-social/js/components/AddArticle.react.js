@@ -47,7 +47,7 @@ var AddArticle = React.createClass({
 
 		render: function() {
 				if (this.state.isParsing) {
-						return this.renderLoading();
+					return this.renderLoading();
 				}
 
 				return this.renderFAB();

@@ -80,12 +80,11 @@ var GroupActions = {
 			var self = this;
 			API.addArticleFromUrl(url, groupId, function(data) {
 					if (data.error) {
-
-							return;
+						return;
 					}
-
 					self._addArticle(data.article);
 					self._setContentIsParsing(false);
+					self.displaySnackMessage("Article Parsed");
 			});
 		},
 

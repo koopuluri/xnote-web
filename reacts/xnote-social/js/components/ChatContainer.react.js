@@ -5,6 +5,9 @@ var GroupActions = require('../actions/GroupActions');
 var GroupUtils = require('../utils/GroupUtils');
 var GroupStore = require('../stores/GroupStore');
 
+var MultiLineInput = require('./MultiLineInput.react.js')
+
+
 var mui = require('material-ui');
 var List = mui.List;
 var ListItem = mui.ListItem;
@@ -96,17 +99,11 @@ var ChatContainer = React.createClass({
 						{messages}
 					</List>
 					</div>
-					<div className = 'chat-form'>
-					<TextField
-							hintText="> Send Message"
-							multiLine = {true}
-  							ref = 'sendMessage' />
-  						<FlatButton
-	  						fullWidth = {false}
-  							linkButton = {false}
-  							label="Send"
-  							primary={true}
-  							onClick = {this._chat} />
+					<div className = 'chat-form' style={{paddingLeft : 10}}>
+						<MultiLineInput
+							width = "54"
+		  					startingContent="Post Note"
+		  					onSave = {this._chat}/>
 					</div>
 			</div>
 		);

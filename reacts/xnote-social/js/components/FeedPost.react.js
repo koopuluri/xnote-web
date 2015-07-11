@@ -20,6 +20,8 @@ var FlatButton = mui.FlatButton;
 var Avatar = mui.Avatar;
 var IconButton = mui.IconButton;
 
+var MultiLineInput = require('./MultiLineInput.react.js')
+
 var ARTICLE = 'ArticleFeedPost';
 var HIGHLIGHT = 'HighlightFeedPost';
 
@@ -163,23 +165,10 @@ var FeedPost = React.createClass({
 	        						</p>
 									{noteList}
 								</div>
-								<TextField
-									style = {
-										{
-											fontSize : 12,
-											lineHeight : 2
-										}
-									}
-		  							hintText=">  Post Note"
-		  							ref = 'postNote' />
-		  						<FlatButton
-		  							linkButton = {false}
-		  							label="Post"
-		  							style = {{
-		  								lineHeight : 2
-		  							}}
-		  							primary={true}
-		  							onClick = {this._addComment} />
+								<MultiLineInput
+									width = "47"
+		  							startingContent="Post Note"
+		  							onSave = {this._addComment}/>
 							</CardText>
 					</Card>
 				);
