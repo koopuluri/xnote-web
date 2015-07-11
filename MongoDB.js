@@ -51,9 +51,7 @@ var DB = {
         });
      },
 
-     addGroupMembers: function() {
-
-     },
+     
 
      removeGroupMembers: function() {
 
@@ -426,50 +424,95 @@ var DB = {
 
      },
 
+     // ! need to check when adding user to group if user is already in group! 
+     addGroupMember: function(user, groupId, member, callback) {
+
+        User.findOne({'facebook.id': member.id}, function(err, userToAdd) {
+            if (err) {
+                console.log('add group member error: ' + err);
+                callback({error: err});
+                return;
+            }
+
+            console.log(userToAdd);
+            // now get the group and update:
+            Group.findOneAndUpdate({groupId: groupId}, 
+                {$addToSet: {'members': userToAdd}}, 
+                {}, 
+                function(error, updatedGroup) {
+                    if (err) {
+                        console.log('add group member error: ' + err);
+                        callback({error: err});
+                        return;
+                    }
+
+                    console.log('updatedGroup: ' + updatedGroup);
+                    User.update({_id: userToAdd._id}, 
+                        {$addToSet: {groups: updatedGroup}},
+                        {}, 
+                        function(err, updatedUser) {
+                            if (err) {
+                                console.log('add group member error: ' + err);
+                                callback({error: err});
+                                return;
+                            }
+
+                            console.log('successfuly updated user and group');
+                            //console.log(updatedGroup);
+                            console.log(updatedUser);
+                        });
+                });
+        });
+
+     },
+
 };
 
 module.exports = DB;
 //
 // // testing out the highlight saving / deleting:
-// User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
+// User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
-//
-//         DB.getGroup(user, 'testPoopGroup', function(obj) {
-//             console.log(obj);
+
+//         // DB.getGroup(user, 'testPoopGroup', function(obj) {
+//         //     console.log(obj);
+//         // });
+//         DB.addGroupMember(user, 'testPoopGroup', {id: user.facebook.id}, function(obj) {
+//             console.log('obj: ' + obj);
 //         });
-//
+
 //         //
 //         // DB.getArticleListSegment(user, 'testPoopGroup', 10, 3, function(obj) {
 //         //     console.log('result: ' + Object.keys(obj));
 //         // });
-//
+
 //         // console.log('got user!');
 //         //
 //         // DB.getGroup(user, 'testPoopGroup', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-//
+
 //         // DB.addGroup(user, {
 //         //     title: 'pooping the grouping',
 //         //     groupId: 'testPoopGroup',
 //         // }, function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-//
+
 //         // var articleId = '5599e642f836bb36631e2e9c';
 //         // DB.getArticle(user, articleId, function(poop) {
 //         //     console.log('article.title: ' + poop.article.title);
 //         // });
-//
+
 //         //
 //         // DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-//
-//
-//
+
+
+
 //         // var dummyGroup = {
 //         //     title: 'dummy group thing!',
 //         //     groupId: 'dummyGroup1'
@@ -478,7 +521,7 @@ module.exports = DB;
 //         // DB.addGroup(user, dummyGroup, function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-//
+
 //         // // adding note:
 //         // var dummyNote = {
 //         //     noteId: 'dummyNote1',
@@ -489,7 +532,7 @@ module.exports = DB;
 //         // DB.addNote(user, dummyNote, 'pooplight', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-//
+
 //         //
 //         // console.log('about to save a dummy highlight!');
 //         // var dummyHighlight = {
@@ -505,7 +548,7 @@ module.exports = DB;
 //         // DB.addHighlight(user, dummyHighlight, '', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-//
+
 //         // // going to delete the dummy article added above:
 //         // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));

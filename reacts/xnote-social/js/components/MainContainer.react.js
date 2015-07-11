@@ -125,9 +125,9 @@ var MainContainer = React.createClass({
         if (!this.state.selectedArticleId) {
             return (
                 <div className="main-container">
-                    <ContentView />
+                    <ContentView groupId={this.props.groupId}/>
                     <AppToolbar />
-                    <GroupSidebar />
+                    <GroupSidebar groupId={this.props.groupId}/>
                     <AddArticle />
                 </div>
             );

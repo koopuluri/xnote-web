@@ -60,6 +60,8 @@ var ArticleView = React.createClass({
 						Annotator.deserialize(article.serialization);
 				}
 				HACK_NUM++;
+
+				console.log('ARTICLE VIEW DESERIALIZE!');
 		}
 	},
 

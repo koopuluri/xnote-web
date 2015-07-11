@@ -22,8 +22,8 @@ console.log('got groupId: ' + groupId);
 
 // set the group associated with the groupId in the stores:
 Actions.fetchAndSetGroup(groupId);
-Actions.fetchArticleListSegment(groupId, 0, 9);
-Actions.fetchFeedSegment(groupId, 0, 5);
+// Actions.fetchArticleListSegment(groupId, 0, 9);
+// Actions.fetchFeedSegment(groupId, 0, 5);
 
 //Render Flux Group App
 React.render(

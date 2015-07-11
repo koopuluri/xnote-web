@@ -19,7 +19,7 @@ var ArticleListItem = React.createClass({
 
     _onClick: function() {
         ArticleActions._setSelectedArticleId(this.props.article._id);
-        GroupActions.resetFeedAndArticleListAndChatSegments();
+        GroupActions.clearArticleList();
     },
 
     render: function() {

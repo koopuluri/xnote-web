@@ -50,12 +50,18 @@ var GroupActions = {
 			var self = this;
 			API.getGroup(groupId, function(result) {
 					if (result.error) {
-							// do nothing for now.
+						// do nothing for now.
 
 					}
 					// set the group:
 					var group = result.group
 					self._setGroup(group);
+			});
+
+			API.getUserInfo(function(obj) {
+				if(!obj.error) {
+					self._setUser(obj.user);
+				}
 			});
 		},
 
@@ -105,13 +111,24 @@ var GroupActions = {
 			});
 		},
 
-		// sets all the feed, articleList, and chat lengths to the default lengths:
-		resetFeedAndArticleListAndChatSegments: function() {
-			console.log('reseting!');
+		clearFeed: function() {
 			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_SEGMENTS,
+				actionType: Constants.CLEAR_FEED,
 			});
 		},
+
+		clearArticleList: function() {
+			GroupDispatcher.handleAction({
+				actionType: Constants.CLEAR_ARTICLE_LIST
+			});
+		},
+
+		// // sets all the feed, articleList, and chat lengths to the default lengths:
+		// resetFeedAndArticleListAndChatSegments: function() {
+		// 	GroupDispatcher.handleAction({
+		// 		actionType: Constants.RESET_SEGMENTS,
+		// 	});
+		// },
 
 		// =========================================================================
 
@@ -213,7 +230,45 @@ var GroupActions = {
 
 		socketReceiveChat: function(chat) {
 				// do nothing for now...
-		}
+		},
+
+		// ================================== FRIENDS ======================================
+
+	    _setFriendsLoading: function(isLoading) {
+	        GroupDispatcher.handleAction({
+	            actionType: Constants.SET_FRIENDS_LOADING,
+	            isLoading: isLoading
+	        });
+	    },
+
+	    _setFriends: function(friends) {
+	        GroupDispatcher.handleAction({
+	            actionType: Constants.SET_FRIENDS,
+	            friends: friends
+	        });
+	    },
+
+	    fetchAndSetFriends: function() {
+	        this._setFriendsLoading(true);
+	        var self = this;
+	        API.getFriends(function(obj) {
+	            if(!obj.error) {
+	                self._setFriendsLoading(false);
+	                self._setFriends(obj.friends);
+	            }
+	        });
+	    },
+
+	    addMember: function(groupId, member) {
+	    	GroupDispatcher.handleAction({
+	            actionType: Constants.ADD_MEMBER,
+	            member: member
+	        });
+
+	        API.addMember(groupId, member, function() {
+				// do nothing.
+	        });
+	    },
 }
 
 module.exports = GroupActions;

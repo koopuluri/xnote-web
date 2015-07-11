@@ -11,6 +11,21 @@ var Actions = {
         });
     },
 
+    // selects the article. If highlightId provided, it will be selected, 
+    // and when article content rendered, it will scroll to the highlight 
+    // associated with the highlightId provided.
+    selectArticle: function(articleId, highlightId) {
+        if (highlightId) {
+            // setting the highlightId for the Discussion and PartialHighlight components:
+            this.setHighlight(highlightId);
+            this.setPartialHighlight(highlightId);
+        }
+
+        // now time to set the articleView: 
+        this._setSelectedArticleId(articleId);
+    },
+
+
     unselectArticle: function() {
         GroupDispatcher.handleAction({
             actionType: Constants.CLEAR_DISCUSSION,
@@ -20,7 +35,6 @@ var Actions = {
     },
 
     _setSelectedArticleId: function(articleId) {
-        console.log('_setSelectedArticleId: ' + articleId);
         GroupDispatcher.handleAction({
             actionType: Constants.SET_SELECTED_ARTICLE_ID,
             articleId: articleId
@@ -125,6 +139,40 @@ var Actions = {
             }
         });
     },
+
+    _setFriendsLoading: function(isLoading) {
+        GroupDispatcher.handleAction({
+            actionType: Constants.SET_FRIENDS_LOADING,
+            isLoading: isLoading
+        });
+    },
+
+    _setFriends: function(friends) {
+        GroupDispatcher.handleAction({
+            actionType: Constants.SET_FRIENDS_LOADING,
+            friends: friends
+        });
+    },
+
+    fetchAndSetFriends: function() {
+        this._setFriendsLoading(true);
+        API.getFriends(function(obj) {
+            if(!obj.error) {
+                this._setFriendsLoading(false);
+                this._setFriends(obj.friends);
+            }
+        });
+    },
 };
 
 module.exports = Actions;
+
+
+
+
+
+
+
+
+
+

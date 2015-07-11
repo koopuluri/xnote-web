@@ -125,17 +125,19 @@ GroupDispatcher.register(function(payload) {
 				}
 				break;
 
-			case GroupConstants.RESET_SEGMENTS:
+			case GroupConstants.CLEAR_FEED:
 				_index = 0;
-				_feed = _feed.slice(0, 5);
+				_feed = [];
+				console.log('FEED CLEARED');
+				break;
+
+			case GroupConstants.ADD_FEED_SEGMENT:
+				var posts = action.feedPosts;
+				_feed = _feed.concat(posts);
+				_index += posts.length;
 				break;
 
 
-			case GroupConstants.ADD_FEED_SEGMENT:
-			  var posts = action.feedPosts;
-			  _feed = _feed.concat(posts);
-			  _index += posts.length;
-			  break;
 
 				default:
 					return true;

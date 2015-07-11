@@ -17,7 +17,7 @@ function getNotifsState() {
     }
 }
 
-
+// props: groupId
 var GroupSidebar = React.createClass({
 
     getInitialState: function() {
@@ -60,7 +60,7 @@ var GroupSidebar = React.createClass({
                         style = {contentStyle}
                         route = 'chat'
                         onActive = {this._onActive}>
-                        <ChatContainer />
+                        <ChatContainer groupId={this.props.groupId}/>
                     </Tab>
 
                     <Tab label= {feedLabel}
@@ -68,7 +68,7 @@ var GroupSidebar = React.createClass({
                         route = 'feed'
                         onActive = {this._onActive}
                         contentContainerStyle={{'height':'100%'}}>
-                            <FeedContainer />
+                            <FeedContainer groupId={this.props.groupId}/>
                     </Tab>
                 </Tabs>
             </div>

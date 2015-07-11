@@ -25,7 +25,7 @@ var NoteComponent = React.createClass ({
 				];
 				var options = null
 				if (note.owner) {
-						if (this.props.user.facebook.id === note.owner.id) {
+						if (this.props.user && this.props.user.facebook.id === note.owner.id) {
 								var options =
 									<DropDownIcon
 										menuItems={noteOptions}

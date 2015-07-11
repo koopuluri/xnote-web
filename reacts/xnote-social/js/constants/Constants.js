@@ -3,6 +3,13 @@ var KeyMirror = require('react/lib/keyMirror');
 //Define action constants
 module.exports = KeyMirror({
 
+	CLEAR_FEED: null,
+	CLEAR_ARTICLE_LIST: null,
+
+	ADD_MEMBER: null,
+	SET_FRIENDS: null,
+	SET_FRIENDS_LOADING: null,
+
 	INCREMENT_FEED_NOTIFS: null,
 	CLEAR_DISCUSSION: null,
 	RESET_SEGMENTS: null,

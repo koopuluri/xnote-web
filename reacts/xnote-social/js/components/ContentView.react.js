@@ -2,8 +2,6 @@ var React = require('react');
 var mui = require('material-ui');
 var ArticleListItem = require('./ArticleListItem.react');
 var ContentStore = require('../stores/ContentStore');
-var GroupStore = require('../stores/GroupStore');
-
 var GroupActions = require('../actions/GroupActions');
 
 var ThemeManager = new mui.Styles.ThemeManager();
@@ -24,7 +22,6 @@ var ContentView = React.createClass({
     },
 
     _onChange: function() {
-        //console.log('ContentView.setState: ' + this.isMounted());
         if (this.isMounted()) {
             this.setState(this.getInitialState());
         }
@@ -32,22 +29,23 @@ var ContentView = React.createClass({
 
     _onScroll: function() {
         var node = this.getDOMNode();
-//        console.log('onScroll: ' + node.scrollTop + '/ ' + node.clientHeight + ';' + node.scrollHeight);
         if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
 
             // load more items:
             var index = ContentStore.getIndex();
-            GroupActions.fetchArticleListSegment(GroupStore.getGroupId(), index, 5);
+            GroupActions.fetchArticleListSegment(this.props.groupId, index, 5);
         }
     },
 
     componentDidMount: function() {
         ContentStore.addChangeListener(this._onChange);
+        GroupActions.fetchArticleListSegment(this.props.groupId, 0, 9);
     },
 
     componentWillUnMount: function() {
         ContentStore.removeChangeListener(this._onChange);
-        console.log('ContentView.unmount');
+        //GroupActions.clearArticleList();
+        //console.log('ContentView.unmount');
     },
 
     render: function() {

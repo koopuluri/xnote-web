@@ -89,7 +89,6 @@ GroupDispatcher.register(function(payload) {
       case Constants.SET_SELECTED_ARTICLE_ID:
           _selectedArticleId = action.articleId;
           ContentStore.emitArticleIdChange();
-          console.log('ContentStore emitting articleChange');
           return true;
 
       case Constants.ADD_ARTICLE_LIST_SEGMENT:
@@ -98,16 +97,15 @@ GroupDispatcher.register(function(payload) {
           _index += articles.length;
           break;
 
-      case Constants.RESET_SEGMENTS:
-          _articleList = _articleList.slice(0, 9);
+      case Constants.CLEAR_ARTICLE_LIST:
+          _articleList = [];
           _index = 0;
-          break;
+          console.log('ARTICLE LIST CLEARED');
 
   		default:
   			return true;
   	}
 
-    console.log('ContentSTore. emitting change!');
   	ContentStore.emitChange();
   	return true;
 })

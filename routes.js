@@ -70,7 +70,6 @@ module.exports = function(app, passport) {
         res.render('index.ejs'); // load the index.ejs file
     });
 
-
      // =====================================
      // FACEBOOK ROUTES =====================
      // =====================================
@@ -93,7 +92,17 @@ module.exports = function(app, passport) {
 
      // get list of friends for the user (using facebook api):
      app.get('/_friends', isLoggedIn, function(req, res) {
+        var FB = require('fb');
+        FB.setAccessToken(req.user.facebook.token);
+        FB.api('', 'post', {
+            batch: [
+                { method: 'get', relative_url: 'me/friends' }
+            ]
+        }, function(obj) {
 
+            var friends = JSON.parse(obj[0].body).data;
+            res.send({friends: friends});
+        });
      });
 
 
@@ -121,11 +130,15 @@ module.exports = function(app, passport) {
         resThing.render('dash.ejs', {
             user : req.user // get the user out of session and pass to template
         });
-
     });
 
 
     // =========================================================================
+
+    app.get('/_user_info', isLoggedIn, function(req, res) {
+        console.log('hit /_user_info: ' + req.user.facebook.name);
+        res.send({user: {facebook: {name: req.user.facebook.name, id: req.user.facebook.id} } });
+    });
 
     app.get('/_get_feed_segment', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
@@ -156,10 +169,10 @@ module.exports = function(app, passport) {
          DB.addGroup(req.user, groupObj, _dbCallback(res));
     });
 
-    app.post('/_add_group_members', isLoggedIn, function(req, res) {
-        var members = req.body.members;
+    app.post('/_add_group_member', isLoggedIn, function(req, res) {
+        var member = req.body.member;
         var groupId = req.body.groupId;
-        DB.addGroupMembers(req.user, groupId, members, _dbCallback(res));
+        DB.addGroupMember(req.user, groupId, member, _dbCallback(res));
     });
 
     app.post('/_remove_group_members', isLoggedIn, function(req, res) {
@@ -168,11 +181,6 @@ module.exports = function(app, passport) {
         DB.removeGroupMembers(req.user, groupId, members, _dbCallback(res));
     });
 
-    // -------------------------------------------------------------------------
-
-    app.get('/_get_user_info', isLoggedIn, function(req, res) {
-        DB.getUserInfo(req.user, _dbCallback(res));
-    });
 
     // -------------------------------------------------------------------------
 

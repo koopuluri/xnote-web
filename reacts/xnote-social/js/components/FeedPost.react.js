@@ -113,7 +113,7 @@ var FeedPost = React.createClass({
 				var postText =
 					<div>
 						<p>Added a highlight: </p>
-						<p> '' {highlight.clippedText} '' </p>
+						<p href="/poop" className="highlight-clipped-text"> '' {highlight.clippedText} '' </p>
 					</div>
 				var noteLength = highlight.notes.length;
 				if (noteLength > 0) {
