@@ -34,6 +34,7 @@ var ArticleView = React.createClass({
 
 	// listener callbacks:
 	_onArticleChange: function() {
+
 		// reset article:
 	//	Annotator.clearAllHighlightsAndComponents();
 		var article = ContentStore.getSelectedArticle();
@@ -47,39 +48,42 @@ var ArticleView = React.createClass({
 				// don't change the hack num!
 		}
 
+		console.log('ArticleView.setState');
 		this.setState(this.getInitialState());
 	},
 
 	componentDidUpdate: function() {
-			if (HACK_NUM === 0) {
-					Annotator.clearAllHighlightsAndComponents();
-					var article = this.state.article;
-					if (article && article.serialization) {
-							Annotator.deserialize(article.serialization);
-					}
-					HACK_NUM++;
-			}
+		if (HACK_NUM === 0) {
+				Annotator.clearAllHighlightsAndComponents();
+				var article = this.state.article;
+				if (article && article.serialization) {
+						Annotator.deserialize(article.serialization);
+				}
+				HACK_NUM++;
+		}
 	},
 
 	componentDidMount: function() {
-			// adding listener:
-			ContentStore.addChangeListener(this._onArticleChange);
-			if (this.props.articleId) {
-					Actions.fetchAndSetArticle(this.props.articleId);
-			}
+		// adding listener:
+		ContentStore.addChangeListener(this._onArticleChange);
+		if (this.props.articleId) {
+				Actions.fetchAndSetArticle(this.props.articleId);
+		}
 	},
 
 	componentWillUnmount: function() {
-			// remove listener and highlights:
-			ContentStore.removeChangeListener(this._onArticleChange);
+		// remove listener and highlights:
+		ContentStore.removeChangeListener(this._onArticleChange);
+		Annotator.clearAllHighlightsAndComponents();
+		console.log('ArticleView.unmount');
 	},
 
 	render: function() {
-			return (
-				<Paper style={{margin: '2px'}} zDepth={1}>
-						{this.getRenderredInnerThing()}
-				</Paper>
-			);
+		return (
+			<Paper style={{margin: '2px'}} zDepth={1}>
+					{this.getRenderredInnerThing()}
+			</Paper>
+		);
 	},
 
 	getRenderredInnerThing: function() {

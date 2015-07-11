@@ -49,6 +49,26 @@ module.exports = {
 				}, function(obj) {
 						callback(obj);
 				});
+		},
+
+		getFeedSegment: function(groupId, start, count, callback) {
+				$.get('/_get_feed_segment', {
+						groupId: groupId,
+						start: start,
+						count: count
+				}, function(data, status) {
+						callback(data);
+				});
+		},
+
+		getArticleListSegment: function(groupId, start, count, callback) {
+				$.get('/_get_article_list_segment', {
+						groupId: groupId,
+						start: start,
+						count: count
+				}, function(data, status) {
+						callback(data);
+				});
 		}
 };
 

@@ -30,17 +30,29 @@ var ArticleToolbar = React.createClass({
     },
 
     componentDidMount: function() {
-      NotificationStore.addChangeListener(this._onChange);
-      GroupStore.addChangeListener(this._onChange);
+      NotificationStore.addChangeListener(this._onNotifChange);
+      GroupStore.addChangeListener(this._onGroupChange);
     },
 
     componentWillUnmount: function() {
-      NotificationStore.removeChangeListener(this._onChange);
-      GroupStore.removeChangeListener(this._onChange);
+      NotificationStore.removeChangeListener(this._onNotifChange);
+      GroupStore.removeChangeListener(this._onGroupChange);
+      console.log('ArticleToolbar.unmount');
     },
 
-    _onChange: function() {
-      this.setState(getState());
+    _onNotifChange: function() {
+        console.log('_onNotifChange')
+        this.setState({
+            chatNotifs: NotificationStore.getChatNotifs(),
+            feedNotifs: NotificationStore.getFeedNotifs()
+        });
+    },
+
+    _onGroupChange: function() {
+        var newTitle = GroupStore.getGroupTitle();
+        if (this.state.groupTitle !== newTitle) {
+            this.setState({groupTitle: newTitle});
+        }
     },
 
     _showMenuBar: function() {
@@ -48,7 +60,7 @@ var ArticleToolbar = React.createClass({
     },
 
     _onBackButtonPressed: function(e, selectedIndex, menuItem) {
-      ArticleActions._setSelectedArticleId(null);
+      ArticleActions.unselectArticle();
     },
 
     render: function() {

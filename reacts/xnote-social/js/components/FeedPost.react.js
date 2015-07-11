@@ -92,8 +92,10 @@ var FeedPost = React.createClass({
         						fontSize: 16,
         					}
         				}>
-        				<p>Added an article: {article.title}</p>
-          				<a href={article.url}>{article.url}</a>
+								<div>
+        					<p>Added an article: {article.title}</p>
+          				<p>{article.url}</p>
+								</div>
         			</CardText>
       			</Card>
 			);

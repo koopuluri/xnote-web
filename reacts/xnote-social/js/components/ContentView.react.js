@@ -2,6 +2,9 @@ var React = require('react');
 var mui = require('material-ui');
 var ArticleListItem = require('./ArticleListItem.react');
 var ContentStore = require('../stores/ContentStore');
+var GroupStore = require('../stores/GroupStore');
+
+var GroupActions = require('../actions/GroupActions');
 
 var ThemeManager = new mui.Styles.ThemeManager();
 var Colors = mui.Styles.Colors;
@@ -21,15 +24,30 @@ var ContentView = React.createClass({
     },
 
     _onChange: function() {
-        this.setState(this.getInitialState());
+        //console.log('ContentView.setState: ' + this.isMounted());
+        if (this.isMounted()) {
+            this.setState(this.getInitialState());
+        }
+    },
+
+    _onScroll: function() {
+        var node = this.getDOMNode();
+//        console.log('onScroll: ' + node.scrollTop + '/ ' + node.clientHeight + ';' + node.scrollHeight);
+        if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
+
+            // load more items:
+            var index = ContentStore.getIndex();
+            GroupActions.fetchArticleListSegment(GroupStore.getGroupId(), index, 5);
+        }
     },
 
     componentDidMount: function() {
         ContentStore.addChangeListener(this._onChange);
     },
 
-    componentWillMount: function() {
+    componentWillUnMount: function() {
         ContentStore.removeChangeListener(this._onChange);
+        console.log('ContentView.unmount');
     },
 
     render: function() {
@@ -41,7 +59,7 @@ var ContentView = React.createClass({
         });
 
         return (
-            <div className="content-view">
+            <div className="content-view" onScroll={this._onScroll}>
                 <Card>
                     <List>
                         {articles}

@@ -11,6 +11,14 @@ var Actions = {
         });
     },
 
+    unselectArticle: function() {
+        GroupDispatcher.handleAction({
+            actionType: Constants.CLEAR_DISCUSSION,
+        });
+        this._setSelectedArticle(null);
+        this._setSelectedArticleId(null);
+    },
+
     _setSelectedArticleId: function(articleId) {
         console.log('_setSelectedArticleId: ' + articleId);
         GroupDispatcher.handleAction({

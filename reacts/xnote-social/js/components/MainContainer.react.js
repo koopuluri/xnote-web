@@ -34,9 +34,6 @@ var MainContainer = React.createClass({
 
     _onChange: function() {
         this.setState(this.getInitialState());
-        while(true) {
-            console.log('fuck you');
-        }
     },
 
     componentWillUnmount: function() {
@@ -44,6 +41,10 @@ var MainContainer = React.createClass({
     },
 
     componentDidMount: function() {
+        window.onscroll = function() {
+            console.log('scroll');
+        }
+        
         var self = this;
         ContentStore.addArticleIdChangeListener(this._onChange);
 
@@ -127,6 +128,7 @@ var MainContainer = React.createClass({
                     <ContentView />
                     <AppToolbar />
                     <GroupSidebar />
+                    <AddArticle />
                 </div>
             );
         }  else {

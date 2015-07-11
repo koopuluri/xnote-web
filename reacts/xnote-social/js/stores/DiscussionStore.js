@@ -90,6 +90,10 @@ AppDispatcher.register(function(payload) {
         }
         break;
 
+    case XnoteConstants.CLEAR_DISCUSSION: 
+        _highlight = null;
+        break;
+
 
     default:
         return true;

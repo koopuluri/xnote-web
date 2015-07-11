@@ -1,5 +1,4 @@
 var React = require('react');
-var ContentStore = require('../stores/ContentStore');
 var GroupStore = require('../stores/GroupStore');
 
 

@@ -126,6 +126,21 @@ module.exports = function(app, passport) {
 
 
     // =========================================================================
+
+    app.get('/_get_feed_segment', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        var start = req.query.start;
+        var count = req.query.count;
+        DB.getFeedSegment(req.user, groupId, start, count, _dbCallback(res));
+    });
+
+    app.get('/_get_article_list_segment', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        var start = req.query.start;
+        var count = req.query.count;
+        DB.getArticleListSegment(req.user, groupId, start, count, _dbCallback(res));
+    });
+
     app.get('/_my_groups', isLoggedIn, function(req, res) {
         DB.getGroups(req.user, _dbCallback(res));
     });

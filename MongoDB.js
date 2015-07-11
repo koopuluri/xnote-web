@@ -351,53 +351,20 @@ var DB = {
        // - feedPost: (sub-populate the article / highlight ref within each feedPost)
        // - articles: (title, url; sub-populate(createdBy));
        getGroup: function(user, groupId, callback) {
+
           Group.findOne({groupId: groupId})
-               .populate('feedPosts')
-               .populate('articles', 'title url createdAt createdBy icon')
-               .populate('createdBy', 'facebook.id facebook.name')
-               .populate('members', 'facebook.id facebook.name')
+               .select('createdBy members groupId')
+               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('members', '-_id facebook.id facebook.name')
                .exec(function(err, doc) {
-                  if (err) {
-                      console.log('err in executing the population: ' + err);
-                      callback({error: err});
-                      return;
-                  }
+                    if (err || !doc) {
+                        if (err)
+                            console.log('err in executing the population: ' + err);
+                        callback({error: err});
+                        return;
+                    }
 
-                  if(!doc) {
-                      console.log('doc is null?!?');
-                      callback({error: 'null doc'});
-                      return;
-                  }
-
-                  // now within feedPost, have to populate the article / highlight ref:
-                  FeedPost.populate(doc.feedPosts, [{path: 'article', select: '-createdBy'},
-                            {path: 'highlight', select: '-createdBy'},
-                            {path: 'createdBy', select: 'facebook.id facebook.name'}],
-                            function(err, data) {
-
-                      if (err) {
-                          console.log('error feedpost pop: ' + err);
-                          callback({error: err});
-                          return;
-                      }
-
-                      // populate the createdBy field for articles:
-                      Article.populate(doc.articles,
-                              {
-                                path: 'createdBy',
-                                select: 'facebook.id facebook.name'
-                              }, function(err, popArticle) {
-                                  if (err) {
-                                      console.log('error article pop: ' + err);
-                                      callback({error: err});
-                                      return;
-                                  }
-
-                                  console.log('articles and feeds are populated! Returning the group:');
-                                  console.log("User List data: %j", doc);
-                                  callback({group: doc});
-                              });
-                  });
+                    callback({group: doc});
                });
        },
 
@@ -419,15 +386,64 @@ var DB = {
         });
      },
 
+     getFeedSegment: function(user, groupId, start, count, callback) {
+        FeedPost.find({groupId: groupId})
+                .sort({'lastModifiedTimestamp': 'desc'})
+                .skip(start).limit(count)
+                .populate('createdBy', '-_id facebook.id facebook.name')
+                .populate('highlight', '-createdBy')
+                .populate('highlight.notes', '-createdBy')
+                .populate('article', '-createdBy')
+                .exec(function(err, results) {
+                    if(err) {
+                        console.log('getFeedSegment error: ' + err);
+                        callback({error: err});
+                        return;
+                    }
+
+                    callback({feedPosts: results});
+                });
+     },
+
+     getArticleListSegment: function(user, groupId, start, count, callback) {
+        console.log('in articleListSegment!');
+        Article.find({groupId: groupId})
+               .sort({'createdAt': 'desc'})
+               .skip(start).limit(count)
+               .populate('createdBy', '-_id facebook.id facebook.name')
+               .exec(function(err, results) {
+                  if(err) {
+                      console.log('articleListSegment: ' + err);
+                      callback({error: err});
+                      return;
+                  }
+                  console.log(results.length);
+                  callback({articles: results});
+               });
+     },
+
+     getChatListSegment: function(user, groupId, start, end) {
+
+     },
+
 };
 
 module.exports = DB;
-
+//
 // // testing out the highlight saving / deleting:
 // User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
+//
+//         DB.getGroup(user, 'testPoopGroup', function(obj) {
+//             console.log(obj);
+//         });
+//
+//         //
+//         // DB.getArticleListSegment(user, 'testPoopGroup', 10, 3, function(obj) {
+//         //     console.log('result: ' + Object.keys(obj));
+//         // });
 //
 //         // console.log('got user!');
 //         //
@@ -476,19 +492,19 @@ module.exports = DB;
 //
 //         //
 //         // console.log('about to save a dummy highlight!');
-//         var dummyHighlight = {
-//            articleId: '559cdcc98b120d12312b2315',
-//            highlightId: 'pooplight',
-//            groupId: 'testPoopGroup',
-//            clippedText: 'poop is the secret of my energy!',
-//            selection: {},
-//            notes: []
-//         }
-//
-//         // saving a dummy highlight:
-//         DB.addHighlight(user, dummyHighlight, '', function(poop) {
-//             console.log('poop: ' + Object.keys(poop));
-//         });
+//         // var dummyHighlight = {
+//         //    articleId: '559cdcc98b120d12312b2315',
+//         //    highlightId: 'pooplight',
+//         //    groupId: 'testPoopGroup',
+//         //    clippedText: 'poop is the secret of my energy!',
+//         //    selection: {},
+//         //    notes: []
+//         // }
+//         //
+//         // // saving a dummy highlight:
+//         // DB.addHighlight(user, dummyHighlight, '', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
 //
 //         // // going to delete the dummy article added above:
 //         // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
