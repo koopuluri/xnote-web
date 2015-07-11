@@ -107,11 +107,13 @@ var AppToolbar = React.createClass({
       menuItems.push(
         { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
         {
-          payload: LOGOUT,
-          text: 'Logout',
+            payload: '/logout',
+            text: 'Logout',
+            type: MenuItem.Types.LINK,
         },
         {
-          payload: GROUPS_PAGE,
+          type: MenuItem.TYPES.LINK,
+          payload: '/groups',
           text: 'Back to Groups',
         },
         {

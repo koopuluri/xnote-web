@@ -37,31 +37,13 @@ var NoteComponent = React.createClass ({
 
 				var ownerName = note.owner ? note.owner.name : 'CrapNoteOwner'
 
-
-				var secondaryText =
-						<p style = {
-							{
-								fontSize : 10,
-								lineHeight : "10px",
-							}
-						}> {note.createdAt} </p>
 				return (
-						<div>
-								<ListItem
-										secondaryText = {secondaryText}
-										disableTouchTap	= {true}
-										rightIconButton={options}
-										style = {
-											{
-												fontSize : 16,
-												lineHeight : "16px",
-												backgroundColor : Colors.green50
-											}
-										}>
-												<p className = 'post-note-username' style = {{fontSize : 12}}>{ownerName}</p>
-												<p className = 'post-note-content'>{note.content}</p>
-								</ListItem>
-								<ListDivider />
+						<div style = {{marginLeft : 12, backgroundColor : Colors.green50}}>
+							<div style={{padding : 10}}>
+								<p style = {{fontSize : 12, lineHeight: 0}}> {ownerName} </p>
+								<p style = {{fontSize : 10, color : Colors.grey500}}> {note.createdAt} </p>
+								<p>{note.content}</p>
+							</div>
 						</div>
 				);
 		}

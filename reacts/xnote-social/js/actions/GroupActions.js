@@ -115,7 +115,8 @@ var GroupActions = {
 
 		// =========================================================================
 
-		_setContentIsParsing(isParsing) {
+
+		_setContentIsParsing: function(isParsing) {
 				GroupDispatcher.handleAction({
 					actionType: Constants.CONTENT_SET_PARSING,
 					isParsing: isParsing

@@ -92,10 +92,10 @@ var FeedPost = React.createClass({
         						fontSize: 16,
         					}
         				}>
-								<div>
+						<div>
         					<p>Added an article: {article.title}</p>
-          				<p>{article.url}</p>
-								</div>
+          					<p>{article.url}</p>
+						</div>
         			</CardText>
       			</Card>
 			);
@@ -159,8 +159,10 @@ var FeedPost = React.createClass({
 	        							fontSize: 16,
 	        						}
 	        					}>
-	        					{postText}
-								{noteList}
+	        					<div>
+	        						{postText}
+									{noteList}
+								</div>
 								<TextField
 		  							hintText=">  Post Note"
 		  							ref = 'postNote' />
