@@ -10,6 +10,7 @@ var NotifStore = require('../stores/NotificationStore');
 var FeedStore = require('../stores/FeedStore');
 var GroupStore = require('../stores/GroupStore');
 var AddArticle = require('./AddArticle.react');
+var GroupUtils = require('../utils/GroupUtils');
 
 var GroupActions = require('../actions/GroupActions');
 
@@ -26,15 +27,18 @@ var MainContainer = React.createClass({
 
     getInitialState: function() {
         return {
-            selectedArticleId: ContentStore.getSelectedArticleId()
+            route: window.location.hash.substr(1)
         }
-        // return {
-        //     selectedArticleId: null
-        // }
     },
 
     _onChange: function() {
-        this.setState(this.getInitialState());
+        var newParams = GroupUtils.getUrlVars(window.location.hash.substr(1));
+        var oldParams = GroupUtils.getUrlVars(this.state.route);
+        if ((oldParams.articleId && !newParams.articleId) || (!oldParams.articleId && newParams.articleId)) {
+            this.setState(this.getInitialState());  
+        }
+        // basically don't set state for highlight changes.
+        
     },
 
     componentWillUnmount: function() {
@@ -42,6 +46,13 @@ var MainContainer = React.createClass({
     },
 
     componentDidMount: function() {
+        var self = this;
+        window.addEventListener('hashchange', function() {
+            self.setState({
+                route: window.location.hash.substr(1)
+            });
+        });
+        
         var self = this;
         ContentStore.addArticleIdChangeListener(this._onChange);
 
@@ -119,12 +130,13 @@ var MainContainer = React.createClass({
 
     render: function() {
         // renderring the container
-        if (!this.state.selectedArticleId) {
+        var params = GroupUtils.getUrlVars(this.state.route);
+        if (!params || !params.articleId) {
             return (
                 <div className="main-container">
-                    <ContentView />
+                    <ContentView groupId={this.props.groupId}/>
                     <AppToolbar />
-                    <GroupSidebar />
+                    <GroupSidebar groupId={this.props.groupId}/>
                     <AddArticle />
                     <SnackbarComponent />
                 </div>
@@ -132,10 +144,11 @@ var MainContainer = React.createClass({
         }  else {
             return (
                 <div className="container">
-
                     <div className="article-container">
                         <div className="article-view col-md-8">
-                            <ArticleView articleId={this.state.selectedArticleId} />
+                            <ArticleView 
+                                articleId={params.articleId}
+                                highlightId={params.highlightId} />
                         </div>
                         <div className="note-view col-md-4">
                             <Discussion />,

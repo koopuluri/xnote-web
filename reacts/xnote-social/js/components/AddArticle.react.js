@@ -14,13 +14,16 @@ var CircularProgress = mui.CircularProgress;
 var AddArticle = React.createClass({
 
 		getInitialState: function() {
-				return {
-					isParsing: ContentStore.getParsing()
-				};
+			return {
+				isParsing: ContentStore.getParsing()
+			};
 		},
 
 		_onChange: function() {
-			this.setState(this.getInitialState());
+			var storeIsParsing = ContentStore.getParsing();
+			if (storeIsParsing !== this.state.isParsing) {
+				this.setState(this.getInitialState());
+			}
 		},
 
 		componentDidMount: function() {

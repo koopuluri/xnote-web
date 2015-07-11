@@ -3,6 +3,17 @@ var KeyMirror = require('react/lib/keyMirror');
 //Define action constants
 module.exports = KeyMirror({
 
+	CLEAR_FEED: null,
+	CLEAR_ARTICLE_LIST: null,
+
+	ADD_MEMBER: null,
+	SET_FRIENDS: null,
+	SET_FRIENDS_LOADING: null,
+
+	INCREMENT_FEED_NOTIFS: null,
+	CLEAR_DISCUSSION: null,
+	RESET_SEGMENTS: null,
+
 	CONTENT_ADD_ARTICLE: null,
 	CONTENT_SET_PARSING: null,
 
@@ -22,6 +33,11 @@ module.exports = KeyMirror({
 	SET_FEED: null,
 	SET_ARTICLE_LIST: null,
 	SET_USER: null,
+
+	SET_CONTENT_LOADING: null,
+	SET_FEED_LOADING: null,
+	ADD_ARTICLE_LIST_SEGMENT: null,
+	ADD_FEED_SEGMENT: null,
 
 	SET_DISC: null,
 	SET_DISC_ERROR: null,
@@ -46,7 +62,7 @@ module.exports = KeyMirror({
 
 	SOCKET_RECEIVE_NOTE: null,
 	SOCKET_RECEIVE_POST: null,
-	
+
 	FEED_POST_ARTICLE: 'ArticleFeedPost',
 	FEED_POST_HIGHLIGHT: 'HighlightFeedPost',
 

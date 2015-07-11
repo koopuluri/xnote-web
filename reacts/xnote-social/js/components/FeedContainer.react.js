@@ -1,7 +1,7 @@
 var React = require('react');
 var FeedStore = require('../stores/FeedStore');
 var FeedPost = require('./FeedPost.react.js');
-
+var GroupActions = require('../actions/GroupActions');
 var mui = require('material-ui');
 var List = mui.List;
 var ListItem = mui.ListItem;
@@ -19,10 +19,13 @@ var FeedContainer = React.createClass({
 
 		componentDidMount: function() {
 			FeedStore.addChangeListener(this._onChange);
+			GroupActions.fetchFeedSegment(this.props.groupId, 0, 5);
 		},
 
 		componentWillUnmount: function() {
 			FeedStore.removeChangeListener(this._onChange);
+			GroupActions.clearFeed();
+			console.log('FeedContainer.umount');
 		},
 
 
@@ -40,7 +43,7 @@ var FeedContainer = React.createClass({
 			var feed = feed.map(function(post) {
 				return (
 					<div>
-						<ListItem disabled = {true}>
+						<ListItem disabled={true}>
 							<FeedPost post={post} />
 						</ListItem>
 					</div>

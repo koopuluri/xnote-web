@@ -1,8 +1,9 @@
 var React = require('react');
-var ContentStore = require('../stores/ContentStore');
 var GroupStore = require('../stores/GroupStore');
+var FriendStore = require('../stores/FriendStore');
 
-
+var GroupActions = require('../actions/GroupActions');
+  
 var mui = require('material-ui');
 var Dialog = mui.Dialog;
 var AppBar = mui.AppBar;
@@ -15,6 +16,7 @@ var List = mui.List;
 var ListItem = mui.ListItem;
 var TextField = mui.TextField;
 var Avatar = mui.Avatar;
+var CircularProgress = mui.CircularProgress;
 
 var GROUPS_PAGE = "GroupsPage";
 var LOGOUT = "Logout";
@@ -23,16 +25,20 @@ var ADD_MEMBER = "Add Member"
 function getState() {
     return {
         groupTitle: GroupStore.getGroupTitle(),
+        groupId: GroupStore.getGroupId(),
         members: GroupStore.getGroupMembers(),
-        friends: GroupStore.getFriends(),
-        queryList: GroupStore.getFriends()
+        friends: FriendStore.getFriends(),
+        queryList: FriendStore.getFriends(),
+        friendsLoading: FriendStore.getLoading(),
+        currentUser: GroupStore.getCurrentUser()
     }
 }
 
-var getOnAddFunction = function(member) {
+var getOnAddFunction = function(member, self) {
   return function() {
-    this.refs.addMemberQuery.clearValue();
-    this.refs.addMemberDialog.dismiss();
+    GroupActions.addMember(self.state.groupId, member);
+    self.refs.addMemberQuery.clearValue();
+    self.refs.addMemberDialog.dismiss();
   }
 }
 
@@ -43,10 +49,12 @@ var AppToolbar = React.createClass({
 
     componentDidMount: function() {
       GroupStore.addChangeListener(this._onChange);
+      FriendStore.addChangeListener(this._onChange);
     },
 
     componentWillUnmount: function() {
       GroupStore.removeChangeListener(this._onChange);
+      FriendStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
@@ -61,6 +69,7 @@ var AppToolbar = React.createClass({
       switch (menuItem.payload) {
         case ADD_MEMBER:
           this.refs.addMemberDialog.show();
+          GroupActions.fetchAndSetFriends();
           break;
 
         case LOGOUT:
@@ -72,17 +81,13 @@ var AppToolbar = React.createClass({
 
     },
 
-    _onAddMember: function(member) {
-
-    },
-
     _onQueryChange: function() {
       var query = this.refs.addMemberQuery.getValue();
       query = query.toLowerCase();
       var friends = this.state.friends;
       var queryList = [];
       for (var i = 0; i < friends.length; i++) {
-          var name = friends[i].facebook.name.toLowerCase();
+          var name = friends[i].name.toLowerCase();
           if (name.includes(query)) {
               queryList.push(friends[i]);
           }
@@ -108,11 +113,13 @@ var AppToolbar = React.createClass({
       menuItems.push(
         { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
         {
-          payload: LOGOUT,
-          text: 'Logout',
+            payload: '/logout',
+            text: 'Logout',
+            type: MenuItem.Types.LINK,
         },
         {
-          payload: GROUPS_PAGE,
+          type: MenuItem.Types.LINK,
+          payload: '/groups',
           text: 'Back to Groups',
         },
         {
@@ -132,14 +139,30 @@ var AppToolbar = React.createClass({
             <div>
               <ListItem
                 avatar = {<Avatar>A</Avatar>}
-                onTouchTap = {getOnAddFunction(queryListItem)}>
-                {queryListItem.facebook.name}
+                onTouchTap = {getOnAddFunction(queryListItem, self)}>
+                {queryListItem.name}
               </ListItem>
             </div>
           );
         }
       });
       if (true) {
+        var memberDialogInternals = '';
+        if (this.state.friendsLoading) {
+            memberDialogInternals = <CircularProgress mode="indeterminate" />
+        } else {
+            memberDialogInternals = <List> {queryList} </List>
+        }
+        
+        var usernameElement = '';
+        var me = this.state.currentUser;
+        if (me && me.facebook.name) {
+            usernameElement = (<FlatButton primary={true} 
+                            label={me.facebook.name}
+                            disabled={true} />);
+        }
+
+
         return (
           <div>
               <AppBar className="app-toolbar"
@@ -148,7 +171,8 @@ var AppToolbar = React.createClass({
                   }
                   zDepth={1}
                   showMenuIconButton = {true}
-                  onLeftIconButtonTouchTap = {this._showMenuBar}>
+                  onLeftIconButtonTouchTap = {this._showMenuBar}
+                  iconElementRight={usernameElement}>
               </AppBar>
               <LeftNav
                 docked={false}
@@ -166,9 +190,7 @@ var AppToolbar = React.createClass({
                     hintText="> Add Member"
                     ref = 'addMemberQuery'
                     onChange = {this._onQueryChange}/>
-                  <List>
-                    {queryList}
-                  </List>
+                  {memberDialogInternals}
               </Dialog>
           </div>
         );

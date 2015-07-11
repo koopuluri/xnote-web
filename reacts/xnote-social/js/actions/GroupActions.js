@@ -42,24 +42,96 @@ var GroupActions = {
 		},
 
 		fetchAndSetChat: function(groupId) {
-				var chat = JSON.parse(localStorage.getItem('chat'));
-				this._setChat(chat);
+			var chat = JSON.parse(localStorage.getItem('chat'));
+			this._setChat(chat);
 		},
 
 		fetchAndSetGroup: function(groupId) {
-				var self = this;
-				API.getGroup(groupId, function(result) {
-						if (result.error) {
-								// do nothing for now.
+			var self = this;
+			API.getGroup(groupId, function(result) {
+					if (result.error) {
+						// do nothing for now.
 
-						}
-						// set the group:
-						var group = result.group
-						self._setGroup(group);
-						self._setArticleList(group.articles);
-						self._setFeed(group.feedPosts);
-				});
+					}
+					// set the group:
+					var group = result.group
+					self._setGroup(group);
+			});
+
+			API.getUserInfo(function(obj) {
+				if(!obj.error) {
+					self._setUser(obj.user);
+				}
+			});
 		},
+
+		// ========================= SEGS ==========================================
+
+		_setContentLoading: function(isLoading) {
+			GroupDispatcher.handleAction({
+					actionType: Constants.SET_CONTENT_LOADING,
+					isLoading: isLoading
+			});
+		},
+
+		_setFeedLoading: function(isLoading) {
+			GroupDispatcher.handleAction({
+					actionType: Constants.SET_FEED_LOADING,
+					isLoading: isLoading
+			});
+		},
+
+		// fetches the articleList seg.
+		// adds to the contentStore.
+		fetchArticleListSegment: function(groupId, start, count) {
+			this._setContentLoading(true);
+			var self = this;
+			API.getArticleListSegment(groupId, start, count, function(obj) {
+					if (!obj.error) {
+						self._setContentLoading(false);
+						GroupDispatcher.handleAction({
+								actionType: Constants.ADD_ARTICLE_LIST_SEGMENT,
+								articles: obj.articles
+						});
+					}
+			});
+		},
+
+		fetchFeedSegment: function(groupId, start, count) {
+			this._setFeedLoading(true);
+			var self = this;
+			API.getFeedSegment(groupId, start, count, function(obj) {
+					if (!obj.error) {
+						self._setFeedLoading(false);
+						GroupDispatcher.handleAction({
+								actionType: Constants.ADD_FEED_SEGMENT,
+								feedPosts: obj.feedPosts
+						});
+					}
+			});
+		},
+
+		clearFeed: function() {
+			GroupDispatcher.handleAction({
+				actionType: Constants.CLEAR_FEED,
+			});
+		},
+
+		clearArticleList: function() {
+			GroupDispatcher.handleAction({
+				actionType: Constants.CLEAR_ARTICLE_LIST
+			});
+		},
+
+		// // sets all the feed, articleList, and chat lengths to the default lengths:
+		// resetFeedAndArticleListAndChatSegments: function() {
+		// 	GroupDispatcher.handleAction({
+		// 		actionType: Constants.RESET_SEGMENTS,
+		// 	});
+		// },
+
+		// =========================================================================
+
 
 		_setContentIsParsing: function(isParsing) {
 				GroupDispatcher.handleAction({
@@ -134,6 +206,7 @@ var GroupActions = {
 		},
 
 		incrementFeedNotifs: function() {
+				console.log('incrementFeedNotifs');
 				GroupDispatcher.handleAction({
 						actionType: Constants.INCREMENT_FEED_NOTIFS
 				});
@@ -163,7 +236,46 @@ var GroupActions = {
 				actionType: Constants.SET_SNACKBAR_MESSAGE,
 				message: message
 			})
-		}
+		},
+
+		// ================================== FRIENDS ======================================
+
+	    _setFriendsLoading: function(isLoading) {
+	        GroupDispatcher.handleAction({
+	            actionType: Constants.SET_FRIENDS_LOADING,
+	            isLoading: isLoading
+	        });
+	    },
+
+	    _setFriends: function(friends) {
+	        GroupDispatcher.handleAction({
+	            actionType: Constants.SET_FRIENDS,
+	            friends: friends
+	        });
+	    },
+
+	    fetchAndSetFriends: function() {
+	        this._setFriendsLoading(true);
+	        var self = this;
+	        API.getFriends(function(obj) {
+	            if(!obj.error) {
+	                self._setFriendsLoading(false);
+	                self._setFriends(obj.friends);
+	            }
+	        });
+	    },
+
+	    addMember: function(groupId, member) {
+	    	GroupDispatcher.handleAction({
+	            actionType: Constants.ADD_MEMBER,
+	            member: member
+	        });
+
+	        API.addMember(groupId, member, function() {
+				// do nothing.
+	        });
+	    },
+>>>>>>> 4a2b7591493c379bbc07bbd68535b3a3d6d8d3a4
 }
 
 module.exports = GroupActions;

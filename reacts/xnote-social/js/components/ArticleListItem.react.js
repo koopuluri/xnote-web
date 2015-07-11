@@ -1,6 +1,7 @@
 var React = require('react');
 
 var ArticleActions = require('../actions/ArticleActions');
+var GroupActions = require('../actions/GroupActions');
 
 var mui = require('material-ui');
 var List = mui.List;
@@ -17,7 +18,8 @@ var Colors = mui.Styles.Colors;
 var ArticleListItem = React.createClass({
 
     _onClick: function() {
-        ArticleActions._setSelectedArticleId(this.props.article._id);
+        GroupActions.clearArticleList();
+        window.location.hash = '#articleId=' + this.props.article._id;
     },
 
     render: function() {

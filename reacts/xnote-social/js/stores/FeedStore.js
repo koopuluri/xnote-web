@@ -5,6 +5,8 @@ var Actions = require('../actions/GroupActions');
 var _ = require('underscore');
 
 var _feed = [];
+var _index = 0;
+
 var CHANGE = 'feedStoreChange';
 
 // got from: http://stackoverflow.com/a/5306832:
@@ -68,23 +70,27 @@ function deleteNote(note) {
 
 var FeedStore = _.extend({}, EventEmitter.prototype, {
 
+    getIndex: function() {
+        return _index;
+    },
+
 		//Return posts
 		getFeed: function() {
-			return _feed.slice(0, 3);
+			  return _feed.slice(0, 3);
 		},
 
 		//Emit Change event
 		emitChange: function() {
-			this.emit(CHANGE);
+			  this.emit(CHANGE);
 		},
 
 		//Add change listener
 		addChangeListener: function(callback) {
-			this.on(CHANGE, callback);
+			  this.on(CHANGE, callback);
 		},
 
 		removeChangeListener: function(callback) {
-			this.removeListener(CHANGE, callback);
+			  this.removeListener(CHANGE, callback);
 		}
 });
 
@@ -113,15 +119,29 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.SOCKET_RECEIVE_NOTE:
-					var toUpdate  = addNote(action.highlightId, action.note);
-					if (toUpdate) {
-							Actions.incrementFeedNotifs();
-					}
-					break;
+				var toUpdate  = addNote(action.highlightId, action.note);
+				if (toUpdate) {
+						Actions.incrementFeedNotifs();
+				}
+				break;
 
-			default:
-				return true;
-		}
+			case GroupConstants.CLEAR_FEED:
+				_index = 0;
+				_feed = [];
+				console.log('FEED CLEARED');
+				break;
+
+			case GroupConstants.ADD_FEED_SEGMENT:
+				var posts = action.feedPosts;
+				_feed = _feed.concat(posts);
+				_index += posts.length;
+				break;
+
+
+
+				default:
+					return true;
+			}
 		FeedStore.emitChange();
 		return true;
 });

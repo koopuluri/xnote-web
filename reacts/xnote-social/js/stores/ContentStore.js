@@ -8,15 +8,19 @@ var _selectedArticle = null;
 var _selectedArticleId = null;
 var _isParsing = false;
 
-var _viewNumber = 5;
+var _index = 0;
 
 var CHANGE = 'contentStoreChange';
 var ARTICLE_ID_CHANGE = 'contentArticleIdChange';
 
 var ContentStore = _.extend({}, EventEmitter.prototype, {
 
+    getIndex: function() {
+        return _index;
+    },
+
   	getArticleList: function() {
-        return _articleList.slice(0, _viewNumber);
+        return _articleList;
     },
 
     getParsing: function() {
@@ -86,6 +90,17 @@ GroupDispatcher.register(function(payload) {
           _selectedArticleId = action.articleId;
           ContentStore.emitArticleIdChange();
           return true;
+
+      case Constants.ADD_ARTICLE_LIST_SEGMENT:
+          var articles = action.articles;
+          _articleList = _articleList.concat(articles);
+          _index += articles.length;
+          break;
+
+      case Constants.CLEAR_ARTICLE_LIST:
+          _articleList = [];
+          _index = 0;
+          console.log('ARTICLE LIST CLEARED');
 
   		default:
   			return true;

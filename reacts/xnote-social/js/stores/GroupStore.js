@@ -4,7 +4,7 @@ var GroupConstants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _group = {};
-var _user = {facebook: {name: 'Karthik Uppuluri', id: 'dkl;ajkl;dfj;'}};
+var _user = null;
 
 var _friends = [
   {facebook: {name: 'Nikhil Deshmudre', id: 'dkl;ajkl;dfj;'}},
@@ -66,6 +66,10 @@ GroupDispatcher.register(function(payload) {
 
     case GroupConstants.SET_USER:
         _user = action.user;
+        break;
+
+    case GroupConstants.ADD_MEMBER:
+        _members.push(action.member);
         break;
 
 		default:

@@ -33,6 +33,7 @@ var Discussion = React.createClass({
 
     // simplify, simplify, simplify... ... ...
     _onChange: function() {
+        console.log('discussion.setState');
         this.setState(this.getInitialState());
     },
 
@@ -40,6 +41,10 @@ var Discussion = React.createClass({
         DiscussionStore.addChangeListener(this._onChange);
     },
 
+    componentWillUnmount: function() {
+        DiscussionStore.removeChangeListener(this._onChange);
+        console.log('Discussion.unmount');
+    },
 
     _socketGotNote: function(note) {
         if (DiscussionStore.getLastAddedNoteId() != note.noteId) {

@@ -70,10 +70,12 @@ GroupDispatcher.register(function(payload) {
 			break;
 
 		case Constants.SOCKET_RECEIVE_POST:
+			console.log('socket.io receive post!?!?!?!');
 			_feedNotifs++;
 			break;
 
 		case Constants.INCREMENT_FEED_NOTIFS:
+			console.log('feed notifs increment!');
 				_feedNotifs++;
 				break;
 
