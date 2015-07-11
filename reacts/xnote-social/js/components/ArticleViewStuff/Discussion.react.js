@@ -95,7 +95,10 @@ var Discussion = React.createClass({
 
               comp = <FeedPost post={post} actions="Article"/>
           } else {
-              comp = 'Fuck you';
+              var messageStyle = {marginTop: '30%', marginLeft: '5%'};
+              comp = <div className="message" style={messageStyle}>
+                         <p> {NO_DISC_SELECTED_MESSAGE} </p>
+                     </div>;
           }
 
           return (
