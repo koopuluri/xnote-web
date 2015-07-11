@@ -14,16 +14,16 @@ var Actions = {
     // selects the article. If highlightId provided, it will be selected, 
     // and when article content rendered, it will scroll to the highlight 
     // associated with the highlightId provided.
-    selectArticle: function(articleId, highlightId) {
-        if (highlightId) {
-            // setting the highlightId for the Discussion and PartialHighlight components:
-            this.setHighlight(highlightId);
-            this.setPartialHighlight(highlightId);
-        }
+    // selectArticle: function(articleId, highlightId) {
+    //     if (highlightId) {
+    //         // setting the highlightId for the Discussion and PartialHighlight components:
+    //         this.setHighlight(highlightId);
+    //         this.setPartialHighlight(highlightId);
+    //     }
 
-        // now time to set the articleView: 
-        this._setSelectedArticleId(articleId);
-    },
+    //     // now time to set the articleView: 
+    //     this._setSelectedArticleId(articleId);
+    // },
 
 
     unselectArticle: function() {
@@ -71,6 +71,7 @@ var Actions = {
     },
 
     setHighlight: function(highlight) {
+        
         GroupDispatcher.handleAction({
             actionType: Constants.SET_DISCUSSION_HIGHLIGHT,
             highlight: highlight

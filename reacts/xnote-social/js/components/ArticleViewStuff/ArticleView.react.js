@@ -69,7 +69,11 @@ var ArticleView = React.createClass({
 		// adding listener:
 		ContentStore.addChangeListener(this._onArticleChange);
 		if (this.props.articleId) {
-				Actions.fetchAndSetArticle(this.props.articleId);
+			Actions.fetchAndSetArticle(this.props.articleId);
+		}
+		if (this.props.highlightId) {
+			Actions.fetchAndSetHighlight(this.props.highlightId);
+			Actions.setPartialHighlight(this.props.highlightId);
 		}
 	},
 
@@ -77,6 +81,7 @@ var ArticleView = React.createClass({
 		// remove listener and highlights:
 		ContentStore.removeChangeListener(this._onArticleChange);
 		Annotator.clearAllHighlightsAndComponents();
+		Actions.unselectArticle();
 		console.log('ArticleView.unmount');
 	},
 
@@ -182,7 +187,6 @@ var ArticleView = React.createClass({
 							selection: sel,
 							selectionCoordinates: coords
 					});
-					//Actions.unselectNote();
 			} else {
 					// show user a message about how they can't take overlapping highlights!
 					if (this.state.selection) {

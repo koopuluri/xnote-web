@@ -77,7 +77,8 @@ var ArticleToolbar = React.createClass({
     },
 
     _onBackButtonPressed: function(e, selectedIndex, menuItem) {
-      ArticleActions.unselectArticle();
+        //ArticleActions.unselectArticle();
+        window.location.hash = '#';
     },
 
     render: function() {
