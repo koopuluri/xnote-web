@@ -28,18 +28,17 @@ var NoteComponent = React.createClass ({
 				var noteOptions = [
 			  		{payload: note, text: 'Delete'},
 				];
-				var options = null
-						if (this.props.user && this.props.user.facebook.id === note.owner.id) {
-								var options =
-									<DropDownIcon
-										menuItems={noteOptions}
-										closeOnMenuItemTouchTap = {true}
-										onChange = {self._menuOptions}> +
-									</DropDownIcon>
-						}
+				var options = null;
+				if (this.props.user && this.props.user.facebook.id === note.owner.id) {
+					var options =
+							<DropDownIcon
+								menuItems={noteOptions}
+								closeOnMenuItemTouchTap = {true}
+								onChange = {self._menuOptions}> +
+							</DropDownIcon>
 				}
 
-				var ownerName = note.owner ? note.owner.name : 'PoopNoteOwner'
+				var ownerName = note.owner ? note.owner.name : 'PoopNoteOwner';
 
 				return (
 					<ListItem

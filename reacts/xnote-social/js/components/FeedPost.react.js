@@ -98,12 +98,11 @@ var FeedPost = React.createClass({
         				style = {
         					{
         						padding: 10,
-        						fontSize: 16,
         					}
         				}>
 						<div>
-        					<p>Added an article: {article.title}</p>
-          					<p>{article.url}</p>
+        					<p style = {{fontSize:14}}>Added an article: {article.title}</p>
+          					<p style = {{fontSize:10, color: Colors.grey500}}>{article.url}</p>
 						</div>
         			</CardText>
       			</Card>

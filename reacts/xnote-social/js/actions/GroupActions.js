@@ -275,7 +275,6 @@ var GroupActions = {
 				// do nothing.
 	        });
 	    },
->>>>>>> 4a2b7591493c379bbc07bbd68535b3a3d6d8d3a4
 }
 
 module.exports = GroupActions;
