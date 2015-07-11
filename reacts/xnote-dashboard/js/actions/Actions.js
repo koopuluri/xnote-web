@@ -45,7 +45,7 @@ var Actions = {
         // });
     },
 
-    getFriends(callback) {
+    getFriends: function(callback) {
 
     }
 }
