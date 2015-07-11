@@ -124,15 +124,6 @@ var FeedPost = React.createClass({
 				});
 
 				var noteList = null;
-<<<<<<< HEAD
-=======
-				var postOwner = post.createdBy.facebook.name;
-				var postText =
-					<div>
-						<p>Added a highlight: </p>
-						<p href="/poop" className="highlight-clipped-text"> '' {highlight.clippedText} '' </p>
-					</div>
->>>>>>> 4a2b7591493c379bbc07bbd68535b3a3d6d8d3a4
 				var noteLength = highlight.notes.length;
 				if (noteLength > 0) {
 					noteList =

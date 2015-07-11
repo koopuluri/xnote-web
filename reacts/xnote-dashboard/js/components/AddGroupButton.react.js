@@ -39,7 +39,7 @@ var AddGroupButton = React.createClass({
         return (
             <div className = "add-group-container">
                 <Dialog
-                    title = "Add Article"
+                    title = "Add Group"
                     actions={addGroupActions}
                     ref = "addGroupDialog"
                     modal={true}>
