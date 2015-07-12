@@ -54,16 +54,15 @@ var FeedPost = React.createClass({
 		this.setState(this.getInitialState());
 	},
 
-	_addComment: function(message) {
+	_addComment: function(content) {
 		var highlightId = this.props.post.highlight.highlightId;
-		var content = this.refs.postNote.getValue();
-		this.refs.postNote.clearValue();
 		if(content !== '') {
 			var note = {
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
-				noteId: GroupUtils.generateUUID()
+				noteId: GroupUtils.generateUUID(),
+				owner: this.state.currentUser.facebook
 			}
 			this.state.actions.addNote(highlightId, note);
 		}
@@ -167,6 +166,7 @@ var FeedPost = React.createClass({
 								</div>
 								<MultiLineInput
 									width = "51"
+									textareaClassName = "feed-post-text-area"
 		  							startingContent="Post Note"
 		  							onSave = {this._addComment}/>
 							</CardText>

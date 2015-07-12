@@ -100,6 +100,7 @@ var ChatContainer = React.createClass({
 					<div className = 'chat-form' style={{paddingLeft : 10}}>
 						<MultiLineInput
 							width="59"
+							startingContent = 'Send a message'
 		  					textareaClassName='chat-post-area'
 		  					onSave = {this._chat}/>
 					</div>
