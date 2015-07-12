@@ -28,6 +28,7 @@ var MultiLineInput = React.createClass({
           self.props.onSave(noteContent);
 
       });
+
       $('.' + self.props.textareaClassName).keyup(function (event) {
           if (event.keyCode == 13) {
               var content = this.value;

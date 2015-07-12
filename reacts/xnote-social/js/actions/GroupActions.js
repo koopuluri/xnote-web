@@ -234,7 +234,7 @@ var GroupActions = {
 
 	resetChatNotifs: function() {
 			GroupDispatcher.handleAction({
-					actionType: Constants.RESET_CHAT_NOTIFS
+				actionType: Constants.RESET_CHAT_NOTIFS
 			});
 	},
 

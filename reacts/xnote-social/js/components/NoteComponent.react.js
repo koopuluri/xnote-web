@@ -11,7 +11,6 @@ var CardTitle = mui.CardTitle;
 var Colors = mui.Styles.Colors;
 var DropDownIcon = mui.DropDownIcon;
 
-
 var NoteComponent = React.createClass ({
 
 		_menuOptions: function(e, key, payload) {

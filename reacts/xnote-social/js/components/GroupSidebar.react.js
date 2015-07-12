@@ -62,8 +62,7 @@ var GroupSidebar = React.createClass({
                         onActive = {this._onActive}>
                         <ChatContainer groupId={this.props.groupId}/>
                     </Tab>
-
-
+                    
                     <Tab
                         className='123' 
                         label={feedLabel}

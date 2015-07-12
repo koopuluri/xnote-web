@@ -5,6 +5,7 @@ var GroupActions = require('../actions/GroupActions');
 var GroupUtils = require('../utils/GroupUtils');
 var GroupStore = require('../stores/GroupStore');
 
+
 var ChatScrollContainer = require('./ChatScrollContainer.react');
 var MultiLineInput = require('./MultiLineInput.react')
 
@@ -76,7 +77,6 @@ var ChatContainer = React.createClass({
 	  					textareaClassName='chat-post-area'
 	  					onSave = {this._chat}/>
 				</div>
-
 			</div>
 		);
 	}

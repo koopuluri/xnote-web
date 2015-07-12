@@ -150,7 +150,6 @@ var ArticleToolbar = React.createClass({
           }
         }
 
-
         if(feedOwner.id === this.state.currentUser.id) {
           feedNotifs--;
           return;

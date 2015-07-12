@@ -38,6 +38,7 @@ var getFeedPostOnClick = function(post) {
 		}
   	}
 }
+
 // props:
 // - post
 // - actions:
@@ -64,7 +65,6 @@ var FeedPost = React.createClass({
 
 	_addComment: function(content) {
 		var highlightId = this.props.post.highlight.highlightId;
-		console.log("addComment: " + content);
 		if(content !== '') {
 			var note = {
 				createdBy: this.state.currentUser,
@@ -169,7 +169,6 @@ var FeedPost = React.createClass({
 								<p style = {{ paddingLeft: 60, fontSize: 10}}> {highlight.lastModifiedTimestamp} </p>
 							} 
 
-
 							rightIconButton = {
 								<FlatButton 
 									onClick = {getFeedPostOnClick(post)}
@@ -194,9 +193,9 @@ var FeedPost = React.createClass({
 									{noteList}
 								</div>
 								<MultiLineInput
-
 									width = "51"
 									textareaClassName = {"feed-post-text-area" + highlight.highlightId}
+
 		  							startingContent="Post Note"
 		  							onSave = {this._addComment}/>
 							</CardText>
