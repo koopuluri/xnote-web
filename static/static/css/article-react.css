@@ -31,6 +31,10 @@
   float:left;
 }
 
+.tab-poop {
+    height: calc(100% - 80px);
+    overflow: scroll;
+}
 
 #button{
 	text-align:center;

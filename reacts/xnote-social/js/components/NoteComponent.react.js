@@ -3,8 +3,11 @@ var GroupStore = require('../stores/GroupStore');
 var GroupActions = require('../actions/GroupActions');
 
 var mui = require('material-ui');
+var Avatar = mui.Avatar;
 var ListItem = mui.ListItem;
-var ListDivider = mui.ListDivider;
+var Card = mui.Card;
+var CardText = mui.CardText;
+var CardTitle = mui.CardTitle;
 var Colors = mui.Styles.Colors;
 var DropDownIcon = mui.DropDownIcon;
 
@@ -21,30 +24,55 @@ var NoteComponent = React.createClass ({
 				var note = this.props.note
 				var self = this
 				var noteOptions = [
-			  		{payload: note, text: 'Delete'},
+			  		{payload: {
+			  				note : note,
+			  				highlightId : this.props.highlightId,
+			  			},
+			  		 text: 'Delete'},
 				];
-				var options = null
-				if (note.owner) {
-						if (this.props.user && this.props.user.facebook.id === note.owner.id) {
-								var options =
-									<DropDownIcon
-										menuItems={noteOptions}
-										closeOnMenuItemTouchTap = {true}
-										onChange = {self._menuOptions}> +
-									</DropDownIcon>
-						}
+				var options = null;
+				if (this.props.user && this.props.user.facebook.id === note.owner.id) {
+					var options =
+							<DropDownIcon
+								menuItems={noteOptions}
+								closeOnMenuItemTouchTap = {true}
+								onChange = {self._menuOptions}> +
+							</DropDownIcon>
 				}
 
-				var ownerName = note.owner ? note.owner.name : 'CrapNoteOwner'
+				var ownerName = note.owner ? note.owner.name : 'PoopNoteOwner';
 
 				return (
-						<div style = {{marginLeft : 12, backgroundColor : Colors.green50}}>
-							<div style={{padding : 10}}>
-								<p style = {{fontSize : 12, lineHeight: 0}}> {ownerName} </p>
-								<p style = {{fontSize : 10, color : Colors.grey500}}> {note.createdAt} </p>
-								<p>{note.content}</p>
-							</div>
-						</div>
+					<ListItem
+							disabled={true}
+							style ={{
+								padding : 10,
+								backgroundColor : Colors.green50,
+							}}
+							primaryText = {
+								<p style = {
+									{
+										fontSize : 13,
+										lineHeight : 1,
+										fontWeight: 800,
+										paddingBottom : 0,
+									}
+								}>
+									{ownerName}
+								</p>	
+								} 
+							secondaryText = {
+								<p style = {
+									{
+										paddingBottom : 0,
+										fontSize : 15,
+										fontColor : Colors.DarkBlack
+									}
+								}>
+									{note.content}
+								</p>
+							}
+							rightIconButton={options} />
 				);
 		}
 });

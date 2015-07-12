@@ -147,6 +147,13 @@ module.exports = function(app, passport) {
         DB.getFeedSegment(req.user, groupId, start, count, _dbCallback(res));
     });
 
+    app.get('/_get_chat_segment', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        var start = req.query.start;
+        var count = req.query.count;
+        DB.getChatSegment(req.user, groupId, start, count, _dbCallback(res));
+    });
+
     app.get('/_get_article_list_segment', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
         var start = req.query.start;
@@ -162,6 +169,16 @@ module.exports = function(app, passport) {
         var groupId = req.query.groupId;
         console.log('groupId: ' + groupId);
         DB.getGroup(req.user, groupId, _dbCallback(res));
+    });
+
+    app.post('/_add_chat', isLoggedIn, function(req, res) {
+        var chat = req.body.chat;
+        var groupId = req.body.groupId;
+
+        // sending through socket right away:
+        req.io.emit('chat:' + groupId, {chat: chat, groupId: groupId});
+
+        DB.addChat(req.user, groupId, chat.chatId, chat.content, _dbCallback(res));
     });
 
     app.post('/_add_group', isLoggedIn, function(req, res) {

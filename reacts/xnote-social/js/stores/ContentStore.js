@@ -93,14 +93,16 @@ GroupDispatcher.register(function(payload) {
 
       case Constants.ADD_ARTICLE_LIST_SEGMENT:
           var articles = action.articles;
-          _articleList = _articleList.concat(articles);
-          _index += articles.length;
+          if (articles) {
+              _articleList = _articleList.concat(articles);
+              _index += articles.length;
+          }
           break;
 
       case Constants.CLEAR_ARTICLE_LIST:
           _articleList = [];
           _index = 0;
-          console.log('ARTICLE LIST CLEARED');
+          break;
 
   		default:
   			return true;

@@ -15,6 +15,8 @@ var Groups = React.createClass({
         }
     },
 
+
+
     componentDidMount: function() {
         var self = this;
         Store.addChangeListener(function() {

@@ -6,6 +6,7 @@ var _ = require('underscore');
 
 var _feed = [];
 var _index = 0;
+var _lastAddedNoteId = null;
 
 var CHANGE = 'feedStoreChange';
 
@@ -53,10 +54,10 @@ function editNote(note) {
 
 
 //Method to delete a note in a post
-function deleteNote(note) {
+function deleteNote(note, highlightId) {
 	for(var i = 0; i < _feed.length; i++) {
 		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].highlight.highlightId === note.highlightId) {
+			if(_feed[i].highlight.highlightId === highlightId) {
 				var notes = _feed[i].highlight.notes
 				for(var j = 0; j < notes.length; j++) {
 					if(notes[j].noteId === note.noteId) {
@@ -76,7 +77,7 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 
 		//Return posts
 		getFeed: function() {
-			  return _feed.slice(0, 3);
+			  return _feed;
 		},
 
 		//Emit Change event
@@ -103,7 +104,9 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.ADD_NOTE:
+				console.log("add note from feedPost");
 				addNote(action.highlightId, action.note);
+				_lastAddedNoteId = action.note.noteId;
 				break;
 
 			case GroupConstants.EDIT_NOTE:
@@ -111,7 +114,7 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.DELETE_NOTE:
-				deleteNote(action.note);
+				deleteNote(action.note, action.highlightId);
 				break;
 
 			case GroupConstants.SOCKET_RECEIVE_POST:
@@ -119,29 +122,36 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.SOCKET_RECEIVE_NOTE:
-				var toUpdate  = addNote(action.highlightId, action.note);
-				if (toUpdate) {
-						Actions.incrementFeedNotifs();
+				var noteId = action.note.noteId;
+				if (! (_lastAddedNoteId && _lastAddedNoteId == noteId) ) {
+					var toUpdate  = addNote(action.highlightId, action.note);
+					if (toUpdate) {
+							Actions.incrementFeedNotifs();
+					}
+					_lastAddedNoteId = noteId;
+				} else {
+					// do nothing. --> note already added, don't add again.
 				}
+
 				break;
 
 			case GroupConstants.CLEAR_FEED:
 				_index = 0;
 				_feed = [];
-				console.log('FEED CLEARED');
 				break;
 
 			case GroupConstants.ADD_FEED_SEGMENT:
 				var posts = action.feedPosts;
-				_feed = _feed.concat(posts);
-				_index += posts.length;
+				if (posts) {
+					_feed = _feed.concat(posts);
+					_index += posts.length;
+				}
 				break;
 
-
-
-				default:
-					return true;
+			default:
+				return true;
 			}
+
 		FeedStore.emitChange();
 		return true;
 });

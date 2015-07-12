@@ -1,0 +1,10 @@
+.app-toolbar {
+  position: fixed;
+  top:0px;
+}
+
+.add-group-button {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+}

@@ -13,8 +13,13 @@ var FeedContainer = React.createClass({
 		//get initial state from stores
 		getInitialState: function() {
 			return {
-				feed: FeedStore.getFeed()
+				feed: FeedStore.getFeed(),
+				index: FeedStore.getIndex()
 			}
+		},
+
+		_onChange: function() {
+			this.setState(this.getInitialState());
 		},
 
 		componentDidMount: function() {
@@ -25,9 +30,15 @@ var FeedContainer = React.createClass({
 		componentWillUnmount: function() {
 			FeedStore.removeChangeListener(this._onChange);
 			GroupActions.clearFeed();
-			console.log('FeedContainer.umount');
 		},
 
+		_onScroll: function() {
+			var node = this.getDOMNode();
+       		if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
+	            // load more items:
+	            GroupActions.fetchFeedSegment(this.props.groupId, this.state.index, 5);
+	        }
+		},
 
 		render: function() {
 			var feed = this.state.feed;
@@ -44,24 +55,19 @@ var FeedContainer = React.createClass({
 				return (
 					<div>
 						<ListItem disabled={true}>
-							<FeedPost post={post} />
+							<FeedPost post={post} isLink={true}/>
 						</ListItem>
 					</div>
 				)
 			});
 			return (
-				<div className = "feed-container">
+				<div className = "feed-container" onScroll={this._onScroll}>
 					<List>
 						{feed}
 					</List>
 				</div>
 			);
 		},
-
-		_onChange: function() {
-			this.setState(this.getInitialState());
-		}
-
 });
 
 module.exports = FeedContainer;

@@ -2,6 +2,7 @@ var React = require('react');
 var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
 var ArticleToolbar = require('./ArticleViewStuff/ArticleToolbar.react');
+var SnackbarComponent = require('./SnackbarComponent.react');
 
 var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
@@ -87,10 +88,9 @@ var MainContainer = React.createClass({
             GroupActions.socketReceiveNote(obj.note, obj.highlightId, postNotifCount);
         });
 
-        socket.on('chat:'+groupId, function(chat) {
-            GroupActions.socketReceiveChat(chat);
+        socket.on('chat:' + groupId, function(chatObj) {
+            GroupActions.socketReceiveChat(chatObj.chat);
         });
-
     },
 
     childContextTypes : {
@@ -137,6 +137,7 @@ var MainContainer = React.createClass({
                     <AppToolbar />
                     <GroupSidebar groupId={this.props.groupId}/>
                     <AddArticle />
+                    <SnackbarComponent />
                 </div>
             );
         }  else {

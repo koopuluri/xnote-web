@@ -5,6 +5,9 @@ var GroupActions = require('../actions/GroupActions');
 var GroupUtils = require('../utils/GroupUtils');
 var GroupStore = require('../stores/GroupStore');
 
+var ChatScrollContainer = require('./ChatScrollContainer.react');
+var MultiLineInput = require('./MultiLineInput.react')
+
 var mui = require('material-ui');
 var List = mui.List;
 var ListItem = mui.ListItem;
@@ -15,13 +18,18 @@ var CardText = mui.CardText;
 var TextField = mui.TextField;
 var FlatButton = mui.FlatButton;
 
+var Colors = mui.Styles.Colors;
+
 function getChatState() {
 	return {
 		messages: ChatStore.getChat(),
-		currentUser : GroupStore.getCurrentUser(),
+		currentUser : GroupStore.getCurrentUser()
 	}
 }
 
+// props:
+// - groupId
+// - currentUser
 var ChatContainer = React.createClass({
 
 	//get initial state from stores
@@ -29,92 +37,48 @@ var ChatContainer = React.createClass({
 		return getChatState();
 	},
 
+	_onChange: function() {
+		this.setState(getChatState());
+	},
+
 	componentDidMount: function() {
 		ChatStore.addChangeListener(this._onChange);
 		GroupStore.addChangeListener(this._onChange);
+		GroupActions.fetchChatSegment(this.props.groupId, 0, 10);
 	},
 
 	componentWillUnmount: function() {
 		ChatStore.removeChangeListener(this._onChange);
 		GroupStore.removeChangeListener(this._onChange);
+		GroupActions.clearChat();
 	},
 
-	_chat: function() {
-		var content = this.refs.sendMessage.getValue();
-		this.refs.sendMessage.clearValue();
+	_chat: function(content) {
 		var message = {
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
-				messageId: GroupUtils.generateUUID()
+				chatId: GroupUtils.generateUUID(),
 		}
-		GroupActions.chat(message);
+		GroupActions.postChat(message, this.props.groupId);
 	},
 
 	render: function() {
-		var messages = this.state.messages;
-		var self = this;
-
-		if (messages.length == 0) {
-			var messages =
-				<CardTitle
-        			title = "You have no chat messages."
-        			style = {
-	        			{
-        					padding: 10
-        				}
-	        		}
-        			titleStyle = {
-	        			{
-	        				fontSize: 14,
-        					lineHeight: '14px'
-        				}
-					}
-					subtitleStyle = {
-						{
-							fontSize: 10
-						}
-					} />
-		} else {
-			var messages = messages.map(function(message) {
-				return (
-					<div>
-						<ChatPost
-							message={message}
-							user = {self.state.currentUser}/>
-					</div>
-				);
-			});
-		}
-
 		return (
-			<div className = 'chat-container'>
-				<div className ='chat-messages'>
-					<Card className = 'chat-messages-card'>
-        				<List>
-							{messages}
-						</List>
-					</Card>
-					</div>
-					<div className = 'chat-form'>
-					<Card>
-						<TextField
-  							hintText="> Send Message"
-  							ref = 'sendMessage' />
-  						<FlatButton
-	  						fullWidth = {false}
-  							linkButton = {false}
-  							label="Send"
-  							primary={true}
-  							onClick = {this._chat} />
-  					</Card>
-					</div>
+			<div className = 'chat-container' style={{backgroundColor: Colors.white}}>
+
+				<ChatScrollContainer currentUser={this.state.currentUser} messages={this.state.messages}/>
+
+				<div className = 'chat-form' style={{paddingLeft : 10}}>
+					<MultiLineInput
+						width="59"
+						startingContent = 'Send a message'
+	  					textareaClassName='chat-post-area'
+	  					onSave = {this._chat}/>
+				</div>
+
 			</div>
 		);
-	},
-
-	_onChange: function() {
-		this.setState(getChatState());
 	}
 
 });

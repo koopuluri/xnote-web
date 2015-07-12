@@ -17,7 +17,8 @@ var ContentView = React.createClass({
 
     getInitialState: function() {
         return {
-            articleList: ContentStore.getArticleList()
+            articleList: ContentStore.getArticleList(),
+            index: ContentStore.getIndex()
         }
     },
 
@@ -32,8 +33,7 @@ var ContentView = React.createClass({
         if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
 
             // load more items:
-            var index = ContentStore.getIndex();
-            GroupActions.fetchArticleListSegment(this.props.groupId, index, 5);
+            GroupActions.fetchArticleListSegment(this.props.groupId, this.state.index, 5);
         }
     },
 
