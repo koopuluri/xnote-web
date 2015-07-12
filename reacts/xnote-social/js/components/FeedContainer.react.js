@@ -50,7 +50,7 @@ var FeedContainer = React.createClass({
 				)
 			});
 			return (
-				<div className = "feed-container">
+				<div className = "feed-container" >
 					<List>
 						{feed}
 					</List>

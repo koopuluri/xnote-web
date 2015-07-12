@@ -82,6 +82,13 @@ var GroupActions = {
 			});
 		},
 
+		_setChatLoading: function(isLoading) {
+        	GroupDispatcher.handleAction({
+            	actionType: Constants.SET_CHAT_LOADING,
+            	isLoading: isLoading
+        	});
+    	},
+
 		// fetches the articleList seg.
 		// adds to the contentStore.
 		fetchArticleListSegment: function(groupId, start, count) {

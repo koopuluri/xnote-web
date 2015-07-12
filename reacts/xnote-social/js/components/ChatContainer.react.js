@@ -45,13 +45,15 @@ var ChatContainer = React.createClass({
 	},
 
 	_chat: function(content) {
-		var message = {
+		if (content != '' ) {
+			var message = {
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
 				messageId: GroupUtils.generateUUID()
+			}
+			GroupActions.chat(message);
 		}
-		GroupActions.chat(message);
 	},
 
 	render: function() {
@@ -71,7 +73,7 @@ var ChatContainer = React.createClass({
 			var messages = messages.map(function(message) {
 				return (
 					<div>
-						<ChatPost
+						<ChatPost style={{backgroundColor:Colors.grey100}}
 							message={message}
 							user = {self.state.currentUser}/>
 					</div>
@@ -80,9 +82,9 @@ var ChatContainer = React.createClass({
 		}
 
 		return (
-			<div className = 'chat-container' style={{backgroundColor: Colors.white}}>
-				<div className ='chat-messages'>
-       				<List>
+			<div className = 'chat-container'>
+				<div className ='chat-messages' style = {{padding:5, backgroundColor:Colors.grey100}} >
+       				<List style={{backgroundColor:Colors.grey100}}>
 						{messages}
 					</List>
 					</div>

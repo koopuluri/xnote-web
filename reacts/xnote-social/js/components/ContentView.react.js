@@ -57,8 +57,8 @@ var ContentView = React.createClass({
         });
 
         return (
-            <div className="content-view" onScroll={this._onScroll}>
-                <Card>
+            <div className="content-view" onScroll={this._onScroll} style = {{padding : 10}}>
+                <Card zDepth = {1} >
                     <List>
                         {articles}
                     </List>

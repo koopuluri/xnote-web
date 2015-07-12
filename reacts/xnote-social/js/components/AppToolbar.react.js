@@ -17,6 +17,9 @@ var ListItem = mui.ListItem;
 var TextField = mui.TextField;
 var Avatar = mui.Avatar;
 var CircularProgress = mui.CircularProgress;
+var Toolbar = mui.Toolbar;
+var ToolbarGroup = mui.ToolbarGroup;
+var IconButton = mui.IconButton;
 
 var GROUPS_PAGE = "GroupsPage";
 var LOGOUT = "Logout";
@@ -28,17 +31,22 @@ function getState() {
         groupId: GroupStore.getGroupId(),
         members: GroupStore.getGroupMembers(),
         friends: FriendStore.getFriends(),
-        queryList: FriendStore.getFriends(),
+        queryList: FriendStore.getFriends().slice(0),
         friendsLoading: FriendStore.getLoading(),
-        currentUser: GroupStore.getCurrentUser()
+        currentUser: GroupStore.getCurrentUser(),
+        addList: []
     }
 }
 
-var getOnAddFunction = function(member, self) {
+var friendListOnClickFunction = function(member, self) {
   return function() {
-    GroupActions.addMember(self.state.groupId, member);
+    var newList = self.state.addList;
+    newList.push(member);
+    self.setState({
+      addList : newList
+    })
     self.refs.addMemberQuery.clearValue();
-    self.refs.addMemberDialog.dismiss();
+    self.refs.addMemberQuery.focus();
   }
 }
 
@@ -130,6 +138,7 @@ var AppToolbar = React.createClass({
       var self = this;
       var addMemberActions = [
         { text: 'Cancel', primary: true },
+        { text: 'Add', primary: true }
       ];
       var counter = 0;
       var queryList = this.state.queryList.map(function(queryListItem) {
@@ -138,64 +147,82 @@ var AppToolbar = React.createClass({
           return (
             <div>
               <ListItem
-                avatar = {<Avatar>A</Avatar>}
-                onTouchTap = {getOnAddFunction(queryListItem, self)}>
+                onTouchTap = {friendListOnClickFunction(queryListItem, self)}>
                 {queryListItem.name}
               </ListItem>
             </div>
           );
         }
       });
-      if (true) {
-        var memberDialogInternals = '';
-        if (this.state.friendsLoading) {
-            memberDialogInternals = <CircularProgress mode="indeterminate" />
-        } else {
-            memberDialogInternals = <List> {queryList} </List>
-        }
+      var memberDialogInternals = '';
+      if (this.state.friendsLoading) {
+          memberDialogInternals = <CircularProgress mode="indeterminate" />
+      } else {
+          memberDialogInternals = <div><List> {queryList} </List></div>
+      }
         
-        var usernameElement = '';
-        var me = this.state.currentUser;
-        if (me && me.facebook.name) {
-            usernameElement = (<FlatButton primary={true} 
+      var usernameElement = '';
+      var me = this.state.currentUser;
+      if (me && me.facebook.name) {
+          usernameElement = (<FlatButton primary={true} 
                             label={me.facebook.name}
                             disabled={true} />);
-        }
-
-
+      }
+      
+      var addListComponent = this.state.addList.map(function(addListItem) {
         return (
+          <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
+          <ListItem 
+            style={{
+              backgroundColor:Colors.green200,
+              paddingRight:5,
+              paddingBottom:2,
+              paddingLeft:5,
+              paddingTop:2}}
+            primaryText = {addListItem.name}
+            disabled = {true} />
+          </ToolbarGroup>
+        );
+      });
+
+      return (
           <div>
-              <AppBar className="app-toolbar"
-                  title= {
-                    <FlatButton primary={true} label={this.state.groupTitle} disabled={true}> </FlatButton>
-                  }
-                  zDepth={1}
-                  showMenuIconButton = {true}
-                  onLeftIconButtonTouchTap = {this._showMenuBar}
-                  iconElementRight={usernameElement}>
-              </AppBar>
-              <LeftNav
+            <AppBar className="app-toolbar"
+                title= {
+                  <FlatButton primary={true} label={this.state.groupTitle} disabled={true}> </FlatButton>
+                }
+                zDepth={1}
+                showMenuIconButton = {true}
+                onLeftIconButtonTouchTap = {this._showMenuBar}
+                iconElementRight={usernameElement}>
+            </AppBar>
+            <LeftNav
                 docked={false}
                 menuItems = {menuItems}
                 ref = 'menuBar'
                 onChange={this._onLeftNavChange}>
-              </LeftNav>
-              <Dialog
+            </LeftNav>
+            <Dialog
                 title = "Add Member"
                 ref = "addMemberDialog"
                 actions={addMemberActions}
                 modal={true}>
-                  <TextField
-                    fullWidth = {true}
-                    hintText="> Add Member"
-                    ref = 'addMemberQuery'
-                    onChange = {this._onQueryChange}/>
+                <div style={{border:5}}>
+                  {addListComponent}
+                  <ToolbarGroup style = {{height:36}}>
+                    <TextField
+                      style={{padding: 0}}
+                      hintText ="> Enter friend name"
+                      ref = 'addMemberQuery'
+                      onChange = {this._onQueryChange}/>
+                  </ToolbarGroup>
+                </div>
+                <div style={{'clear':'both'}}>
                   {memberDialogInternals}
-              </Dialog>
+                </div>
+            </Dialog>
           </div>
-        );
-
-      }
+      );
     }
 });
 

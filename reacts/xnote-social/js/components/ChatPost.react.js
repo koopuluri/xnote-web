@@ -7,6 +7,7 @@ var ListItem = mui.ListItem;
 var Avatar = mui.Avatar;
 var DropDownIcon = mui.DropDownIcon;
 var Colors = mui.Styles.Colors;
+var Paper = mui.Paper;
 
 var ChatPost = React.createClass({
 	render: function() {
@@ -27,20 +28,23 @@ var ChatPost = React.createClass({
 					{
 						fontSize : 12,
 						lineHeight : 1,
-						paddingBottom : 0,
+						paddingBottom : 3,
 						color : Colors.grey400,
 						margin : 0
 					}
 				}> {message.createdBy.facebook.name} </p>
-				<div style={{backgroundColor:Colors.grey100}}>				
-					<p style = {
+				<Paper zDepth = {1} >				
+					<div style = {
 						{
 							fontSize : 15,
 							fontColor: Colors.grey500,
-							padding: 5
+							paddingTop : 10,
+							paddingBottom : 5,
+							paddingLeft : 10,
+							paddingRight : 10
 						}
-					}> {message.content} </p>
-				</div>
+					}> {message.content} </div>
+				</Paper>
 			</div>
 			</ListItem>
 		); 

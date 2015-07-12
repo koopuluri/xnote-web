@@ -37,6 +37,8 @@
 .feed-container {
   overflow-y : scroll;
   height : 100%;
+  background-color : #F6F6F6;
+  color : #f6f6f6;
 }
 
 .chat-container {
@@ -65,4 +67,8 @@ textarea {
   border-right : 0px;
   border-top : 0px;
   border-bottom: 5px;
+}
+
+*:focus {
+    outline: 0;
 }

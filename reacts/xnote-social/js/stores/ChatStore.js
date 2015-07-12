@@ -4,6 +4,7 @@ var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _chat = [];
+var _isLoading = false;
 
 function loadChatData(data) {
 	_chat = data;
@@ -32,7 +33,11 @@ var ChatStore = _.extend({}, EventEmitter.prototype, {
 
 	removeChangeListener: function(callback) {
 		this.removeListener('chat-change', callback);
-	}
+	},
+
+	getLoading: function() {
+        return _isLoading;
+    },
 });
 
 GroupDispatcher.register(function(payload) {
@@ -46,6 +51,10 @@ GroupDispatcher.register(function(payload) {
 		case Constants.CHAT_MESSAGE:
 			chat(action.message);
 			break;
+
+		case XnoteConstants.SET_CHAT_LOADING:
+	        _isLoading = action.isLoading;
+        break;
 			
 		default:
 			return true;

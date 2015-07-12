@@ -28,7 +28,7 @@ var ArticleView = React.createClass({
 				selectionCoordinates: [],
 				owner: '',
 				currentUser: GroupStore.getCurrentUser(),
-				isError: null
+				isError: null,
  		};
 	},
 
@@ -115,11 +115,11 @@ var ArticleView = React.createClass({
 		}
 
 		if (this.state.isLoading) {
-				return (
-					<div className="poop-article-container">
-							<Loading marginTop={20} marginLeft={40}/>
-					</div>
-				);
+			return (
+				<div className="poop-article-container">
+					<Loading marginTop={20} marginLeft={40}/>
+				</div>
+			);
 		}
 
 		// if no article selected:
