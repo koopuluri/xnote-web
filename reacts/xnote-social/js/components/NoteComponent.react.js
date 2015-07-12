@@ -11,9 +11,6 @@ var CardTitle = mui.CardTitle;
 var Colors = mui.Styles.Colors;
 var DropDownIcon = mui.DropDownIcon;
 
-
-
-
 var NoteComponent = React.createClass ({
 
 		_menuOptions: function(e, key, payload) {
@@ -26,7 +23,11 @@ var NoteComponent = React.createClass ({
 				var note = this.props.note
 				var self = this
 				var noteOptions = [
-			  		{payload: note, text: 'Delete'},
+			  		{payload: {
+			  				note : note,
+			  				highlightId : this.props.highlightId,
+			  			},
+			  		 text: 'Delete'},
 				];
 				var options = null;
 				if (this.props.user && this.props.user.facebook.id === note.owner.id) {

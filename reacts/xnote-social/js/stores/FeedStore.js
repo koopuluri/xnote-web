@@ -53,10 +53,10 @@ function editNote(note) {
 
 
 //Method to delete a note in a post
-function deleteNote(note) {
+function deleteNote(note, highlightId) {
 	for(var i = 0; i < _feed.length; i++) {
 		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].highlight.highlightId === note.highlightId) {
+			if(_feed[i].highlight.highlightId === highlightId) {
 				var notes = _feed[i].highlight.notes
 				for(var j = 0; j < notes.length; j++) {
 					if(notes[j].noteId === note.noteId) {
@@ -111,7 +111,7 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.DELETE_NOTE:
-				deleteNote(action.note);
+				deleteNote(action.note, action.highlightId);
 				break;
 
 			case GroupConstants.SOCKET_RECEIVE_POST:

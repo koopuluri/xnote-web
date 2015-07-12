@@ -108,7 +108,7 @@ var Actions = {
         });
     },
 
-    deleteNote: function(highlightId, noteId) {
+    deleteNote: function(payload) {
     },
 
     addNote: function(highlightId, note) {

@@ -50,8 +50,7 @@ var GroupActions = {
 			var self = this;
 			API.getGroup(groupId, function(result) {
 					if (result.error) {
-						// do nothing for now.
-
+						displaySnackMessage("Error : Could not find group");
 					}
 					// set the group:
 					var group = result.group
@@ -61,6 +60,8 @@ var GroupActions = {
 			API.getUserInfo(function(obj) {
 				if(!obj.error) {
 					self._setUser(obj.user);
+				} else {
+					displaySnackMessage("Error : Could not get user");
 				}
 			});
 		},
@@ -93,6 +94,8 @@ var GroupActions = {
 								actionType: Constants.ADD_ARTICLE_LIST_SEGMENT,
 								articles: obj.articles
 						});
+					} else {
+						displaySnackMessage("Error: Could not fetch article list");
 					}
 			});
 		},
@@ -107,6 +110,8 @@ var GroupActions = {
 								actionType: Constants.ADD_FEED_SEGMENT,
 								feedPosts: obj.feedPosts
 						});
+					} else {
+						displaySnackMessage("Error: Could not get feed");
 					}
 			});
 		},
@@ -152,6 +157,8 @@ var GroupActions = {
 			var self = this;
 			API.addArticleFromUrl(url, groupId, function(data) {
 					if (data.error) {
+						self._setContentIsParsing(false);
+						self.displaySnackMessage("Error adding article");						
 						return;
 					}
 					self._addArticle(data.article);
@@ -179,11 +186,12 @@ var GroupActions = {
 				});
 		},
 
-		deleteNote: function(note) {
-				GroupDispatcher.handleAction({
-					actionType: Constants.DELETE_NOTE,
-					note: note
-				});
+		deleteNote: function(payload) {
+			GroupDispatcher.handleAction({
+				actionType: Constants.DELETE_NOTE,
+				note: payload.note,
+				highlightId : payload.highlightId
+			});
 		},
 
 		chat: function(message) {

@@ -60,24 +60,13 @@ var ChatContainer = React.createClass({
 
 		if (messages.length == 0) {
 			var messages =
-				<CardTitle
-        			title = "You have no chat messages."
-        			style = {
-	        			{
-        					padding: 10
-        				}
-	        		}
-        			titleStyle = {
-	        			{
-	        				fontSize: 14,
-        					lineHeight: '14px'
-        				}
-					}
-					subtitleStyle = {
-						{
-							fontSize: 10
-						}
-					} />
+				<div>
+					<CardTitle
+        				title = "You have no chat messages."
+        				style = {{ padding: 10 }}
+        				titleStyle = {{	fontSize: 14,lineHeight: '14px'	}} />
+				</div>
+
 		} else {
 			var messages = messages.map(function(message) {
 				return (

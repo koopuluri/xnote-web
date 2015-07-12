@@ -31,6 +31,7 @@ var getFeedPostOnClick = function(post) {
 	    //TODO: Call the function that redirects
   	}
 }
+
 // props:
 // - post
 // - actions:
@@ -117,7 +118,11 @@ var FeedPost = React.createClass({
 				}
 				var notes = highlight.notes.map(function(note) {
 					return (
-						<NoteComponent actions={self.state.actions} note={note} user = {self.state.currentUser} />
+						<NoteComponent 
+							highlightId = {highlight.highlightId}
+							actions={self.state.actions}
+							note={note} 
+							user = {self.state.currentUser} />
 					);
 				});
 
