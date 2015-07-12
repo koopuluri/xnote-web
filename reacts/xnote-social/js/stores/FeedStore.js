@@ -6,6 +6,8 @@ var _ = require('underscore');
 
 var _feed = [];
 var _index = 0;
+var _lastAddedNoteId = null;
+var _isLoading = false;
 
 var CHANGE = 'feedStoreChange';
 
@@ -76,7 +78,11 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 
 		//Return posts
 		getFeed: function() {
-			  return _feed.slice(0, 3);
+			  return _feed;
+		},
+
+		getLoading: function() {
+			return _isLoading;
 		},
 
 		//Emit Change event
@@ -102,8 +108,14 @@ GroupDispatcher.register(function(payload) {
 				_feed = action.feed.reverse();
 				break;
 
+			case GroupConstants.SET_FEED_LOADING:
+				_isLoading = action.isLoading;
+				break;
+
 			case GroupConstants.ADD_NOTE:
+				console.log("add note from feedPost");
 				addNote(action.highlightId, action.note);
+				_lastAddedNoteId = action.note.noteId;
 				break;
 
 			case GroupConstants.EDIT_NOTE:
@@ -119,29 +131,36 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.SOCKET_RECEIVE_NOTE:
-				var toUpdate  = addNote(action.highlightId, action.note);
-				if (toUpdate) {
-						Actions.incrementFeedNotifs();
+				var noteId = action.note.noteId;
+				if (! (_lastAddedNoteId && _lastAddedNoteId == noteId) ) {
+					var toUpdate  = addNote(action.highlightId, action.note);
+					if (toUpdate) {
+							Actions.incrementFeedNotifs();
+					}
+					_lastAddedNoteId = noteId;
+				} else {
+					// do nothing. --> note already added, don't add again.
 				}
+
 				break;
 
 			case GroupConstants.CLEAR_FEED:
 				_index = 0;
 				_feed = [];
-				console.log('FEED CLEARED');
 				break;
 
 			case GroupConstants.ADD_FEED_SEGMENT:
 				var posts = action.feedPosts;
-				_feed = _feed.concat(posts);
-				_index += posts.length;
+				if (posts) {
+					_feed = _feed.concat(posts);
+					_index += posts.length;
+				}
 				break;
 
-
-
-				default:
-					return true;
+			default:
+				return true;
 			}
+
 		FeedStore.emitChange();
 		return true;
 });

@@ -28,13 +28,21 @@ var HIGHLIGHT = 'HighlightFeedPost';
 
 var getFeedPostOnClick = function(post) {
 	return function() {
-	    //TODO: Call the function that redirects
+		if (post.type === ARTICLE) {
+			window.location.hash = '#articleId=' + post.article._id;
+		} else if (post.type === HIGHLIGHT) {
+			console.log(post.highlight);
+			window.location.hash = '#articleId=' + post.highlight.articleId + '&&highlightId=' + post.highlight.highlightId;
+		} else {
+			// fuck 
+		}
   	}
 }
 
 // props:
 // - post
 // - actions:
+// - isLink
 var FeedPost = React.createClass({
 	getInitialState: function() {
 		return {
@@ -134,6 +142,20 @@ var FeedPost = React.createClass({
 							{notes}
 						</div>
 				}
+
+				var rightIconButton = '';
+				if (this.props.isLink) {
+					rightIconButton = (
+								<FlatButton 
+									onClick = {getFeedPostOnClick(post)}
+									primary = {true}
+									style={{
+										height:40,
+									}}
+									label='HIGHLIGHT' />
+							);
+				}
+
 				return (
 					<Card>
 						<ListItem
@@ -146,6 +168,7 @@ var FeedPost = React.createClass({
 							secondaryText = {
 								<p style = {{ paddingLeft: 60, fontSize: 10}}> {highlight.lastModifiedTimestamp} </p>
 							} 
+
 							rightIconButton = {
 								<FlatButton 
 									onClick = {getFeedPostOnClick(post)}
@@ -171,7 +194,8 @@ var FeedPost = React.createClass({
 								</div>
 								<MultiLineInput
 									width = "51"
-									textareaClassName = "feed-post-text-area"
+									textareaClassName = {"feed-post-text-area" + highlight.highlightId}
+
 		  							startingContent="Post Note"
 		  							onSave = {this._addComment}/>
 							</CardText>

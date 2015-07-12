@@ -12,7 +12,6 @@ var Paper = mui.Paper;
 var ChatPost = React.createClass({
 	render: function() {
 		var message = this.props.message
-
 		return (
 			<ListItem
 				disabled={true}

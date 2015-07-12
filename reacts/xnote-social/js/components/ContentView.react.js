@@ -3,6 +3,7 @@ var mui = require('material-ui');
 var ArticleListItem = require('./ArticleListItem.react');
 var ContentStore = require('../stores/ContentStore');
 var GroupActions = require('../actions/GroupActions');
+var Loading = require('./ArticleViewStuff/Loading.react');
 
 var ThemeManager = new mui.Styles.ThemeManager();
 var Colors = mui.Styles.Colors;
@@ -17,7 +18,9 @@ var ContentView = React.createClass({
 
     getInitialState: function() {
         return {
-            articleList: ContentStore.getArticleList()
+            articleList: ContentStore.getArticleList(),
+            index: ContentStore.getIndex(),
+            isLoading: ContentStore.getLoading(),
         }
     },
 
@@ -32,8 +35,7 @@ var ContentView = React.createClass({
         if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
 
             // load more items:
-            var index = ContentStore.getIndex();
-            GroupActions.fetchArticleListSegment(this.props.groupId, index, 5);
+            GroupActions.fetchArticleListSegment(this.props.groupId, this.state.index, 5);
         }
     },
 
@@ -49,22 +51,30 @@ var ContentView = React.createClass({
     },
 
     render: function() {
-
-        var articles = this.state.articleList.map(function(article) {
+        if(this.state.isLoading) {
             return (
-                <ArticleListItem article={article} />
+                <div className="content-view" onScroll={this._onScroll} style = {{padding : 10}}>
+                    <Loading marginTop={30} marginLeft={43}/>
+                </div>
             );
-        });
+        } else {
 
-        return (
-            <div className="content-view" onScroll={this._onScroll} style = {{padding : 10}}>
-                <Card zDepth = {1} >
-                    <List>
-                        {articles}
-                    </List>
-                </Card>
-            </div>
-        );
+            var articles = this.state.articleList.map(function(article) {
+                return (
+                    <ArticleListItem article={article} />
+                );
+            });
+
+            return (
+                <div className="content-view" onScroll={this._onScroll} style = {{padding : 10}}>
+                    <Card zDepth = {1} >
+                        <List>
+                            {articles}
+                        </List>
+                    </Card>
+                </div>
+            );
+        }
     }
 });
 

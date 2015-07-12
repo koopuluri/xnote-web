@@ -5,8 +5,8 @@ var _ = require('underscore');
 
 //TODO: Remove dummy chat and feed notification values
 
-var _chatNotifs = 3
-var _feedNotifs = 5
+var _chatNotifs = 0;
+var _feedNotifs = 0;
 
 function loadChatNotifs(data) {
 	_chatNotifs = data;

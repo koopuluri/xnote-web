@@ -6,11 +6,10 @@ var Article = require('./models/Article');
 var FeedPost = require('./models/FeedPost');
 var Note = require('./models/Note');
 var Highlight = require('./models/Highlight');
+var Chat = require('./models/Chat');  //
 
 var async = require('async');
 var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
-
-
 
 //Lets connect to our database using the DB server URL.
 try {
@@ -420,8 +419,47 @@ var DB = {
                });
      },
 
-     getChatListSegment: function(user, groupId, start, end) {
+     getChatSegment: function(user, groupId, start, count, callback) {
+        console.log('in articleListSegment!');
+        Chat.find({groupId: groupId})
+               .sort({'createdAt': 'desc'})
+               .skip(start).limit(count)
+               .populate('createdBy', '-_id facebook.id facebook.name')
+               .exec(function(err, results) {
+                  if(err) {
+                      console.log('chatSegment error: ' + err);
+                      callback({error: err});
+                      return;
+                  }
+                  console.log(results.length);
+                  callback({chats: results});
+               });
+     },
 
+     addChat: function(user, groupId, chatId, content, callback) {
+        console.log("chat.groupId: " + groupId);
+        console.log("chat.message: " + content);
+        if (!groupId || !content) {
+            callback({error: 'poop'});
+            return;
+        }
+
+        var chat = Chat({
+            groupId: groupId,
+            createdBy: user,
+            content: content,
+            chatId: chatId
+        });
+
+        chat.save(function(err, savedChat) {
+            if (err) {
+                console.log('addChat error: ' + err);
+                callback({error: err});
+            }
+
+            // chat saved!
+            callback({chat: savedChat.content});
+        });
      },
 
      // ! need to check when adding user to group if user is already in group! 
@@ -469,7 +507,7 @@ var DB = {
 };
 
 module.exports = DB;
-//
+// //
 // // testing out the highlight saving / deleting:
 // User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
 //     if (err) {
@@ -479,8 +517,17 @@ module.exports = DB;
 //         // DB.getGroup(user, 'testPoopGroup', function(obj) {
 //         //     console.log(obj);
 //         // });
-//         DB.addGroupMember(user, 'testPoopGroup', {id: user.facebook.id}, function(obj) {
-//             console.log('obj: ' + obj);
+//         // DB.addGroupMember(user, 'testPoopGroup', {id: user.facebook.id}, function(obj) {
+//         //     console.log('obj: ' + obj);
+//         // });
+
+//         // DB.addChat(user, 'testPoopGroup', 'poopopopopopop', function(obj) {
+//         //     console.log('poop' + obj);
+//         // });
+
+        
+//         DB.getChatSegment(user, 'testPoopGroup', 0, 5, function(obj) {
+//             console.log('chats : ' + obj.chats);
 //         });
 
 //         //

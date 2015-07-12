@@ -23,7 +23,6 @@ var MultiLineInput = React.createClass({
       // on submit of the textarea:
       var self = this;
       $('.' + self.props.textareaClassName).submit(function() {
-          console.log('HMM');
           var noteContent = $('.' + self.props.textareaClassName).val();
           $('.' + self.props.textareaClassName).val('');
           self.props.onSave(noteContent);
@@ -43,7 +42,6 @@ var MultiLineInput = React.createClass({
               }
           }
       });
-
     },
 
     _getCaret: function(el) {

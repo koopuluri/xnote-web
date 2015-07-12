@@ -40,7 +40,14 @@ function getState() {
 
 var getOnFeedPostClickedFunction = function(post) {
   return function() {
-    console.log(post);
+    if (post.type === ARTICLE) {
+      window.location.hash = '#articleId=' + post.article._id;
+    } else if (post.type === HIGHLIGHT) {
+      console.log(post.highlight);
+      window.location.hash = '#articleId=' + post.highlight.articleId + '&&highlightId=' + post.highlight.highlightId;
+    } else {
+      // fuck 
+    }
   }
 }
 
@@ -88,6 +95,7 @@ var ArticleToolbar = React.createClass({
       var chatNotifs = this.state.chatNotifs;
 
       var chatMenu = this.state.chat.map(function(message) {
+
         if (message.createdBy.facebook.id === this.state.currentUser.facebook.id) {
           chatNotifs--;
           return;
@@ -138,19 +146,19 @@ var ArticleToolbar = React.createClass({
           highlight = post.highlight;
           noteLength = highlight.notes.length;
           if(noteLength > 0) {
-            feedOwner = highlight.notes[noteLength - 1].owner ? highlight.notes[noteLength - 1].owner : 'poopOwner';
-            feedText = 'Added a note ';
-            feedText = feedText + '"' + highlight.notes[noteLength - 1].content + '" for the highlight ';
-            feedText = feedText + '"' + highlight.clippedText + '"';
+              feedOwner = highlight.notes[noteLength - 1].owner ? highlight.notes[noteLength - 1].owner : 'poopOwner';
+              feedText = 'Added a note ';
+              feedText = feedText + '"' + highlight.notes[noteLength - 1].content + '" for the highlight ';
+              feedText = feedText + '"' + highlight.clippedText + '"';
           } else {
-            feedText = 'Added a highlight "' + highlight.clippedText + '"';
+              feedText = 'Added a highlight "' + highlight.clippedText + '"';
           }
-        }
-
+        } 
         if(feedOwner.id === this.state.currentUser.id) {
           feedNotifs--;
           return;
         }
+
         //Counting characters to see if the list requires two or one line
         var secondaryTextLines = 1;
         if(feedText.length > 67) {

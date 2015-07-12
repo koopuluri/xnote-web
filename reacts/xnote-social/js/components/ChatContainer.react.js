@@ -4,9 +4,11 @@ var ChatPost = require('./ChatPost.react.js');
 var GroupActions = require('../actions/GroupActions');
 var GroupUtils = require('../utils/GroupUtils');
 var GroupStore = require('../stores/GroupStore');
+var Loading = require('./ArticleViewStuff/Loading.react')
 
-var MultiLineInput = require('./MultiLineInput.react.js')
 
+var ChatScrollContainer = require('./ChatScrollContainer.react');
+var MultiLineInput = require('./MultiLineInput.react')
 
 var mui = require('material-ui');
 var List = mui.List;
@@ -24,9 +26,13 @@ function getChatState() {
 	return {
 		messages: ChatStore.getChat(),
 		currentUser : GroupStore.getCurrentUser(),
+		isLoading : ChatStore.getLoading(),
 	}
 }
 
+// props:
+// - groupId
+// - currentUser
 var ChatContainer = React.createClass({
 
 	//get initial state from stores
@@ -34,14 +40,20 @@ var ChatContainer = React.createClass({
 		return getChatState();
 	},
 
+	_onChange: function() {
+		this.setState(getChatState());
+	},
+
 	componentDidMount: function() {
 		ChatStore.addChangeListener(this._onChange);
 		GroupStore.addChangeListener(this._onChange);
+		GroupActions.fetchChatSegment(this.props.groupId, 0, 10);
 	},
 
 	componentWillUnmount: function() {
 		ChatStore.removeChangeListener(this._onChange);
 		GroupStore.removeChangeListener(this._onChange);
+		GroupActions.clearChat();
 	},
 
 	_chat: function(content) {
@@ -50,57 +62,29 @@ var ChatContainer = React.createClass({
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
-				messageId: GroupUtils.generateUUID()
+				chatId: GroupUtils.generateUUID(),
 			}
-			GroupActions.chat(message);
+			GroupActions.postChat(message, this.props.groupId);
 		}
 	},
 
 	render: function() {
-		var messages = this.state.messages;
-		var self = this;
-
-		if (messages.length == 0) {
-			var messages =
-				<div>
-					<CardTitle
-        				title = "You have no chat messages."
-        				style = {{ padding: 10 }}
-        				titleStyle = {{	fontSize: 14,lineHeight: '14px'	}} />
-				</div>
-
+		if (this.state.isLoading) {
+		    return (<Loading marginLeft = {40}/>);
 		} else {
-			var messages = messages.map(function(message) {
-				return (
-					<div>
-						<ChatPost style={{backgroundColor:Colors.grey100}}
-							message={message}
-							user = {self.state.currentUser}/>
-					</div>
-				);
-			});
-		}
-
-		return (
-			<div className = 'chat-container'>
-				<div className ='chat-messages' style = {{padding:5, backgroundColor:Colors.grey100}} >
-       				<List style={{backgroundColor:Colors.grey100}}>
-						{messages}
-					</List>
-					</div>
+			return (
+				<div className = 'chat-container'>
+					<ChatScrollContainer currentUser={this.state.currentUser} messages={this.state.messages}/>
 					<div className = 'chat-form' style={{paddingLeft : 10}}>
 						<MultiLineInput
 							width="59"
 							startingContent = 'Send a message'
-		  					textareaClassName='chat-post-area'
-		  					onSave = {this._chat}/>
+	  						textareaClassName='chat-post-area'
+	  						onSave = {this._chat}/>
 					</div>
-			</div>
-		);
-	},
-
-	_onChange: function() {
-		this.setState(getChatState());
+				</div>
+			);
+		}
 	}
 
 });

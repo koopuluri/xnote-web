@@ -2,6 +2,7 @@ var React = require('react');
 var GroupActions = require('../actions/GroupActions');
 var ContentStore = require('../stores/ContentStore');
 var GroupStore = require('../stores/GroupStore');
+var Loading = require('./ArticleViewStuff/Loading.react')
 
 var mui = require('material-ui');
 var FloatingActionButton = mui.FloatingActionButton;
@@ -9,10 +10,11 @@ var Dialog = mui.Dialog;
 var FlatButton = mui.FlatButton;
 var TextField = mui.TextField;
 var CircularProgress = mui.CircularProgress;
+var Colors = mui.Styles.Colors;
 
 
 var AddArticle = React.createClass({
-
+		
 		getInitialState: function() {
 			return {
 				isParsing: ContentStore.getParsing()
@@ -60,8 +62,8 @@ var AddArticle = React.createClass({
 		// for when the article is parsing:
 		renderLoading: function() {
 				return (
-						<div className="add-article-button">
-								<CircularProgress mode="indeterminate" />
+						<div className="add-article-spinner">
+								<Loading marginLeft = {0}/>
 						</div>
 				);
 		},

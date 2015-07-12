@@ -47,8 +47,6 @@ var ArticleView = React.createClass({
 		} else {
 				// don't change the hack num!
 		}
-
-		console.log('ArticleView.setState');
 		this.setState(this.getInitialState());
 	},
 
@@ -60,8 +58,6 @@ var ArticleView = React.createClass({
 						Annotator.deserialize(article.serialization);
 				}
 				HACK_NUM++;
-
-				console.log('ARTICLE VIEW DESERIALIZE!');
 		}
 	},
 
@@ -87,8 +83,8 @@ var ArticleView = React.createClass({
 
 	render: function() {
 		return (
-			<Paper style={{margin: '2px'}} zDepth={1}>
-					{this.getRenderredInnerThing()}
+			<Paper style={{margin: '2px', 'height':'100%'}} zDepth={1}>
+				{this.getRenderredInnerThing()}
 			</Paper>
 		);
 	},
@@ -117,7 +113,7 @@ var ArticleView = React.createClass({
 		if (this.state.isLoading) {
 			return (
 				<div className="poop-article-container">
-					<Loading marginTop={20} marginLeft={40}/>
+					<Loading marginTop={20} marginLeft={45}/>
 				</div>
 			);
 		}

@@ -88,10 +88,9 @@ var MainContainer = React.createClass({
             GroupActions.socketReceiveNote(obj.note, obj.highlightId, postNotifCount);
         });
 
-        socket.on('chat:'+groupId, function(chat) {
-            GroupActions.socketReceiveChat(chat);
+        socket.on('chat:' + groupId, function(chatObj) {
+            GroupActions.socketReceiveChat(chatObj.chat);
         });
-
     },
 
     childContextTypes : {

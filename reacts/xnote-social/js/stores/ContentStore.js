@@ -7,6 +7,7 @@ var _articleList = [];
 var _selectedArticle = null;
 var _selectedArticleId = null;
 var _isParsing = false;
+var _isLoading =true;
 
 var _index = 0;
 
@@ -36,7 +37,7 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
     },
 
     getLoading: function() {
-        return false;
+        return _isLoading;
     },
 
     emitArticleIdChange: function() {
@@ -74,6 +75,10 @@ GroupDispatcher.register(function(payload) {
           _isParsing = action.isParsing;
           break;
 
+      case Constants.SET_CONTENT_LOADING:
+          _isLoading = action.isLoading;
+          break;
+
   		case Constants.SET_ARTICLE_LIST:
     			_articleList = action.articleList.reverse();
     			break;
@@ -93,14 +98,16 @@ GroupDispatcher.register(function(payload) {
 
       case Constants.ADD_ARTICLE_LIST_SEGMENT:
           var articles = action.articles;
-          _articleList = _articleList.concat(articles);
-          _index += articles.length;
+          if (articles) {
+              _articleList = _articleList.concat(articles);
+              _index += articles.length;
+          }
           break;
 
       case Constants.CLEAR_ARTICLE_LIST:
           _articleList = [];
           _index = 0;
-          console.log('ARTICLE LIST CLEARED');
+          break;
 
   		default:
   			return true;

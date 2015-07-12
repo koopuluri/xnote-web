@@ -6,12 +6,11 @@ var _ = require('underscore');
 var _chat = [];
 var _isLoading = false;
 
+var _index = 0;
+var _lastAddedChatId = null;
+
 function loadChatData(data) {
 	_chat = data;
-}
-
-function chat(message) {
-	_chat.push(message);
 }
 
 var ChatStore = _.extend({}, EventEmitter.prototype, {
@@ -19,6 +18,10 @@ var ChatStore = _.extend({}, EventEmitter.prototype, {
 	//Get chat items
 	getChat: function() {
 		return _chat;
+	},
+
+	getLoading: function() {
+		return _isLoading;
 	},
 
 	//emit change event
@@ -44,18 +47,34 @@ GroupDispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
 
-		case Constants.RECEIVE_CHAT:
-			loadChatData(action.data);
-			break;
-
 		case Constants.CHAT_MESSAGE:
-			chat(action.message);
+			var newChat = action.chat;
+			if (! (_lastAddedChatId && _lastAddedChatId == newChat.chatId) ) {
+				_chat.push(newChat);
+				_lastAddedChatId = newChat.chatId;
+			}
 			break;
 
-		case XnoteConstants.SET_CHAT_LOADING:
+		case Constants.ADD_CHAT_SEGMENT: 
+			var chats = action.chats;
+			if (chats) {
+				_chat = chats.reverse().concat(_chat);
+				_index += chats.length;
+			} else {
+				// don't add the chat --> already exists
+			}
+			break;
+
+		case Constants.SET_CHAT_LOADING:
 	        _isLoading = action.isLoading;
-        break;
+        	break;
 			
+		case Constants.CLEAR_CHAT:
+			_index = 0;
+			_chat = [];
+			console.log('CHAT CLEARED');
+			break;
+
 		default:
 			return true;
 	}
@@ -64,3 +83,27 @@ GroupDispatcher.register(function(payload) {
 })
 
 module.exports = ChatStore;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

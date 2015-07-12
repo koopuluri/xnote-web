@@ -2,6 +2,7 @@ var React = require('react');
 var FeedStore = require('../stores/FeedStore');
 var FeedPost = require('./FeedPost.react.js');
 var GroupActions = require('../actions/GroupActions');
+var Loading = require('./ArticleViewStuff/Loading.react');
 var mui = require('material-ui');
 var List = mui.List;
 var ListItem = mui.ListItem;
@@ -13,8 +14,14 @@ var FeedContainer = React.createClass({
 		//get initial state from stores
 		getInitialState: function() {
 			return {
-				feed: FeedStore.getFeed()
+				feed: FeedStore.getFeed(),
+				index: FeedStore.getIndex(),
+				isLoading: FeedStore.getLoading()
 			}
+		},
+
+		_onChange: function() {
+			this.setState(this.getInitialState());
 		},
 
 		componentDidMount: function() {
@@ -25,43 +32,52 @@ var FeedContainer = React.createClass({
 		componentWillUnmount: function() {
 			FeedStore.removeChangeListener(this._onChange);
 			GroupActions.clearFeed();
-			console.log('FeedContainer.umount');
 		},
 
+		_onScroll: function() {
+			var node = this.getDOMNode();
+       		if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
+	            // load more items:
+	            GroupActions.fetchFeedSegment(this.props.groupId, this.state.index, 5);
+	        }
+		},
 
 		render: function() {
 			var feed = this.state.feed;
-			if (feed.length == 0) {
-				return (
-					<div className="feed-container">
-						<div className="feed-message">
-							<p> You have no posts in your feed. </p>
-						</div>
-					</div>
-				)
-			}
-			var feed = feed.map(function(post) {
-				return (
+			if(this.state.isLoading) {
+				return(
 					<div>
-						<ListItem disabled={true}>
-							<FeedPost post={post} />
-						</ListItem>
+						<Loading marginLeft = {40}/>
 					</div>
-				)
-			});
-			return (
-				<div className = "feed-container" >
-					<List>
-						{feed}
-					</List>
-				</div>
-			);
+				);
+			} else {
+				if (feed.length == 0) {
+					return (
+						<div className="feed-container">
+							<div className="feed-message">
+								<p> You have no posts in your feed. </p>
+							</div>
+						</div>
+					)
+				}
+				var feed = feed.map(function(post) {
+					return (
+						<div>
+							<ListItem disabled={true}>
+								<FeedPost post={post} isLink={true}/>
+							</ListItem>
+						</div>
+					)
+				});
+				return (
+					<div className = "feed-container" onScroll={this._onScroll}>
+						<List>
+							{feed}
+						</List>
+					</div>
+				);
+			}
 		},
-
-		_onChange: function() {
-			this.setState(this.getInitialState());
-		}
-
 });
 
 module.exports = FeedContainer;

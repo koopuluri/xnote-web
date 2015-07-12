@@ -14,8 +14,13 @@ var _isError = false;
 var _lastAddedNoteId = null;
 
 function addNote(note) {
-    _highlight.notes.unshift(note);
-    _lastAddedNoteId = note.noteId;
+    var noteId = note.noteId;
+    if (! (_lastAddedNoteId && _lastAddedNoteId == noteId) ) {
+        _highlight.notes.push(note);
+        _lastAddedNoteId = note.noteId;
+    } else {
+        // do nothing, note already there! 
+    }
 }
 
 
@@ -77,7 +82,6 @@ AppDispatcher.register(function(payload) {
             addNote(action.note);
         } else {
             // do nothing.
-
         }
         break;
 
@@ -85,8 +89,7 @@ AppDispatcher.register(function(payload) {
     case XnoteConstants.SOCKET_RECEIVE_NOTE:
         if (_highlight && action.highlightId === _highlight.highlightId) {
             // time to add the note to this highlight:
-            _highlight.notes.unshift(action.note);
-            
+            addNote(action.note);
         }
         break;
 

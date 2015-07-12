@@ -34,6 +34,12 @@
   right: 24px;
 }
 
+.add-article-spinner {
+  position: fixed;
+  bottom: 24px;
+  right: 48px;
+}
+
 .feed-container {
   overflow-y : scroll;
   height : 100%;
