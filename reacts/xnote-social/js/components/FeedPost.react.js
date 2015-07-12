@@ -54,7 +54,7 @@ var FeedPost = React.createClass({
 		this.setState(this.getInitialState());
 	},
 
-	_addComment: function() {
+	_addComment: function(message) {
 		var highlightId = this.props.post.highlight.highlightId;
 		var content = this.refs.postNote.getValue();
 		this.refs.postNote.clearValue();
@@ -154,7 +154,7 @@ var FeedPost = React.createClass({
 							<CardText
 								style = {
 	        						{
-	        							paddingLeft: 20,
+	        							paddingLeft: 15,
 	        							paddingBottom: 0,
 	        							fontSize: 15,
 	        						}
@@ -166,7 +166,7 @@ var FeedPost = React.createClass({
 									{noteList}
 								</div>
 								<MultiLineInput
-									width = "47"
+									width = "51"
 		  							startingContent="Post Note"
 		  							onSave = {this._addComment}/>
 							</CardText>

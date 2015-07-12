@@ -10,7 +10,7 @@ function loadChatData(data) {
 }
 
 function chat(message) {
-	_chat.unshift(message);
+	_chat.push(message);
 }
 
 var ChatStore = _.extend({}, EventEmitter.prototype, {

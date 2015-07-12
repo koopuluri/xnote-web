@@ -5,11 +5,14 @@ var React = require('react');
 // - startingContent
 // - width
 
-var AddNoteInput = React.createClass({
+var MultiLineInput = React.createClass({
     render: function() {
         return (
             <div className = 'multiline-input-textarea-container'>
-                <textarea placeholder={this.props.startingContent} rows="1" cols={this.props.width} name="text" className={this.props.textareaClassName}></textarea>
+                <textarea 
+                  placeholder={this.props.startingContent}
+                  rows="1" cols={this.props.width}
+                  className={this.props.textareaClassName}></textarea>
             </div>
         );
     },
@@ -19,14 +22,15 @@ var AddNoteInput = React.createClass({
       // handling the text area for enter and shift-enter:
       // on submit of the textarea:
       var self = this;
-      $('.' + 'add-note-textarea-container').submit(function() {
-          var noteContent = $('.' + 'add-note-textarea-container').val();
-          $('.' + 'add-note-textarea-container').val('');
+      $('.' + self.props.textareaClassName).submit(function() {
+          console.log('HMM');
+          var noteContent = $('.' + self.props.textareaClassName).val();
+          $('.' + self.props.textareaClassName).val('');
           self.props.onSave(noteContent);
 
       });
 
-      $('.' + 'add-note-textarea-container').keyup(function (event) {
+      $('.' + self.props.textareaClassName).keyup(function (event) {
           if (event.keyCode == 13) {
               var content = this.value;
               var caret = self._getCaret(this);
@@ -40,10 +44,6 @@ var AddNoteInput = React.createClass({
           }
       });
 
-      if (this.props.startingContent) {
-          $('.' + 'add-note-textarea-container').val(this.props.startingContent);
-          $('.' + 'add-note-textarea-container').focus();
-      }
     },
 
     _getCaret: function(el) {
@@ -64,4 +64,4 @@ var AddNoteInput = React.createClass({
     },
 });
 
-module.exports = AddNoteInput;
+module.exports = MultiLineInput;

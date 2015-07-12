@@ -44,9 +44,7 @@ var ChatContainer = React.createClass({
 		GroupStore.removeChangeListener(this._onChange);
 	},
 
-	_chat: function() {
-		var content = this.refs.sendMessage.getValue();
-		this.refs.sendMessage.clearValue();
+	_chat: function(content) {
 		var message = {
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
@@ -101,8 +99,8 @@ var ChatContainer = React.createClass({
 					</div>
 					<div className = 'chat-form' style={{paddingLeft : 10}}>
 						<MultiLineInput
-							width = "54"
-		  					startingContent="Post Note"
+							width="59"
+		  					textareaClassName='chat-post-area'
 		  					onSave = {this._chat}/>
 					</div>
 			</div>
