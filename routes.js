@@ -79,7 +79,7 @@ module.exports = function(app, passport) {
      // handle the callback after facebook has authenticated the user
      app.get('/auth/facebook/callback',
          passport.authenticate('facebook', {
-             successRedirect : '/social',
+             successRedirect : '/dashboard',
              failureRedirect : '/'
          }));
 
@@ -99,16 +99,16 @@ module.exports = function(app, passport) {
                 { method: 'get', relative_url: 'me/friends' }
             ]
         }, function(obj) {
-
             var friends = JSON.parse(obj[0].body).data;
             res.send({friends: friends});
         });
      });
 
 
-     app.get('/social/', isLoggedIn, function(req, res) {
-        //var groupId = req.query.groupId;
-        var groupId = "55a25931150ef26b44db57bb";
+     app.get('/group/', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        console.log('going to group: ' + groupId);
+        //var groupId = "55a25931150ef26b44db57bb";
         res.render('social.ejs', {
             groupId: groupId
         });
@@ -123,12 +123,8 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     app.get('/dashboard', isLoggedIn, function(req, resThing) {
-
-        // testing Graph API:
-        var FB = require('fb');
-//        FB.setAccessToken(req.user.facebook.token);
         resThing.render('dash.ejs', {
-            user : req.user // get the user out of session and pass to template
+
         });
     });
 
@@ -167,7 +163,7 @@ module.exports = function(app, passport) {
         DB.getArticleListSegment(req.user, groupId, start, count, _dbCallback(res));
     });
 
-    app.get('/_my_groups', isLoggedIn, function(req, res) {
+    app.get('/_groups', isLoggedIn, function(req, res) {
         DB.getGroups(req.user, _dbCallback(res));
     });
 

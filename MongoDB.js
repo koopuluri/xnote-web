@@ -15,7 +15,7 @@ var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
 
 //Lets connect to our database using the DB server URL.
 try {
-    mongoose.connect('mongodb://localhost/myapp');
+    mongoose.connect('mongodb://koopuluri:whyisblue@ds045882.mongolab.com:45882/xnotelabs');
 } catch (err) {
     console.log('seems connection already exists');
     // do nothing.
@@ -541,35 +541,64 @@ var DB = {
         var articleRef = light.article;
 
         console.log('add notifs for highlight.articleRef: ' + articleRef);
-        // now finding all other highlights for this article, and sending notifs:
-        Highlight.find({article: articleRef}, function(err, docs) {
-            if(err) {
-                console.log('error finding highlights with article: ' + articleRef);
-                return;
-            }
 
-            for (var i = 0; i < docs.length; i++) {
-                var highlight = docs[i];
-                if (!highlight.createdBy.equals(user._id)) {
-                    // for all other users besides the one who created this highlight:
+        // now sending notif to the owner of the article that this highlight resides in:
+        Article.findOne({_id: articleRef}, function(err, art) {
+            if (err) {
+                console.log('error finding article for highlight in highlight notifs add: ' + err);
+            } else {
+                // add notif for owner of the article:
+                if (!art.createdBy.equals(user._id)) {
+                    // add notif for this user:
                     var notif = Notification({
                         group: light.group,
-                        user: highlight.createdBy,
+                        user: art.createdBy,
                         forNote: false,
-                        highlight: highlight,
+                        highlight: light._id,
                     });
 
-                    notif.save(function(err, savedLight) {
-                        if(err) {
-                            console.log('failed to save highlight for add notif: ' + err);
+                    notif.save(function(err, savedNotif) {
+                        if (err) {
+                            console.log('notif not saved for creator of article: ' + articleRef);
                         } else {
-                            // add notif:
-                            console.log('saved notif for highligth and now sending through io!');
-                            callback(notif);
+                            console.log('notif saved for article owner for highlight: ' + articleRef);
+                            callback(savedNotif);
                         }
                     });
                 }
-            }
+
+
+                // finding all other highlights for this article, and sending notifs:
+                Highlight.find({article: articleRef}, function(err, docs) {
+                    if(err) {
+                        console.log('error finding highlights with article: ' + articleRef);
+                        return;
+                    }
+
+                    for (var i = 0; i < docs.length; i++) {
+                        var highlight = docs[i];
+                        if (!highlight.createdBy.equals(user._id) && !highlight.createdBy.equals(art.createdBy)) {
+                            // for all other users besides the one who created this highlight:
+                            var notif = Notification({
+                                group: light.group,
+                                user: highlight.createdBy,
+                                forNote: false,
+                                highlight: light._id,
+                            });
+
+                            notif.save(function(err, savedLight) {
+                                if(err) {
+                                    console.log('failed to save highlight for add notif: ' + err);
+                                } else {
+                                    // add notif:
+                                    console.log('saved notif for highligth and now sending through io!');
+                                    callback(notif);
+                                }
+                            });
+                        }
+                    }
+                });
+            }   
         });
      },
 
@@ -609,14 +638,6 @@ var DB = {
                             console.log('added notification for note add for highlight: ' + savedHighlight._id);
                             //console.log('updatedNotif.highlight: ' + updatedNotif.highlight);
                             callback(updatedNotif);
-
-                            // // emitting the thing:
-                            // console.log('emitting note add for dnn')
-                            // io.emit('notif:' + user + ':' + savedHighlight.group,
-                            //     {
-                            //         notif: updatedNotif,
-                            //         highlight: savedHighlight
-                            //     });
                         }
                     });
             }
@@ -701,12 +722,12 @@ module.exports = DB;
 //         // });
 
 //         // var id = mongoose.Types.ObjectId();
-//         // DB.addGroup(user, {
-//         //     title: 'pooping the grouping 2',
-//         //     _id: id,
-//         // }, function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
+//         DB.addGroup(user, {
+//             title: 'pooping the grouping 2',
+//             _id: groupId,
+//         }, function(poop) {
+//             console.log('poop: ' + poop.error);
+//         });
 
 //         // var articleId = '5599e642f836bb36631e2e9c';
 //         // DB.getArticle(user, articleId, function(poop) {
@@ -720,19 +741,16 @@ module.exports = DB;
 //         // });
 
 
-
-
-
 //         //adding note:
-//         var dummyNote = {
-//             noteId: 'dummyNote1',
-//             content: 'dummy note content',
-//         }
+//         // var dummyNote = {
+//         //     noteId: 'dummyNote1',
+//         //     content: 'dummy note content',
+//         // }
         
-//         console.log('about to add note');
-//         DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
-//             console.log('poop: ' + poop.groupId.id);
-//         });
+//         // console.log('about to add note');
+//         // DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
+//         //     console.log('poop: ' + poop.groupId.id);
+//         // });
 
 //         //
 //         // console.log('about to save a dummy highlight!');

@@ -8,6 +8,8 @@ var GroupActions = {
 
 	fetchAndSetNotifs: function(group) {
 		API.getNotifs(group, function(obj) {
+			console.log('notifs: ' + obj.notifs);
+			console.log(obj);
 			GroupDispatcher.handleAction({
 				actionType: Constants.SET_NOTIFS,
 				notifs: obj.notifs
