@@ -317,7 +317,8 @@ var DB = {
      // get all groups associated with user:
      // ONLY POPULATE WITH: {title, members, createdAt}
      getGroups: function(user, callback) {
-        User.findOne({_id: user._id}).populate('groups')
+        User.findOne({_id: user._id})
+                    .populate('groups.groupRef')
                     .exec(function (err, populatedUser) {
                         callback({groups: populatedUser.groups});
         });

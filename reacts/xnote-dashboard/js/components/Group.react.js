@@ -6,10 +6,9 @@ var Group = React.createClass({
 
     render: function() {
         var group = this.props.group;
-
         return (
             <div className="group-div">
-                {group.title}
+                {group.groupRef.title}
             </div>
         );
     }
