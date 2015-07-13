@@ -23,11 +23,6 @@
   overflow-y: scroll;
 }
 
-.article-container {
-  position: fixed;
-  top: 35px;
-}
-
 .add-article-button {
   position: fixed;
   bottom: 24px;

@@ -33,7 +33,6 @@ var Discussion = React.createClass({
 
     // simplify, simplify, simplify... ... ...
     _onChange: function() {
-        console.log('discussion.setState');
         this.setState(this.getInitialState());
     },
 
@@ -43,7 +42,6 @@ var Discussion = React.createClass({
 
     componentWillUnmount: function() {
         DiscussionStore.removeChangeListener(this._onChange);
-        console.log('Discussion.unmount');
     },
 
     _socketGotNote: function(note) {
@@ -93,7 +91,7 @@ var Discussion = React.createClass({
                   createdBy: {facebook: {name: 'Karthik Uppuluri', id: 'dkjsfkjs'}}
               }
 
-              comp = <FeedPost post={post} actions="Article"/>
+              comp = <FeedPost post={post} actions="Article" isLink = {false}/>
           } else {
               var messageStyle = {marginTop: '30%', marginLeft: '5%'};
               comp = <div className="message" style={messageStyle}>
@@ -109,86 +107,6 @@ var Discussion = React.createClass({
               </div>
           );
     },
-
-
-
-    //
-    // render: function() {
-    //     if (this.state.error) {
-    //         return (<p> error brah </p>);
-    //     }
-    //
-    //     if (this.state.isLoading) {
-    //         return (<Loading />);
-    //     }
-    //
-    //     var messageStyle = {marginTop: '30%'};
-    //
-    //     // if there's no discussion selected:
-    //     if (!this.state.highlight && !this.props.currentUser) {
-    //         return (
-    //             <div className="discussion-view-container">
-    //                 <div className="discussion-view-contents">
-    //                     <div className="message" style={messageStyle}>
-    //                         <p> {NO_DISC_SELECTED_AND_NO_USER} </p>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         );
-    //     } else if (!this.state.highlight && this.props.currentUser) {
-    //         return (
-    //             <div className="discussion-view-container">
-    //                 <div className="discussion-view-contents">
-    //                     <div className="message" style={messageStyle}>
-    //                         <p> {NO_DISC_SELECTED_MESSAGE} </p>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         );
-    //     }
-    //
-    //     var notes = this.state.highlight.notes;
-    //
-    //     // if there is a discussion selected, but it has no notes:
-    //     if (notes.length == 0 && !this.props.currentUser) {
-    //         return (
-    //             <div className="discussion-view-contents">
-    //                 <div className="message" style={messageStyle}>
-    //                     <p> {NO_NOTES_MESSAGE_WITHOUT_USER} </p>
-    //                 </div>
-    //             </div>
-    //         );
-    //     } else if (notes.length == 0 && this.props.currentUser) {
-    //         return (
-    //             <div className="discussion-view-contents">
-    //                 <AddNoteInput
-    //                       highlightId={this.state.discussion.highlightId}
-    //                       articleId={this.state.discussion.articleId}
-    //                       onSave={this._addNoteFormOnSave}
-    //                       textareaClassName="add-note-text">
-    //                 </AddNoteInput>
-    //                 <div className="message" style={messageStyle}>
-    //                     <p> {NO_NOTES_MESSAGE_WITH_USER} </p>
-    //                 </div>
-    //             </div>
-    //         );
-    //     }
-    //
-    //     // means there's a dicusssion selected and it has notes:
-    //     return (
-    //         <div className="discussion-view-contents">
-    //             <AddNoteInput
-    //                   highlightId={this.state.discussion.highlightId}
-    //                   articleId={this.state.discussion.articleId}
-    //                   onSave={this._addNoteFormOnSave}
-    //                   textareaClassName="add-note-text">
-    //             </AddNoteInput>
-    //             <div className="note-list-thing">
-    //                 <NoteList notes={this.state.discussion.notes} />
-    //             </div>
-    //         </div>
-    //     );
-    // }
 });
 
 module.exports = Discussion;

@@ -93,7 +93,7 @@ var ArticleToolbar = React.createClass({
       //notifs calculated separately so that the currentUser notifs can be removed
       var feedNotifs = this.state.feedNotifs;
       var chatNotifs = this.state.chatNotifs;
-
+      console.log(this.state.feed);
       var chatMenu = this.state.chat.map(function(message) {
 
         if (message.createdBy.facebook.id === this.state.currentUser.facebook.id) {
@@ -154,10 +154,6 @@ var ArticleToolbar = React.createClass({
               feedText = 'Added a highlight "' + highlight.clippedText + '"';
           }
         } 
-        if(feedOwner.id === this.state.currentUser.id) {
-          feedNotifs--;
-          return;
-        }
 
         //Counting characters to see if the list requires two or one line
         var secondaryTextLines = 1;
@@ -223,6 +219,7 @@ var ArticleToolbar = React.createClass({
                 primary={true}
                 label={feedLabel}/>
           }>
+              <ListItem primaryText='Clear'/>
               {feedMenu}  
           </IconMenu>
       }

@@ -154,6 +154,7 @@ var MainContainer = React.createClass({
                         </div>
                     </div>
                     <ArticleToolbar />
+                    <SnackbarComponent />
 
                 </div>
             );

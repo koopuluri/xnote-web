@@ -79,6 +79,7 @@ var FeedPost = React.createClass({
 
 	render: function() {
 		var post = this.props.post
+		var self = this;
 		if (post.type === ARTICLE) {
 			var article = post.article;
 			return (
@@ -142,7 +143,6 @@ var FeedPost = React.createClass({
 							{notes}
 						</div>
 				}
-
 				var rightIconButton = '';
 				if (this.props.isLink) {
 					rightIconButton = (

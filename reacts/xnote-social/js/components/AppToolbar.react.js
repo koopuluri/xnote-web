@@ -3,6 +3,8 @@ var GroupStore = require('../stores/GroupStore');
 var FriendStore = require('../stores/FriendStore');
 
 var GroupActions = require('../actions/GroupActions');
+
+var Loading = require('./ArticleViewStuff/Loading.react.js')
   
 var mui = require('material-ui');
 var Dialog = mui.Dialog;
@@ -20,6 +22,7 @@ var CircularProgress = mui.CircularProgress;
 var Toolbar = mui.Toolbar;
 var ToolbarGroup = mui.ToolbarGroup;
 var IconButton = mui.IconButton;
+var FontIcon = mui.FontIcon;
 
 var GROUPS_PAGE = "GroupsPage";
 var LOGOUT = "Logout";
@@ -31,11 +34,25 @@ function getState() {
         groupId: GroupStore.getGroupId(),
         members: GroupStore.getGroupMembers(),
         friends: FriendStore.getFriends(),
-        queryList: FriendStore.getFriends().slice(0),
+        queryList: [],
         friendsLoading: FriendStore.getLoading(),
         currentUser: GroupStore.getCurrentUser(),
         addList: []
     }
+}
+
+var onDeleteFromAddList = function(addListItem, self) {
+  return function() {
+    var newList = self.state.addList;
+    for (var i = 0; i < newList.length; i++) {
+      if(newList[i].id === addListItem.id) {
+        newList.splice(i, 1);
+      }
+    }
+    self.setState({
+      addList: newList
+    })
+  }
 }
 
 var friendListOnClickFunction = function(member, self) {
@@ -91,18 +108,29 @@ var AppToolbar = React.createClass({
 
     _onQueryChange: function() {
       var query = this.refs.addMemberQuery.getValue();
-      query = query.toLowerCase();
-      var friends = this.state.friends;
-      var queryList = [];
-      for (var i = 0; i < friends.length; i++) {
-          var name = friends[i].name.toLowerCase();
-          if (name.includes(query)) {
-              queryList.push(friends[i]);
-          }
+      if(query != '') {
+        query = query.toLowerCase();
+        var friends = this.state.friends;
+        var queryList = [];
+        for (var i = 0; i < friends.length; i++) {
+            var name = friends[i].name.toLowerCase();
+            if (name.includes(query)) {
+                queryList.push(friends[i]);
+            }
+        }
+        this.setState({
+            queryList: queryList
+        });
+      } else {
+        this.setState({
+            queryList: []
+        })
       }
-      this.setState({
-          queryList: queryList
-      });
+    },
+
+    _onAddMembers: function() {
+      this.refs.addMemberDialog.dismiss();
+      //TODO: Wire up the backend for adding members
     },
 
     render: function() {
@@ -138,12 +166,19 @@ var AppToolbar = React.createClass({
       var self = this;
       var addMemberActions = [
         { text: 'Cancel', primary: true },
-        { text: 'Add', primary: true }
+        { text: 'Add', primary: true, onTouchTap: this._onAddMembers}
       ];
       var counter = 0;
       var queryList = this.state.queryList.map(function(queryListItem) {
         counter ++;
-        if (counter <= 5) {
+        var found = false;
+        for(var i = 0; i < self.state.addList.length; i++) {
+          if (self.state.addList[i].id == queryListItem.id) {
+            found = true;
+            break;
+          }
+        }
+        if(!found && counter <= 5) {
           return (
             <div>
               <ListItem
@@ -156,7 +191,7 @@ var AppToolbar = React.createClass({
       });
       var memberDialogInternals = '';
       if (this.state.friendsLoading) {
-          memberDialogInternals = <CircularProgress mode="indeterminate" />
+          memberDialogInternals = <Loading marginLeft={45} marginTop={5}/>
       } else {
           memberDialogInternals = <div><List> {queryList} </List></div>
       }
@@ -179,7 +214,12 @@ var AppToolbar = React.createClass({
               paddingBottom:2,
               paddingLeft:5,
               paddingTop:2}}
-            primaryText = {addListItem.name}
+            primaryText = {<p style={{paddingRight:15}}> {addListItem.name} </p>}
+            rightIconButton = {
+              <FontIcon 
+                onClick={onDeleteFromAddList(addListItem, self)}>
+                 x 
+              </FontIcon>}
             disabled = {true} />
           </ToolbarGroup>
         );
