@@ -12,8 +12,7 @@ var mongoose = require('mongoose');
 // Array
 
 var chatSchema = mongoose.Schema({
-	chatId: String,
-	groupId: String,
+	group: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
 	createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 	content: String,
 	createdAt: {type: Date, default: Date.now}

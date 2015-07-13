@@ -7,6 +7,7 @@ var _ = require('underscore');
 
 var _chatNotifs = 0;
 var _feedNotifs = 0;
+var _notifs = []
 
 function loadChatNotifs(data) {
 	_chatNotifs = data;
@@ -32,6 +33,10 @@ var NotificationStore = _.extend({}, EventEmitter.prototype, {
 
 	getFeedNotifs: function() {
 		return _feedNotifs;
+	},
+
+	getNotifs: function() {
+		return _notifs;
 	},
 
 	//emit change event
@@ -78,6 +83,10 @@ GroupDispatcher.register(function(payload) {
 			console.log('feed notifs increment!');
 				_feedNotifs++;
 				break;
+
+		case Constants.SET_NOTIFS:
+			_notifs = action.notifs;
+			break;
 
 		default:
 			return true;

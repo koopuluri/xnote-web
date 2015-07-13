@@ -1,10 +1,18 @@
 module.exports = {
 
+		getNotifs: function(groupId, callback) {
+			$.get('/_notifs', {
+				groupId: groupId
+			}, function(data, status) {
+				callback(data);
+			});
+		},
+
 		getGroup: function(groupId, callback) {
 			$.get('/_group', {
-					groupId: groupId
+				groupId: groupId
 			}, function(data, status) {
-					callback(data);
+				callback(data);
 			});
 		},
 

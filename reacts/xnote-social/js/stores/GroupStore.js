@@ -30,7 +30,7 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
     },
 
     getGroupId: function() {
-        return _group.groupId;
+        return _group._id;
     },
 
     getFriends: function() {

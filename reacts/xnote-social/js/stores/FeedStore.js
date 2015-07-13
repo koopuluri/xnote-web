@@ -26,7 +26,7 @@ Array.prototype.move = function (old_index, new_index) {
 function addNote(highlightId, note) {
 		for(var i = 0; i < _feed.length; i++) {
 				if(_feed[i].type === 'HighlightFeedPost') {
-						if(_feed[i].highlight.highlightId === highlightId) {
+						if(_feed[i].highlight._id=== highlightId) {
 								_feed[i].highlight.notes.unshift(note);
 
 								// now need to put this post at the top:
@@ -36,28 +36,12 @@ function addNote(highlightId, note) {
 		}
 }
 
-//Method to edit a note in a post
-function editNote(note) {
-	for(var i = 0; i < _feed.length; i++) {
-		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].highlight.highlightId === note.highlightId) {
-				var notes = _feed[i].highlight.notes
-				for(var j = 0; j < notes.length; j++) {
-					if(notes[j].noteId === note.noteId) {
-						notes[j] = note;
-					}
-				}
-			}
-		}
-	}
-}
-
 
 //Method to delete a note in a post
 function deleteNote(note, highlightId) {
 	for(var i = 0; i < _feed.length; i++) {
 		if(_feed[i].type === 'HighlightFeedPost') {
-			if(_feed[i].highlight.highlightId === highlightId) {
+			if(_feed[i].highlight._id === highlightId) {
 				var notes = _feed[i].highlight.notes
 				for(var j = 0; j < notes.length; j++) {
 					if(notes[j].noteId === note.noteId) {

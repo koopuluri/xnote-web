@@ -3,6 +3,7 @@ var XnoteConstants = require('../../../constants/Constants');
 var PartialHighlight = require('../PartialHighlight.react');
 
 
+
 // this file is where all the annotation logic resides.
 // using rangy-core (@author: timdown).
 var highlighter;
@@ -40,6 +41,55 @@ var partialNoteComponentNodes = [];
 
 Annotator = {
 
+	// given a highlightId: returns a className to be used for the highlight.
+	_getClassName: function(highId) {
+		XnoteConstants.BASE_HIGHLIGHT_CLASS + '-' + highId;
+	},
+
+		  // by: http://stackoverflow.com/a/3410557
+	_getIndicesOf: function(searchStr, str, caseSensitive) {
+		var startIndex = 0, searchStrLen = searchStr.length;
+		var index, indices = [];
+		if (!caseSensitive) {
+			str = str.toLowerCase();
+			searchStr = searchStr.toLowerCase();
+		}
+		while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+			indices.push(index);
+			startIndex = index + searchStrLen;
+		}
+		return indices;
+	},
+
+	//"type:textContent|106$129$5$BASE_HIGHLIGHT_CLASS-55a3085a0a85100000a752e9$|186$214$6$BASE_HIGHLIGHT_CLASS-55a308620a85100000a752ea$|286$294$4$BASE_HIGHLIGHT_CLASS-55a307f46eef720000d77555$|515$751$7$BASE_HIGHLIGHT_CLASS-55a3086c0a85100000a752eb$|904$1351$8$BASE_HIGHLIGHT_CLASS-55a308760a85100000a752ec$"
+	// given a serialization, returns a list of highlight ids:
+	_extractHighlightsFromSerialization: function(serialization) {
+		var indices = this._getIndicesOf(XnoteConstants.BASE_HIGHLIGHT_CLASS, serialization, false);
+		var ids = [];
+		for (var i = 0; i < indices.length; i++) {
+			var index = indices[i] + XnoteConstants.BASE_HIGHLIGHT_CLASS.length + 1;
+
+			// now starting at this index; all characters until the delimiter,
+			// are part of the highlightId:
+			var c = serialization[index];
+			var idString = '';
+			while (c != '$') {
+				idString += c;
+
+				// updating the character:
+				index++;
+				c = serialization[index]
+			}
+
+			// we have the idString!
+			console.log('found id: ' + idString);
+			ids.push(idString);
+		}
+
+		// returning the highlight ids:
+		return ids;
+	},	
+
 	_init: function() {
 		if (!highlighter) {
 			rangy.init();
@@ -47,72 +97,61 @@ Annotator = {
 		}
 	},
 
-  // clear all rangy highlights:
-  clearAllHighlightsAndComponents: function() {
-      this._init();
-      // first unmounting the components:
-      for (var i = 0; i < partialNoteComponentNodes.length; i++) {
-          var node = partialNoteComponentNodes[i];
-          React.unmountComponentAtNode(node);
-      }
+	// clear all rangy highlights:
+	clearAllHighlightsAndComponents: function() {
+	  this._init();
+	  // first unmounting the components:
+	  for (var i = 0; i < partialNoteComponentNodes.length; i++) {
+	      var node = partialNoteComponentNodes[i];
+	      React.unmountComponentAtNode(node);
+	  }
 
-      highlighter.removeAllHighlights();
-  },
-
-  // by: http://stackoverflow.com/a/3410557
-  _getIndicesOf: function(searchStr, str, caseSensitive) {
-      var startIndex = 0, searchStrLen = searchStr.length;
-      var index, indices = [];
-      if (!caseSensitive) {
-          str = str.toLowerCase();
-          searchStr = searchStr.toLowerCase();
-      }
-      while ((index = str.indexOf(searchStr, startIndex)) > -1) {
-          indices.push(index);
-          startIndex = index + searchStrLen;
-      }
-      return indices;
-  },
+	  highlighter.removeAllHighlights();
+	},
 
 	serialize: function() {
 		  return highlighter.serialize();
 	},
 
-	deserialize: function(serialization) {
-      this._init();
-      // find all of the highlight ids in the serialization:
-      var indices = this._getIndicesOf(XnoteConstants.BASE_HIGHLIGHT_CLASS, serialization, false);
-      var highlightIds = []
-      for (var i = 0; i < indices.length; i++) {
-          var index = indices[i];
-          var className = serialization.slice(index, (index + 1 + XnoteConstants.BASE_HIGHLIGHT_CLASS.length) + 36);
-          highlighter.addClassApplier(rangy.createCssClassApplier(className, {
-        		        tagNames: ["span", "a", "p"]
-        		    }));
-
-          // adding the discussion id:
-          highlightIds.push(className.slice(XnoteConstants.BASE_HIGHLIGHT_CLASS.length+1, className.length));
-      }
-
-      //  now deserializing:
-      highlighter.deserialize(serialization);
-
-      // now renderring all partial notes:
-      for (i = 0; i < highlightIds.length; i++) {
-
-          var id = highlightIds[i];
-          this._renderPartialHighlights(id);
-      }
+	_addClassApplierForId: function(id) {
+		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + '-' + id;
+		highlighter.addClassApplier(rangy.createCssClassApplier(className, {
+  	        tagNames: ["span", "a"]
+  	    }));
 	},
 
-//BASE_HIGHLIGHT_CLASS-8f32e2ef-8558-477a-a096-fe544a08f641
-//BASE_HIGHLIGHT_CLASS-8f32e2ef-8558-477a-a096-fe544a08f641
+	deserialize: function(serialization) {
+		this._init();
+
+		// find all of the highlight ids in the serialization:
+		var ids = this._extractHighlightsFromSerialization(serialization);
+
+		// adding classApplier for each of the ids:
+		for (i = 0; i < ids.length; i++) {
+			var id = ids[i];
+			this._addClassApplierForId(id);
+		}
+
+		//  now deserializing:
+		highlighter.deserialize(serialization);
+
+		// now renderring all partial notes:
+		for (i = 0; i < ids.length; i++) {
+			var id = ids[i];
+			this._renderPartialHighlights(id);
+		}
+	},
+
+	//BASE_HIGHLIGHT_CLASS-8f32e2ef-8558-477a-a096-fe544a08f641
+	//BASE_HIGHLIGHT_CLASS-8f32e2ef-8558-477a-a096-fe544a08f641
 
 	// for a given highlight object, renders the PartialNotes associated with it.
 	_renderPartialHighlights: function(highId) {
+		console.log('-_renderPartialHighlights.className: ' + className);
   		// get all elements associated with this note:
   		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + "-" + highId;
   		var elements = $('.' + className);
+  		console.log('_renderPartialHighlights.className: ' + className);
   		elements.map(function(index) {
     			// render PartialNote for this element:
     			React.render(<PartialHighlight
@@ -125,7 +164,7 @@ Annotator = {
   		});
 	},
 
-  _highlightSelection: function(sel, id) {
+ 	_highlightSelection: function(sel, id) {
   		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + '-' + id;
   		highlighter.addClassApplier(rangy.createCssClassApplier(className, {
   	        tagNames: ["span", "a"]
@@ -139,8 +178,8 @@ Annotator = {
 	// - add rangy highlights.
 	// - add all PartialNotes associated with this note (len(partialNotes) == len(# rangy highlights));
 	addHighlight: function(highlight) {
-  		this.highlightFromSelectionInfo(highlight.selection, highlight.highlightId);
-  		this._renderPartialHighlights(highlight.highlightId);
+  		this.highlightFromSelectionInfo(highlight.selection, highlight._id);
+  		this._renderPartialHighlights(highlight._id);
 	},
 
 	// deleting a note:

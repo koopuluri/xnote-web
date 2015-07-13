@@ -16,15 +16,14 @@ var articleSchema = mongoose.Schema({
     title: String,
     content: String,
     url: String,
-    articleId: String,
-    groupId: String,
+    group: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
     icon: String,
     serialization: {type: String, default: ''}
 });
 
 articleSchema.pre('remove', function(next) {
-    console.log('article pre remove groupId: ' + this.groupId);
-    mongoose.models['Group'].findOneAndUpdate({groupId: this.groupId},
+    console.log('article pre remove groupId: ' + this.group);
+    mongoose.models['Group'].findOneAndUpdate({_id: this.group},
         {$pull: {articles: {_id: this._id}}}, function(err, data) {
             if (!err) {
                 console.log("group's article ref is removed");
@@ -38,7 +37,7 @@ articleSchema.pre('remove', function(next) {
 
 articleSchema.post('save', function(doc) {
     // UPDATE the parent group's refs (remember don't SAVE!);
-    mongoose.models['Group'].findOneAndUpdate({groupId: doc.groupId},
+    mongoose.models['Group'].findOneAndUpdate({_id: doc.group},
       {$push: {'articles': doc}},
       {},
       function (error, savedGroup) {

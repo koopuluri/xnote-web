@@ -6,6 +6,15 @@ var API = require('../utils/API');
 //Define actions object
 var GroupActions = {
 
+	fetchAndSetNotifs: function(group) {
+		API.getNotifs(group, function(obj) {
+			GroupDispatcher.handleAction({
+				actionType: Constants.SET_NOTIFS,
+				notifs: obj.notifs
+			});
+		});
+	},
+
 	_setUser: function(user) {
 		GroupDispatcher.handleAction({
 			actionType: Constants.SET_USER,

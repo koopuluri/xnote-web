@@ -47,18 +47,20 @@ var MainContainer = React.createClass({
 
     componentDidMount: function() {
         var self = this;
+        var groupId = this.props.groupId;
         window.addEventListener('hashchange', function() {
             self.setState({
                 route: window.location.hash.substr(1)
             });
         });
+
+        GroupActions.fetchAndSetNotifs(groupId);
         
         var self = this;
         ContentStore.addArticleIdChangeListener(this._onChange);
 
         // setting the socket to receive posts and chat:
         var socket = io.connect();
-        var groupId = this.props.groupId;
 
         //receiving posts:
         socket.on('feedPost:' + groupId, function(post) {
@@ -78,14 +80,14 @@ var MainContainer = React.createClass({
             var feedList = FeedStore.getFeed();
             for (var i = 0; i < feedList.length; i++) {
                 var post = feedList[i];
-                if (post.type === 'HighlightFeedPost' && post.highlight.highlightId === obj.highlightId) {
+                if (post.type === 'HighlightFeedPost' && post.highlight._id === obj.highlightId) {
                     if (i+1 > postNotifCount) {
                         GroupActions.incrementFeedNotifs();
                     }
                 }
             }
 
-            GroupActions.socketReceiveNote(obj.note, obj.highlightId, postNotifCount);
+            GroupActions.socketReceiveNote(obj.note, obj._id, postNotifCount);
         });
 
         socket.on('chat:' + groupId, function(chatObj) {

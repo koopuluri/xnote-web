@@ -1,4 +1,5 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
+var Utils = require('../utils/GroupUtils');
 var Constants = require('../constants/Constants');
 var API = require('../utils/API');
 
@@ -95,6 +96,10 @@ var Actions = {
     fetchAndSetHighlight: function(highlightId) {
         this._setDiscussionLoading(true);
         this.setPartialHighlight(highlightId);
+
+        // set the page url:
+        Utils.addHighlightToUrl(highlightId);
+
         var self = this;
         API.getHighlight(highlightId, function(obj) {
             if (obj.error) {
@@ -133,7 +138,7 @@ var Actions = {
     addHighlight: function(highlight, newSerialization) {
         this._setDiscussionLoading(false);
         this.setHighlight(highlight);
-        this.setPartialHighlight(highlight.highlightId);
+        this.setPartialHighlight(highlight._id);
         API.addHighlightForArticle(highlight, newSerialization, function(obj) {
             if (obj.error) {
                 

@@ -108,7 +108,7 @@ module.exports = function(app, passport) {
 
      app.get('/social/', isLoggedIn, function(req, res) {
         //var groupId = req.query.groupId;
-        var groupId = 'testPoopGroup';
+        var groupId = "55a25931150ef26b44db57bb";
         res.render('social.ejs', {
             groupId: groupId
         });
@@ -134,6 +134,12 @@ module.exports = function(app, passport) {
 
 
     // =========================================================================
+
+    app.get('/_notifs', isLoggedIn, function(req, res) {
+        console.log('/notifs ');
+        var groupRef = req.query.groupId;
+        DB.getNotifs(req.user, groupRef, _dbCallback(res));
+    });
 
     app.get('/_user_info', isLoggedIn, function(req, res) {
         console.log('hit /_user_info: ' + req.user.facebook.name);
@@ -227,6 +233,7 @@ module.exports = function(app, passport) {
     app.post('/_add_highlight', isLoggedIn, function(req, res) {
         var highlightObj = req.body.highlight;
         var serialization = req.body.serialization;
+        console.log(highlightObj);
         DB.addHighlight(req.user, highlightObj, serialization, _callbackPostAdd(req.user, res, req.io));
     });
 
