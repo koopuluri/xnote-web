@@ -46,9 +46,9 @@ var Discussion = React.createClass({
 
     _socketGotNote: function(note) {
         if (DiscussionStore.getLastAddedNoteId() != note.noteId) {
-            var disc = this.state.discussion;
-            disc.notes.unshift(note);
-            this.setState({discussion: disc});
+            var light = this.state.highlight;
+            light.notes.unshift(note);
+            this.setState({highlight: light});
         }
         // if this note has already been added, do nothing.
     },
@@ -67,8 +67,7 @@ var Discussion = React.createClass({
                 createdAt: Math.floor(Date.now() / 1000)
             }
         }
-
-        Actions.addNote(newNote, this.state.discussion.highlightId);
+        Actions.addNote(this.state.highlight._id, newNote);
     },
 
 
@@ -106,7 +105,7 @@ var Discussion = React.createClass({
                   </div>
               </div>
           );
-    },
+    }
 });
 
 module.exports = Discussion;

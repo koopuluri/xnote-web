@@ -14,9 +14,8 @@ var highlightSchema = mongoose.Schema({
     createdAt: {type: Date, default: Date.now},
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     lastModifiedTimestamp: {type: Date, default: Date.now},
-    highlightId: String,
-    articleId: String,
-    groupId: String,
+    article: {type: mongoose.Schema.Types.ObjectId, ref: 'Article'},
+    group: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
     clippedText: String,
 
     selection: {
@@ -39,7 +38,6 @@ var highlightSchema = mongoose.Schema({
                 name: String,
                 id: String
             },
-            
             noteId: String,
             content: String,
             createdAt: {type: Date, default: Date.now},

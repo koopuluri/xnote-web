@@ -199,9 +199,11 @@ var AppToolbar = React.createClass({
       var usernameElement = '';
       var me = this.state.currentUser;
       if (me && me.facebook.name) {
-          usernameElement = (<FlatButton primary={true} 
-                            label={me.facebook.name}
-                            disabled={true} />);
+          usernameElement = (
+            <FlatButton primary={true} 
+              label={me.facebook.name}
+              disabled={true} />
+          );
       }
       
       var addListComponent = this.state.addList.map(function(addListItem) {
@@ -234,7 +236,9 @@ var AppToolbar = React.createClass({
                 zDepth={1}
                 showMenuIconButton = {true}
                 onLeftIconButtonTouchTap = {this._showMenuBar}
-                iconElementRight={usernameElement}>
+                iconElementRight={
+                
+                  usernameElement}>
             </AppBar>
             <LeftNav
                 docked={false}

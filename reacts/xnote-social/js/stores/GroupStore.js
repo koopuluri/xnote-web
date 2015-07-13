@@ -6,12 +6,7 @@ var _ = require('underscore');
 var _group = {};
 var _user = null;
 
-var _friends = [
-  {facebook: {name: 'Nikhil Deshmudre', id: 'dkl;ajkl;dfj;'}},
-  {facebook: {name: 'Nikhil Harithas', id: 'adsfasdfas'}},
-  {facebook: {name: 'Nikhil Karajgikar', id: '89kjasdfas'}},
-  {facebook: {name: 'Vignesh Prasad', id: 'uahsdfkasudk'}},
-]
+var _friends = [];
 
 
 var GroupStore = _.extend({}, EventEmitter.prototype, {
@@ -30,7 +25,7 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
     },
 
     getGroupId: function() {
-        return _group.groupId;
+        return _group._id;
     },
 
     getFriends: function() {

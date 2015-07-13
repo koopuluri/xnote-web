@@ -15,16 +15,14 @@ var feedPostSchema = mongoose.Schema({
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     lastModifiedTimestamp: {type: Date, default: Date.now},
     type: String,
-    groupId: String,
-    articleId: String,
-    highlightId: String,
+    group: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
     article: {type: mongoose.Schema.Types.ObjectId, ref: 'Article'},
     highlight: {type: mongoose.Schema.Types.ObjectId, ref: 'Highlight'},
 });
 
 feedPostSchema.pre('remove', function(next) {
-    console.log('post pre remove groupId: ' + this.groupId);
-    mongoose.models['Group'].findOneAndUpdate({groupId: this.groupId},
+    console.log('post pre remove groupId: ' + this.group);
+    mongoose.models['Group'].findOneAndUpdate({_id: this.group},
         {$pull: {posts: {_id: this._id}}}, function(err, data) {
             if (!err) {
                 console.log("group's feedPost ref is removed");
@@ -38,7 +36,7 @@ feedPostSchema.pre('remove', function(next) {
 
 feedPostSchema.post('save', function(doc) {
     // update the parent group's refs
-    mongoose.models['Group'].findOneAndUpdate({groupId: doc.groupId},
+    mongoose.models['Group'].findOneAndUpdate({_id: doc.group},
         {$push: {'feedPosts': doc}},
         {},
         function (error, savedGroup) {

@@ -1,3 +1,5 @@
+var mongoose = require('mongoose');
+
 // utils object to ease communication between front end and backend
 var GroupUtils = {
 
@@ -12,6 +14,19 @@ var GroupUtils = {
 	    return myJson;
 	},
 
+	addHighlightToUrl: function(id) {
+		var url = window.location.hash;
+		var index = url.indexOf('&&');
+		if (index >= 0) {
+			// replace the existing highlight:
+			window.location.hash = url.slice(0, index) + '&&highlightId=' + id;
+			return;
+		}
+
+		// for when there's no already selected highlight id:
+		window.location.hash = url +'&&highlightId=' + id;
+	},	
+
 	getTimestamp: function() {
 		var d = new Date();
 		var t = d.getTime() / 1000;
@@ -20,13 +35,14 @@ var GroupUtils = {
 
 	// used for new note / article creation: (http://stackoverflow.com/a/8809472)
 	generateUUID: function() {
-		var d = new Date().getTime();
-		var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-		    var r = (d + Math.random()*16)%16 | 0;
-		    d = Math.floor(d/16);
-		    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-		});
-		return uuid;
+		// var d = new Date().getTime();
+		// var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		//     var r = (d + Math.random()*16)%16 | 0;
+		//     d = Math.floor(d/16);
+		//     return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+		// });
+		// return uuid;
+		return mongoose.Types.ObjectId().toString();
 	},
 
 	_secondsToDate: function(seconds) {

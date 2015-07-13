@@ -67,7 +67,6 @@ var PartialHighlight = React.createClass({
 	},
 
 	componentWillUnmount: function() {
-			console.log('PartialHighlight unmount!');
 			PartialHighlightStore.removeChangeListener(this._onChange);
 	},
 

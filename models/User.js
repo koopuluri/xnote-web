@@ -18,7 +18,10 @@ var userSchema = mongoose.Schema({
         name: String,
         email: String
     },
-    groups: [{type: mongoose.Schema.Types.ObjectId, ref: 'Group'}]
+    groups: [{
+	    groupRef: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
+	    notifCount: Number
+    }]
 });
 
 module.exports = mongoose.model('User', userSchema);

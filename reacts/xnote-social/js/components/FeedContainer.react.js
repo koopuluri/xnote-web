@@ -70,8 +70,9 @@ var FeedContainer = React.createClass({
 					)
 				});
 				return (
-					<div className = "feed-container" onScroll={this._onScroll}>
-						<List>
+					<div className = "feed-container"
+						 onScroll={this._onScroll}>
+						<List style={{backgroundColor:Colors.grey150}}>
 							{feed}
 						</List>
 					</div>

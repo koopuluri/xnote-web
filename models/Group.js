@@ -11,10 +11,8 @@ var Schema = mongoose.Schema;
 // ObjectId
 // Array
 
-
 var groupSchema = new Schema({
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    groupId: String,
     members: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     feedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: 'FeedPost'}],
     articles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Article'}],
@@ -27,7 +25,7 @@ groupSchema.post('save', function(doc) {
     for (var i = 0; i < doc.members.length; i++) {
         var userRef = doc.members[i];
         mongoose.models['User'].findOneAndUpdate({_id: userRef},
-          {$push: {'groups': doc}},
+          {$push: {'groups': {groupRef: doc, notifCount: 0} }},
           {},
           function (error, savedUser) {
               if (error) {

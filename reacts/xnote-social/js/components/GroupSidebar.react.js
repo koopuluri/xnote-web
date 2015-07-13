@@ -13,7 +13,6 @@ var Colors = mui.Styles.Colors;
 function getNotifsState() {
     return {
         chatNotifs: NotificationStore.getChatNotifs(),
-        feedNotifs: NotificationStore.getFeedNotifs()
     }
 }
 
@@ -44,9 +43,6 @@ var GroupSidebar = React.createClass({
         }
 
         var feedLabel = 'Feed'
-        if(this.state.feedNotifs > 0) {
-            var feedLabel = 'Feed (' + this.state.feedNotifs + ')'
-        }
 
         return (
             <div className = "group-sidebar-container">

@@ -1,4 +1,5 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
+var Utils = require('../utils/GroupUtils');
 var Constants = require('../constants/Constants');
 var GroupActions = require('../actions/GroupActions');
 var API = require('../utils/API');
@@ -53,7 +54,6 @@ var Actions = {
         var self = this;
         API.getArticle(articleId, function(data) {
             if (data.error) {
-                console.log('fetchAndSetArticle error!');
                 GroupActions.displaySnackMessage("Error could not fetch article");
                 self._setSelectedArticleId(null);  // turning off the loading.
                 return;
@@ -97,6 +97,10 @@ var Actions = {
     fetchAndSetHighlight: function(highlightId) {
         this._setDiscussionLoading(true);
         this.setPartialHighlight(highlightId);
+
+        // set the page url:
+        Utils.addHighlightToUrl(highlightId);
+
         var self = this;
         API.getHighlight(highlightId, function(obj) {
             if (obj.error) {
@@ -104,7 +108,6 @@ var Actions = {
                 GroupActions.displaySnackMessage("Error could not fetch highlight");
                 return;
             }
-
             // got highlight:
             self._setDiscussionLoading(false);
             self.setHighlight(obj.highlight);
@@ -137,7 +140,7 @@ var Actions = {
     addHighlight: function(highlight, newSerialization) {
         this._setDiscussionLoading(false);
         this.setHighlight(highlight);
-        this.setPartialHighlight(highlight.highlightId);
+        this.setPartialHighlight(highlight._id);
         API.addHighlightForArticle(highlight, newSerialization, function(obj) {
             if (obj.error) {
                 GroupActions.displaySnackMessage("Error could not add highlight");

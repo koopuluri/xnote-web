@@ -78,7 +78,7 @@ AppDispatcher.register(function(payload) {
 
 
     case XnoteConstants.DISCUSSION_ADD_NOTE:
-        if (action.highlightId == _highlight.highlightId) {
+        if (action.highlightId == _highlight._id) {
             addNote(action.note);
         } else {
             // do nothing.
@@ -87,7 +87,8 @@ AppDispatcher.register(function(payload) {
 
 
     case XnoteConstants.SOCKET_RECEIVE_NOTE:
-        if (_highlight && action.highlightId === _highlight.highlightId) {
+        console.log('RECEIVE SOCKET NOTE .highlightId: ' + _highlight._id);
+        if (_highlight && action.highlightId === _highlight._id) {
             // time to add the note to this highlight:
             addNote(action.note);
         }

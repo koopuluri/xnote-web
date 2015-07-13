@@ -198,15 +198,14 @@ var ArticleView = React.createClass({
 	_onAddNoteButtonClicked: function() {
 			// adding a highlight:
 			newHighlight = {
-					highlightId: NoteUtils.generateUUID(),
-					articleId: this.state.article._id,
-					groupId: GroupStore.getGroupId(),
+					_id: NoteUtils.generateUUID(),
+					group: GroupStore.getGroupId(),
 					clippedText: this.state.selection.toHtml(),
 					createdAt: new Date() / 1000,
 					selection: Annotator.getSelectionInfo(this.state.selection),
 					createdBy: this.state.currentUser,
 					notes: [],
-					article: this.state.article
+					article: this.state.article._id
 			}
 
 			Annotator.addHighlight(newHighlight);

@@ -72,7 +72,6 @@ GroupDispatcher.register(function(payload) {
 		case Constants.CLEAR_CHAT:
 			_index = 0;
 			_chat = [];
-			console.log('CHAT CLEARED');
 			break;
 
 		default:

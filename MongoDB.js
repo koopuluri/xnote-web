@@ -7,13 +7,15 @@ var FeedPost = require('./models/FeedPost');
 var Note = require('./models/Note');
 var Highlight = require('./models/Highlight');
 var Chat = require('./models/Chat');  //
+var Notification = require('./models/Notification');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var async = require('async');
 var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
 
 //Lets connect to our database using the DB server URL.
 try {
-    mongoose.connect('mongodb://localhost/myapp');
+    mongoose.connect('mongodb://koopuluri:whyisblue@ds045882.mongolab.com:45882/xnotelabs');
 } catch (err) {
     console.log('seems connection already exists');
     // do nothing.
@@ -27,7 +29,7 @@ var DB = {
             createdBy: user,
             title: groupObj.title,
             members: [user._id],
-            groupId: groupObj.groupId
+            _id: groupObj._id
         });
 
         group.save(function(err) {
@@ -36,7 +38,7 @@ var DB = {
                 return;
             }
             console.log('group saved successfuly!');
-            callback({groupId: groupObj.groupId});
+            callback({groupId: groupObj._id});
             // // now saving the ref to this group in the user object:
             // user.groups.push(group._id);
             // user.save(function(err) {
@@ -66,7 +68,7 @@ var DB = {
             content: article.content,
             url: article.url,
             icon: article.icon,
-            groupId: article.groupId,
+            group: article.group,
             serialization: article.serialization,
 
             author: article.author,
@@ -82,13 +84,17 @@ var DB = {
             }
 
             // adding a feedPost for this article:
-            self._addFeedPostForArticle(user, savedArticle, callback)
+            self._addFeedPostForArticle(user, savedArticle, callback);
+            console.log('SAVED ARTICLE: ' + savedArticle.createdBy);
+            self.addNotifsForArticle(user, savedArticle, function(notif) {
+                console.log('this notif saved: ' + notif);
+            });
         });
      },
 
      // only can delete article if user the creator of the article.
      deleteArticle: function(user, articleId, callback) {
-        Article.findOne({articleId: articleId}, function(err, article) {
+        Article.findOne({_id: articleRef}, function(err, article) {
               article.remove(function (error, deletedArticle) {
                   if (error) {
                       callback({error: error});
@@ -103,7 +109,7 @@ var DB = {
      },
 
 
-     addArticleFromUrl: function(user, groupId, url, callback) {
+     addArticleFromUrl: function(user, groupRef, url, callback) {
         if (!url) {
             console.log('url is null');
             callback({error: 'empty url'});
@@ -124,7 +130,7 @@ var DB = {
             console.log('diffbot successfuly parsed! ' + response.title);
 
             var article = {
-                groupId: groupId,
+                group: groupRef,
                 title: response.title,
                 content: response.html,
                 author: response.author,
@@ -140,14 +146,13 @@ var DB = {
 
      // saves a new feedPost for an article
      _addFeedPostForArticle: function(user, article, callback) {
-        var groupId = article.groupId;
+        var groupRef = article.groupRef;
         var post = FeedPost({
             createdBy: user,
             lastModifiedTimestamp: {type: Date, default: Date.now},
             type: 'ArticleFeedPost',
-            groupId: article.groupId,
+            group: groupRef,
             article: article,
-            articleId: article.articleId
         });
 
         post.save(function (err, savedObject) {
@@ -166,15 +171,16 @@ var DB = {
 
      // ========================= HIGHLIGHT ====================================
 
+
+     // TODO: add Notification for users that have added highlight(s) to the same article / creator of the article.
      addHighlight: function(user, highlight, newSerialization, callback) {
         var self = this;
-        var articleId = highlight.articleId;
         var light = Highlight({
+            _id: highlight._id,
             createdBy: user._id,
-            highlightId: highlight.highlightId,
-            articleId: highlight.articleId,
+            article: highlight.article,
             clippedText: highlight.clippedText,
-            groupId: highlight.groupId,
+            group: highlight.group,
             selection: highlight.selection
         });
 
@@ -188,7 +194,7 @@ var DB = {
             console.log('highlight successfuly saved');
 
             // now updati/ng the article serialization:
-            Article.findOneAndUpdate({_id: articleId},
+            Article.findOneAndUpdate({_id: savedHighlight.article},
                 {serialization: newSerialization},
                 function(err, obj) {
                     if (err) {
@@ -202,20 +208,21 @@ var DB = {
                     self._addFeedPostForHighlight(user, savedHighlight, callback);
                 });
 
+            // adding notifs for highlight: 
+            self.addNotifsForHighlight(user, savedHighlight, function(notif) {
+                console.log('notif sent through io: ' + notif);
+            });
+
         });
      },
 
      _addFeedPostForHighlight: function(user, hl, callback) {
-         var groupId = hl.groupId;
-         console.log('HIIIIIIIIIIIIIIIGH: ' + hl);
-         var hoolio = JSON.stringify(hl);
          var post = FeedPost({
              createdBy: user,
              lastModifiedTimestamp: {type: Date, default: Date.now},
              type: 'HighlightFeedPost',
-             groupId: groupId,
+             group: hl.group,
              highlight: hl,
-             highlightId: hl.highlightId
          });
 
          post.save(function (err, savedObject) {
@@ -230,8 +237,8 @@ var DB = {
          });
      },
 
-     deleteHighlight: function(user, groupId, highlightId, callback) {
-        Highlight.findOne({highlightId: highlightId}, function(err, obj) {
+     deleteHighlight: function(user, groupId, highlightRef, callback) {
+        Highlight.findOne({_id: highlightRef}, function(err, obj) {
             if (err) {
                 callback({error: err});
                 return;
@@ -249,7 +256,7 @@ var DB = {
                     }
 
                     console.log('highlight deleted successfuly');
-                    callback({highlightId: highlightId});
+                    callback({highlightId: highlightRef});
                     return;
                 });
             } else {
@@ -261,7 +268,8 @@ var DB = {
 
      // ========================= NOTE =========================================
 
-     addNote: function(user, highlightId, noteObj, callback) {
+     // TODO: add notifications for users that have also added notes to the same highlight / creator of highlight.
+     addNote: function(user, highlightRef, noteObj, callback) {
         var self = this;
         var note = {
             createdBy: user,
@@ -270,7 +278,7 @@ var DB = {
             owner: {name: user.facebook.name, id: user.facebook.id}
         };
 
-        Highlight.findOneAndUpdate({highlightId: highlightId},
+        Highlight.findOneAndUpdate({_id: highlightRef},
             {$push: {'notes': note}},
             {safe: true, upsert: true},
             function (err, savedHighlight) {
@@ -281,40 +289,26 @@ var DB = {
                 }
 
                 //self._updateTimestampForHighlightFeedObject(savedHighlight._id, callback);
+                console.log('savedHighlight._id: ' + savedHighlight._id)
                 FeedPost.findOneAndUpdate({highlight: savedHighlight._id},
                     {$set: {'lastModifiedTimestamp': Date.now()}},
                     {},
                     function (err, savedFeedPost) {
-                        if (err) {
+                        if (err || !savedFeedPost) {
                             console.log('error in finding and updating the FeedPost for highlight: ' + err);
                             callback({error: err});
                             return;
                         }
 
                         console.log('feedPost time updated: ' + savedFeedPost.lastModifiedTimestamp);
-                        callback({note: note, highlightId: highlightId, groupId: savedHighlight.groupId});
+                        callback({note: note, highlightId: highlightRef, groupId: savedHighlight.group});
                     });
+
+                // notifs:
+                self.addNotifsForNoteAdd(user, savedHighlight, function() {
+                    console.log("notif sent for note: " + savedHighlight);
+                });
             });
-     },
-
-
-     // ========================= FEED ========================================
-
-     // sets last modified timestamp to NOW, only called when note added to highlight.
-     // CANNOT save(), because that will cause the groups ref to be updated.
-     // ===> MUST only update.
-     _updateTimestampForHighlightFeedObject: function(highlightRef, callback) {
-       FeedPost.findOneAndUpdate({highlight: highlightRef},
-           {$set: {'lastModifiedTimestamp': Date.now()}},
-           {},
-           function (err, savedFeedPost) {
-               if (err) {
-                   console.log('error in finding and updating the FeedPost for highlight: ' + err);
-                   callback({error: err});
-               }
-
-               console.log('feedPost time updated: ' + savedFeedPost.lastModifiedTimestamp);
-           });
      },
 
 
@@ -329,8 +323,8 @@ var DB = {
         });
      },
 
-     getHighlight: function(user, highlightId, callback) {
-        Highlight.findOne({highlightId: highlightId})
+     getHighlight: function(user, highlightRef, callback) {
+        Highlight.findOne({_id: highlightRef})
                   .populate('createdBy', 'facebook.id facebook.name')
                   .populate('notes.createdBy', 'facebook.id facebook.name')
                   .exec(function(err, doc) {
@@ -347,9 +341,8 @@ var DB = {
        // - user: (facebook.id, facebook.name)
        // - feedPost: (sub-populate the article / highlight ref within each feedPost)
        // - articles: (title, url; sub-populate(createdBy));
-       getGroup: function(user, groupId, callback) {
-
-          Group.findOne({groupId: groupId})
+       getGroup: function(user, groupRef, callback) {
+          Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
                .populate('createdBy', '-_id facebook.id facebook.name')
                .populate('members', '-_id facebook.id facebook.name')
@@ -357,7 +350,7 @@ var DB = {
                     if (err || !doc) {
                         if (err)
                             console.log('err in executing the population: ' + err);
-                        callback({error: err});
+                        callback({error: 'poop'});
                         return;
                     }
 
@@ -383,8 +376,8 @@ var DB = {
         });
      },
 
-     getFeedSegment: function(user, groupId, start, count, callback) {
-        FeedPost.find({groupId: groupId})
+     getFeedSegment: function(user, groupRef, start, count, callback) {
+        FeedPost.find({group: groupRef})
                 .sort({'lastModifiedTimestamp': 'desc'})
                 .skip(start).limit(count)
                 .populate('createdBy', '-_id facebook.id facebook.name')
@@ -402,9 +395,8 @@ var DB = {
                 });
      },
 
-     getArticleListSegment: function(user, groupId, start, count, callback) {
-        console.log('in articleListSegment!');
-        Article.find({groupId: groupId})
+     getArticleListSegment: function(user, groupRef, start, count, callback) {
+        Article.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
                .populate('createdBy', '-_id facebook.id facebook.name')
@@ -419,9 +411,8 @@ var DB = {
                });
      },
 
-     getChatSegment: function(user, groupId, start, count, callback) {
-        console.log('in articleListSegment!');
-        Chat.find({groupId: groupId})
+     getChatSegment: function(user, groupRef, start, count, callback) {
+        Chat.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
                .populate('createdBy', '-_id facebook.id facebook.name')
@@ -436,16 +427,17 @@ var DB = {
                });
      },
 
-     addChat: function(user, groupId, chatId, content, callback) {
-        console.log("chat.groupId: " + groupId);
-        console.log("chat.message: " + content);
-        if (!groupId || !content) {
+     addChat: function(user, groupRef, chatId, content, callback) {
+        if (!groupRef || !content) {
+            console.log('groupRef: ' + groupRef);
+            console.log('content;: ' + content);
             callback({error: 'poop'});
             return;
         }
 
         var chat = Chat({
-            groupId: groupId,
+            _id: chatId,
+            group: groupRef,
             createdBy: user,
             content: content,
             chatId: chatId
@@ -463,7 +455,7 @@ var DB = {
      },
 
      // ! need to check when adding user to group if user is already in group! 
-     addGroupMember: function(user, groupId, member, callback) {
+     addGroupMember: function(user, groupRef, member, callback) {
 
         User.findOne({'facebook.id': member.id}, function(err, userToAdd) {
             if (err) {
@@ -472,9 +464,8 @@ var DB = {
                 return;
             }
 
-            console.log(userToAdd);
             // now get the group and update:
-            Group.findOneAndUpdate({groupId: groupId}, 
+            Group.findOneAndUpdate({_id: groupRef}, 
                 {$addToSet: {'members': userToAdd}}, 
                 {}, 
                 function(error, updatedGroup) {
@@ -504,34 +495,201 @@ var DB = {
 
      },
 
+     // given article ref, goes through all members of the parent group, and 
+     // adds notif for each one of them:
+     addNotifsForArticle: function(creatingUser, article, callback) {
+        console.log('add notif for article!');
+        Group.findOne({_id: article.group}).populate('members')
+             .exec(function(err, doc) {
+                if (err) {
+                    console.log("error finding group for article in adding notifs: " + article._id);
+                    return;
+                }
+
+                // now going through each user and creating a notification for them (except the creator):
+                for (var i = 0; i < doc.members.length; i++) {
+                    var mem = doc.members[i];
+                    console.log('compare: ' + mem._id + ' vs. ' + creatingUser._id);
+                    if (!mem._id.equals(creatingUser._id)) {
+                        // create a notif for them:
+                        var notif = Notification({
+                            group: doc,
+                            user: mem,
+                            article: article
+                        });
+
+                        notif.save(function(err, savedNotif) {
+                            if (err) {
+                                console.log('notif failed to save: ' + err);
+                            } else {
+                                console.log('notif successfuly saved!');
+                                // else: 
+                                callback(notif);
+                            }
+                        }); 
+                    }
+                }
+             });
+     },
+
+     // given a highlight ref, goes through all other highlights for the parent article,
+     // (and the owner of the parent article).
+     // and for each owner of these other highlights, sends them a notification that a 
+     // new highlight has been added for the article
+     addNotifsForHighlight: function(user, light, callback) {
+        var articleRef = light.article;
+
+        console.log('add notifs for highlight.articleRef: ' + articleRef);
+        // now finding all other highlights for this article, and sending notifs:
+        Highlight.find({article: articleRef}, function(err, docs) {
+            if(err) {
+                console.log('error finding highlights with article: ' + articleRef);
+                return;
+            }
+
+            for (var i = 0; i < docs.length; i++) {
+                var highlight = docs[i];
+                if (!highlight.createdBy.equals(user._id)) {
+                    // for all other users besides the one who created this highlight:
+                    var notif = Notification({
+                        group: light.group,
+                        user: highlight.createdBy,
+                        forNote: false,
+                        highlight: highlight,
+                    });
+
+                    notif.save(function(err, savedLight) {
+                        if(err) {
+                            console.log('failed to save highlight for add notif: ' + err);
+                        } else {
+                            // add notif:
+                            console.log('saved notif for highligth and now sending through io!');
+                            callback(notif);
+                        }
+                    });
+                }
+            }
+        });
+     },
+
+     // goes through each owner of the note for the highlight (and the owner of the highlightRef),
+     // and sends them a notification if they don't already have a notification for this highlightRef.
+     addNotifsForNoteAdd: function(noteCreator, savedHighlight, callback) {
+        var notes = savedHighlight.notes;
+        console.log('addNotifsForNoteAdd notes.length: ' + notes.length);
+        for(var i = 0; i < notes.length; i++) {
+            var note = notes[i];
+            var user = note.createdBy;
+            if (!user.equals(noteCreator._id)) {
+                // now have to check if this user already has this highlight as a notification:
+                // if it does, then just update it so: (forNote = true).
+                // otherwise, create a notif for this highlight for this user:
+
+                var notif = Notification({
+                    group: savedHighlight.group,
+                    highlight: savedHighlight._id,
+                    user: user,
+                    forNote: true
+                });
+
+                // so finding one and updating if existing otherwise inserting.
+                Notification.findOneAndUpdate({user: user, group: savedHighlight.group},
+                    {$set: {
+                        group: savedHighlight.group,
+                        highlight: savedHighlight._id,
+                        user: user._id,
+                        forNote: true }
+                    },
+                    {upsert: true}, 
+                    function(err, updatedNotif) {
+                        if (err) {
+                            console.log('finding and updating highlight notif for note add error: ' + err);
+                        } else {
+                            console.log('added notification for note add for highlight: ' + savedHighlight._id);
+                            //console.log('updatedNotif.highlight: ' + updatedNotif.highlight);
+                            callback(updatedNotif);
+
+                            // // emitting the thing:
+                            // console.log('emitting note add for dnn')
+                            // io.emit('notif:' + user + ':' + savedHighlight.group,
+                            //     {
+                            //         notif: updatedNotif,
+                            //         highlight: savedHighlight
+                            //     });
+                        }
+                    });
+            }
+        }
+     },
+
+     getNotifs: function(user, groupRef, callback) {
+        Notification.find({user: user._id, group: groupRef}, function(err, results) {
+            if (err) {
+                console.log('could not get notifs: ' + err);
+                return;
+            }
+
+            // got notifs:
+            callback({notifs: results});
+        });
+     },
+
+     // clears notif count for this user:
+     clearNotifs: function(user, groupRef) {
+        User.findOneAndUpdate({_id: user._id, 'groups.groupRef': groupRef}, 
+            {$set: {'groups.$.notifCount': 0} },
+            {},
+            function(err, updatedUser) {
+                if (err) {
+                    console.log('failed to clear notes for user');
+                } 
+
+                console.log('cleared notifs for user: ' + user.facebook.name);
+            });
+     }
+
 };
 
 module.exports = DB;
-// //
-// // testing out the highlight saving / deleting:
+
+// testing out the highlight saving / deleting:
 // User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
+//         var groupRef = ObjectId("55a25931150ef26b44db57bb");
+//         var groupId = "55a25931150ef26b44db57bb";
 
-//         // DB.getGroup(user, 'testPoopGroup', function(obj) {
+//         // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
 //         //     console.log(obj);
 //         // });
-//         // DB.addGroupMember(user, 'testPoopGroup', {id: user.facebook.id}, function(obj) {
-//         //     console.log('obj: ' + obj);
+//         // DB.addGroupMember(user, '55a25931150ef26b44db57bb', {id: user.facebook.id}, function(obj) {
+//         //      console.log('obj: ' + obj);
 //         // });
 
-//         // DB.addChat(user, 'testPoopGroup', 'poopopopopopop', function(obj) {
-//         //     console.log('poop' + obj);
+//         // DB.addChat(user, groupId, mongoose.Types.ObjectId(), 'poopopopopopop', function(obj) {
+//         //     console.log(obj);
 //         // });
+
+//         // DB.getChatSegment(user, groupId, 0, 5, function(obj) {
+//         //     console.log('chats : ' + obj.chats);
+//         // });
+
+//         //addNotification: function(targetUser, groupId, highlightRef, noteId, callback)
+
+
+//         // DB.addNotification(user, groupId,
+//         //                          "55a25cf75572e8e144c4ac68",
+//         //                          '',
+//         //                          function() {
+//         //                             console.log('poop');
+//         // });
+
+//         // DB.clearNotifs(user, groupId);
 
         
-//         DB.getChatSegment(user, 'testPoopGroup', 0, 5, function(obj) {
-//             console.log('chats : ' + obj.chats);
-//         });
-
-//         //
-//         // DB.getArticleListSegment(user, 'testPoopGroup', 10, 3, function(obj) {
+//         // //
+//         // DB.getArticleListSegment(user, groupId, 0, 3, function(obj) {
 //         //     console.log('result: ' + Object.keys(obj));
 //         // });
 
@@ -541,11 +699,13 @@ module.exports = DB;
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
 
+//         //var id = mongoose.Types.ObjectId();
 //         // DB.addGroup(user, {
-//         //     title: 'pooping the grouping',
-//         //     groupId: 'testPoopGroup',
+//         //     title: 'Wincest',
+//         //     _id: groupId,
 //         // }, function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
+//         //     console.log(poop.error);
 //         // });
 
 //         // var articleId = '5599e642f836bb36631e2e9c';
@@ -554,43 +714,39 @@ module.exports = DB;
 //         // });
 
 //         //
-//         // DB.addArticleFromUrl(user, 'testPoopGroup', 'http://paulgraham.com/ds.html', function(poop) {
+
+//         // DB.addArticleFromUrl(user, groupId, 'http://paulgraham.com/ds.html', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
 
 
 
-//         // var dummyGroup = {
-//         //     title: 'dummy group thing!',
-//         //     groupId: 'dummyGroup1'
-//         // }
-//         //
-//         // DB.addGroup(user, dummyGroup, function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
 
-//         // // adding note:
+
+//         //adding note:
 //         // var dummyNote = {
 //         //     noteId: 'dummyNote1',
 //         //     content: 'dummy note content',
 //         // }
-//         //
+        
 //         // console.log('about to add note');
-//         // DB.addNote(user, dummyNote, 'pooplight', function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
+//         // DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
+//         //     console.log('poop: ' + poop.groupId.id);
 //         // });
 
 //         //
 //         // console.log('about to save a dummy highlight!');
+
+
 //         // var dummyHighlight = {
-//         //    articleId: '559cdcc98b120d12312b2315',
-//         //    highlightId: 'pooplight',
-//         //    groupId: 'testPoopGroup',
+//         //    _id: "55a25cf75572e8e144c4ac3d",
+//         //    article: "55a34592d5aeb6438bb5ebdb",
+//         //    group: groupId,
 //         //    clippedText: 'poop is the secret of my energy!',
 //         //    selection: {},
 //         //    notes: []
 //         // }
-//         //
+        
 //         // // saving a dummy highlight:
 //         // DB.addHighlight(user, dummyHighlight, '', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));

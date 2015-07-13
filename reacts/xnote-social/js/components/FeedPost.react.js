@@ -32,10 +32,11 @@ var getFeedPostOnClick = function(post) {
 			window.location.hash = '#articleId=' + post.article._id;
 		} else if (post.type === HIGHLIGHT) {
 			console.log(post.highlight);
-			window.location.hash = '#articleId=' + post.highlight.articleId + '&&highlightId=' + post.highlight.highlightId;
+			window.location.hash = '#articleId=' + post.highlight.article + '&&highlightId=' + post.highlight._id;
 		} else {
 			// fuck 
 		}
+		GroupActions.clearArticleList();
   	}
 }
 
@@ -64,7 +65,7 @@ var FeedPost = React.createClass({
 	},
 
 	_addComment: function(content) {
-		var highlightId = this.props.post.highlight.highlightId;
+		var highlightId = this.props.post.highlight._id;
 		if(content !== '') {
 			var note = {
 				createdBy: this.state.currentUser,
@@ -128,7 +129,7 @@ var FeedPost = React.createClass({
 				var notes = highlight.notes.map(function(note) {
 					return (
 						<NoteComponent 
-							highlightId = {highlight.highlightId}
+							highlightId = {highlight._id}
 							actions={self.state.actions}
 							note={note} 
 							user = {self.state.currentUser} />
@@ -194,7 +195,7 @@ var FeedPost = React.createClass({
 								</div>
 								<MultiLineInput
 									width = "51"
-									textareaClassName = {"feed-post-text-area" + highlight.highlightId}
+									textareaClassName = {"feed-post-text-area" + highlight._id}
 
 		  							startingContent="Post Note"
 		  							onSave = {this._addComment}/>

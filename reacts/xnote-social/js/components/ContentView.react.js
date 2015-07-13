@@ -58,6 +58,16 @@ var ContentView = React.createClass({
                 </div>
             );
         } else {
+            if (this.state.articleList.length === 0) {
+                return (
+                    <div className="content-view" onScroll={this._onScroll} style = {{padding : 10}}>
+                        <p className = 'no-articles-message'>
+                            You have no articles. Click on the green
+                            button in the bottom right to add one.
+                        </p>
+                    </div>
+                );
+            }
 
             var articles = this.state.articleList.map(function(article) {
                 return (
