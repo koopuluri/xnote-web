@@ -1,6 +1,7 @@
 var React = require('react');
 var Utils = require('../utils/Utils');
 var Actions = require('../actions/Actions')
+var DashStore = require('../stores/DashStore');
 
 var mui = require('material-ui');
 var FloatingActionButton = mui.FloatingActionButton;
@@ -22,12 +23,12 @@ var FontIcon = mui.FontIcon;
 
 function getState() {
     return ({
-        friends: [{name: 'Karthik Uppuluri', id:'aasdf'}],
+        friends: DashStore.getFriends(),
         queryList: [],
         addList: [],
         friendsLoading : false,
         groupName : '',
-        currentUser: {name: 'Vignesh Prasad', id:';;lkj'}
+        currentUser: DashStore.getCurrentUser(),
     });
 }
 
@@ -115,7 +116,7 @@ var AddGroupComponent = React.createClass({
         newList.push(this.state.currentUser);
         var group = {
             createdBy: this.state.currentUser,
-            groupId: Utils.generateUUID(),
+            _id: Utils.generateUUID(),
             members: newList,
             feedPosts: [],
             articles: [],

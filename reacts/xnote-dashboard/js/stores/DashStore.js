@@ -6,6 +6,8 @@ var _ = require('underscore');
 var CHANGE_EVENT = 'dashChange';
 
 _groups = [];
+_user = [];
+_friends = [];
 _isLoading = false;
 
 var DashStore = _.extend({}, EventEmitter.prototype, {
@@ -16,6 +18,14 @@ var DashStore = _.extend({}, EventEmitter.prototype, {
 
     getLoading: function() {
         return _isLoading;
+    },
+
+    getCurrentUser: function() {
+        return _user;
+    },
+
+    getFriends: function() {
+        return _friends;
     },
 
   	emitChange:function(){
@@ -43,6 +53,14 @@ AppDispatcher.register(function(payload) {
     case Constants.SET_LOADING:
        _isLoading = action.isLoading;
        break;
+    
+    case Constants.SET_FRIENDS:
+        _friends = action.friends;
+        break;
+
+    case Constants.SET_USER_INFO:
+        _user = action.userInfo;
+        break;
 
     case Constants.ADD_GROUP:
         _groups.push(action.group);

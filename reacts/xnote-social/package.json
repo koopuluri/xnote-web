@@ -6,7 +6,7 @@
     "flux": "^2.0.0",
     "react": "^0.13.0",
     "underscore": "^1.7.0",
-    "material-design-lite": "~1.0.0-3"
+    "material-ui": "0.10.0",
   },
   "devDependencies": {
     "browserify": "~6.2.0",
