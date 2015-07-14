@@ -120,8 +120,8 @@ var FeedPost = React.createClass({
 				var self = this;
 				var highlight = post.highlight;
 				var highlightClippedText = '';
-				if (highlight.clippedText.length > 203) {
-					highlightClippedText = '"' + highlight.clippedText.substring(0, 200) + '... "';
+				if (highlight.clippedText.length > 143) {
+					highlightClippedText = '"' + highlight.clippedText.substring(0, 140) + '... "';
 				} else {
 					highlightClippedText = '"' + highlight.clippedText + '"';
 				}
@@ -143,6 +143,7 @@ var FeedPost = React.createClass({
 							{notes}
 						</div>
 				}
+
 				var rightIconButton = '';
 				if (this.props.isLink) {
 					rightIconButton = (
@@ -179,8 +180,8 @@ var FeedPost = React.createClass({
 	        						}
 	        					}>
 	        					<div>
-	        						<p style={{padding : 5, fontSize : 16}}>
-	        							{highlightClippedText}
+	        						<p style={{padding : 5, fontSize : 16}} dangerouslySetInnerHTML={{__html: highlightClippedText}} >
+	        							
 	        						</p>
 									{noteList}
 								</div>

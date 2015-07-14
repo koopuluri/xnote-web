@@ -9,7 +9,7 @@ var getOnFeedPostClickedFunction = function(post) {
     if (post.article) {
       window.location.hash = '#articleId=' + post.article._id;
     } else if (post.highlight) {
-      window.location.hash = '#articleId=' + post.highlight.articleId + '&&highlightId=' + post.highlight.highlightId;
+      window.location.hash = '#articleId=' + post.highlight.article + '&&highlightId=' + post.highlight._id;
     } else {
       // fuck 
     }

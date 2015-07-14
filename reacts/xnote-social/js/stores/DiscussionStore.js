@@ -6,6 +6,8 @@ var _ = require('underscore');
 // variables:
 var CHANGE_EVENT = 'discussionChange';
 
+var SEG_SIZE = 6;
+
 // NOTE: _discussion corresponds to 'highlight' in the new schema.
 // it is the entire highlight object ==> contains all of the highlights notes as well!
 var _highlight = null;

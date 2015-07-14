@@ -34,14 +34,16 @@ var ContentView = React.createClass({
         var node = this.getDOMNode();
         if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
 
-            // load more items:
-            GroupActions.fetchArticleListSegment(this.props.groupId, this.state.index, 5);
+            // load more items if not reached limit:
+            if (ContentStore.isLazy()) {
+                GroupActions.fetchArticleListSegment(this.props.groupId, this.state.index, ContentStore.SEG_SIZE);
+            }
         }
     },
 
     componentDidMount: function() {
         ContentStore.addChangeListener(this._onChange);
-        GroupActions.fetchArticleListSegment(this.props.groupId, 0, 9);
+        GroupActions.fetchArticleListSegment(this.props.groupId, 0, ContentStore.SEG_SIZE);
     },
 
     componentWillUnMount: function() {

@@ -8,8 +8,11 @@ var _feed = [];
 var _index = 0;
 var _lastAddedNoteId = null;
 var _isLoading = false;
+var _isLazy = true;
 
 var CHANGE = 'feedStoreChange';
+
+var SEG_SIZE = 6;
 
 // got from: http://stackoverflow.com/a/5306832:
 Array.prototype.move = function (old_index, new_index) {
@@ -60,28 +63,32 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
         return _index;
     },
 
-		//Return posts
-		getFeed: function() {
-			  return _feed;
-		},
+	//Return posts
+	getFeed: function() {
+		  return _feed;
+	},
 
-		getLoading: function() {
-			return _isLoading;
-		},
+	isLazy: function() {
+		return _isLazy;
+	},
 
-		//Emit Change event
-		emitChange: function() {
-			  this.emit(CHANGE);
-		},
+	getLoading: function() {
+		return _isLoading;
+	},
 
-		//Add change listener
-		addChangeListener: function(callback) {
-			  this.on(CHANGE, callback);
-		},
+	//Emit Change event
+	emitChange: function() {
+		  this.emit(CHANGE);
+	},
 
-		removeChangeListener: function(callback) {
-			  this.removeListener(CHANGE, callback);
-		}
+	//Add change listener
+	addChangeListener: function(callback) {
+		  this.on(CHANGE, callback);
+	},
+
+	removeChangeListener: function(callback) {
+		  this.removeListener(CHANGE, callback);
+	}
 });
 
 GroupDispatcher.register(function(payload) {
@@ -139,7 +146,13 @@ GroupDispatcher.register(function(payload) {
 					_feed = _feed.concat(posts);
 					_index += posts.length;
 				}
+
+				if (posts.length < SEG_SIZE) {
+					_isLazy = false;
+				}
+				
 				break;
+
 
 			default:
 				return true;

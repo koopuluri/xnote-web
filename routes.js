@@ -108,7 +108,6 @@ module.exports = function(app, passport) {
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
         console.log('going to group: ' + groupId);
-        //var groupId = "55a25931150ef26b44db57bb";
         res.render('social.ejs', {
             groupId: groupId
         });

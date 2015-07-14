@@ -135,8 +135,7 @@ var DB = {
 
      // saves a new feedPost for an article
      _addFeedPostForArticle: function(user, article, callback) {
-        var groupRef = article.groupRef;
-
+        var groupRef = article.group;
         var post = FeedPost({
             createdBy: user,
             lastModifiedTimestamp: {type: Date, default: Date.now},
@@ -316,8 +315,8 @@ var DB = {
 
      getHighlight: function(user, highlightRef, callback) {
         Highlight.findOne({_id: highlightRef})
-                  .populate('createdBy', 'facebook.id facebook.name')
-                  .populate('notes.createdBy', 'facebook.id facebook.name')
+                  .populate('createdBy', 'facebook.id facebook.name facebook.picture')
+                  .populate('notes.createdBy', 'facebook.id facebook.name facebook.picture')
                   .exec(function(err, doc) {
                       if (err) {
                           console.log('highlight populate error; ' + err);
@@ -336,7 +335,7 @@ var DB = {
             console.log('getGroup: ' + groupRef);
             Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
-               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                .populate('members', '-_id')
                .exec(function(err, doc) {
                     if (err || !doc) {
@@ -373,7 +372,7 @@ var DB = {
         FeedPost.find({group: groupRef})
                 .sort({'lastModifiedTimestamp': 'desc'})
                 .skip(start).limit(count)
-                .populate('createdBy', '-_id facebook.id facebook.name')
+                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                 .populate('highlight', '-createdBy')
                 .populate('highlight.notes', '-createdBy')
                 .populate('article', '-createdBy')
@@ -392,7 +391,7 @@ var DB = {
         Article.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
-               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                .exec(function(err, results) {
                   if(err) {
                       console.log('articleListSegment: ' + err);
@@ -408,7 +407,7 @@ var DB = {
         Chat.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
-               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                .exec(function(err, results) {
                   if(err) {
                       console.log('chatSegment error: ' + err);
