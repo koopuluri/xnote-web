@@ -10,7 +10,6 @@ var Chat = require('./models/Chat');  //
 var Notification = require('./models/Notification');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
-var async = require('async');
 var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
 
 //Lets connect to our database using the DB server URL.
@@ -22,26 +21,27 @@ try {
 }
 
 var DB = {
-
      // add provided group for the provided user:
-     addGroup: function(user, groupObj, callback) {
+     addGroup: function(user, groupObj, memberList, callback) {
         var group = Group({
             createdBy: user,
             title: groupObj.title,
-            members: [user._id],
+            members: [],
             _id: groupObj._id
         });
 
-        group.save(function(err) {
+        // get all the user._ids of the users in the members list:
+
+        var self = this;
+        group.save(function(err, savedGroup) {
             if (err) {
                 callback({error: err});
                 return;
             }
-            console.log('group saved successfuly!');
-            callback({groupId: groupObj._id});
+            console.log('group saved successfuly, now adding members for it:');
+            self.addGroupMembers(user, savedGroup._id, memberList, callback);
         });
      },
-
      
 
      removeGroupMembers: function() {
@@ -446,42 +446,43 @@ var DB = {
      },
 
      // ! need to check when adding user to group if user is already in group! 
-     addGroupMember: function(user, groupRef, member, callback) {
-
-        User.findOne({'facebook.id': member.id}, function(err, userToAdd) {
+     addGroupMembers: function(user, groupRef, members, callback) {
+        console.log('ADD GROUP MEMBERS');
+        // getting all users with facebook.id $in [members] that are not already in groupRef group:
+        User.find({'facebook.id': {$in: members}, 'groups.groupRef': {$ne: groupRef}}, function(err, usersToAdd) {
             if (err) {
-                console.log('add group member error: ' + err);
-                callback({error: err});
+                console.log('getting users based on member list failed: ' + members);
                 return;
             }
 
-            // now get the group and update:
-            Group.findOneAndUpdate({_id: groupRef}, 
-                {$addToSet: {'members': userToAdd}}, 
-                {}, 
-                function(error, updatedGroup) {
+            // adding these users to the group:
+            // first: add all the users to the group's list:
+            Group.findOneAndUpdate({_id: groupRef},
+                {$addToSet: {members: usersToAdd}},
+                {},
+                function(err, updatedGroup) {
                     if (err) {
-                        console.log('add group member error: ' + err);
-                        callback({error: err});
-                        return;
+                        console.log('error saving group when updating members; ' + err);
+                    } else {
+
                     }
-
-                    console.log('updatedGroup: ' + updatedGroup);
-                    User.update({_id: userToAdd._id}, 
-                        {$addToSet: {groups: updatedGroup}},
-                        {}, 
-                        function(err, updatedUser) {
-                            if (err) {
-                                console.log('add group member error: ' + err);
-                                callback({error: err});
-                                return;
-                            }
-
-                            console.log('successfuly updated user and group');
-                            //console.log(updatedGroup);
-                            console.log(updatedUser);
-                        });
                 });
+
+            // for each user, add the groupRef to their lists of groups they are a part of:
+            for (var i = 0; i < usersToAdd.length; i++) {
+                var mem = usersToAdd[i];
+                User.findOneAndUpdate({_id: mem._id},
+                    {$addToSet: {groups: {groupRef: groupRef, notifCount: 0} }},
+                    {},
+                    function(err, savedMem) {
+                        if(err) {
+                            console.log('err updating groups for a member: ' + err);
+                        } else {
+                            console.log('user successfuly saved new group for it: ' + savedMem.facebook.name);
+                        }
+                    });
+            }
+
         });
 
      },
@@ -650,7 +651,7 @@ var DB = {
                         },
                         {
                             path: 'highlight.createdBy',
-                            select: '_id'
+                            select: '-_id'
                         }], function(err, poppedNotifs) {
                             // got notifs:
                             console.log("got popped notifs!!!");
@@ -681,13 +682,36 @@ var DB = {
 
 module.exports = DB;
 
-// testing out the highlight saving / deleting:
 // User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
 //         var groupRef = ObjectId("55a25931150ef26b44db57bb");
 //         var groupId = "55a25931150ef26b44db57bb";
+//         var newGroupId = "55a25931150ef26b44db57yj"
+
+//         // //addGroupMembers: function(user, groupRef, members, callback)
+//         // DB.addGroupMembers(user, groupId, ['511989525640264', '853160004761049'], function(obj) {
+//         //     console.log(obj)
+//         // });
+
+
+//         var memberList = ['511989525640264', '853160004761049'];
+//         var viggy = ['853160004761049']
+
+//         var dummyGroup = {
+//             title: 'The test group, Viggy first!',
+//             _id: newGroupId
+//         }
+
+//         // DB.addGroup(user, dummyGroup, viggy, function(obj) {
+//         //     console.log('poop: ' + Object.keys(obj));
+//         // });
+
+//         DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
+//             console.log('poop: ' );
+//         });
+
 
 //         // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
 //         //     console.log(obj);

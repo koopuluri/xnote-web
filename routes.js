@@ -185,13 +185,14 @@ module.exports = function(app, passport) {
 
     app.post('/_add_group', isLoggedIn, function(req, res) {
          var groupObj = req.body.group;
-         DB.addGroup(req.user, groupObj, _dbCallback(res));
+         var members = req.body.members;
+         DB.addGroup(req.user, groupObj, members, _dbCallback(res));
     });
 
-    app.post('/_add_group_member', isLoggedIn, function(req, res) {
-        var member = req.body.member;
+    app.post('/_add_group_members', isLoggedIn, function(req, res) {
+        var members = req.body.members;
         var groupId = req.body.groupId;
-        DB.addGroupMember(req.user, groupId, member, _dbCallback(res));
+        DB.addGroupMembers(req.user, groupId, members, _dbCallback(res));
     });
 
     app.post('/_remove_group_members', isLoggedIn, function(req, res) {

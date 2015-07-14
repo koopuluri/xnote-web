@@ -33,16 +33,17 @@ var Actions = {
     // adding a group:
     // - add to store.
     // - add to the db.
-    addGroup: function(groupObj) {
+    addGroup: function(groupObj, members) {
         // adding to the store:
         Dispatcher.handleAction({
             actionType: Constants.ADD_GROUP,
             group: groupObj
+            members: members
         });
 
-        // API.addGroup(groupObj, function() {
-        //     // callback does nothing?
-        // });
+        API.addGroup(groupObj, members, function() {
+            // callback does nothing?
+        });
     },
 
     getFriends: function(callback) {

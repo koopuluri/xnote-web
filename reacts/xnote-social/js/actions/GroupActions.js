@@ -324,13 +324,13 @@ var GroupActions = {
         });
     },
 
-    addMember: function(groupId, member) {
+    addMembers: function(groupId, memberList) {
     	GroupDispatcher.handleAction({
             actionType: Constants.ADD_MEMBER,
             member: member
         });
 
-        API.addMember(groupId, member, function() {
+        API.addMembers(groupId, memberList, function() {
 			// do nothing.
         });
     },

@@ -10,8 +10,8 @@ module.exports = {
     },
 
     // adding group:
-    addGroup: function(group, callback) {
-        $.post('/_add_group', {group: group}, function(data, status) {
+    addGroup: function(group, members, callback) {
+        $.post('/_add_group', {group: group, members: members}, function(data, status) {
             callback(data.result);
         });
     },

@@ -95,9 +95,9 @@ module.exports = {
 			});
 		},
 
-		addMember: function(groupId, member, callback) {
-			$.post('/_add_group_member', {
-				member: member,
+		addMembers: function(groupId, memberList, callback) {
+			$.post('/_add_group_members', {
+				members: memberList,
 				groupId: groupId
 			}, function(data, status) {
 				callback(data);
