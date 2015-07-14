@@ -10,12 +10,20 @@ var Colors = mui.Styles.Colors;
 var Paper = mui.Paper;
 
 var ChatPost = React.createClass({
+
 	render: function() {
 		var message = this.props.message
+		if(message.createdBy.facebook.picture) {
+			var leftAvatar = 
+				<Avatar src={message.createdBy.facebook.picture} size={30} />
+		} else {
+			var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
+			var leftAvatar = <Avatar size={30}>{avatarCharacter}</Avatar>
+		}
 		return (
 			<ListItem
 				disabled={true}
-				leftAvatar = {<Avatar size={30}>A</Avatar>}
+				leftAvatar = {leftAvatar}
 				style={{padding: 0}}>
 			<div style={{
 				paddingTop : 10,

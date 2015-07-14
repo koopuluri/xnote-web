@@ -39,7 +39,6 @@ var AddArticle = React.createClass({
 
 		_openDialog: function() {
 				this.refs.addArticleDialog.show();
-				this.refs.addArticle.focus();
 		},
 
 		_onArticleSubmit: function() {

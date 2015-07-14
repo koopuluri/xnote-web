@@ -82,10 +82,17 @@ var FeedPost = React.createClass({
 		var self = this;
 		if (post.type === ARTICLE) {
 			var article = post.article;
+			if(post.createdBy.facebook.picture) {
+				var leftAvatar = 
+					<Avatar src={post.createdBy.facebook.picture} size={30} />
+			} else {
+				var avatarCharacter = post.createdBy.facebook.name.substring(0, 1);
+				var leftAvatar = <Avatar size={30}>{avatarCharacter}</Avatar>
+			}
 			return (
 				<Card>
 					<ListItem
-						leftAvatar = {<Avatar> A </Avatar>}
+						leftAvatar = {leftAvatar}
 						style = {{padding : 10}}
 						disabled = {true}
 						primaryText= {
@@ -118,6 +125,13 @@ var FeedPost = React.createClass({
 			);
 		} else if (post.type === HIGHLIGHT) {
 				var self = this;
+				if(post.createdBy.facebook.picture) {
+					var leftAvatar = 
+						<Avatar src={post.createdBy.facebook.picture} size={30} />
+				} else {
+					var avatarCharacter = post.createdBy.facebook.name.substring(0, 1);
+					var leftAvatar = <Avatar size={30}>{avatarCharacter}</Avatar>
+				}
 				var highlight = post.highlight;
 				var highlightClippedText = '';
 				if (highlight.clippedText.length > 203) {
@@ -159,7 +173,7 @@ var FeedPost = React.createClass({
 				return (
 					<Card>
 						<ListItem
-							leftAvatar = {<Avatar> A </Avatar>}
+							leftAvatar = {leftAvatar}
 							style = {{padding : 10}}
 							disabled = {true}
 							primaryText= {
