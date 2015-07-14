@@ -58,6 +58,7 @@ var ChatContainer = React.createClass({
 
 	_chat: function(content) {
 		if (content != '' ) {
+			console.log(this.state.currentUser);
 			var message = {
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),

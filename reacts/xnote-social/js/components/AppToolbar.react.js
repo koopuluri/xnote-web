@@ -123,13 +123,11 @@ var AppToolbar = React.createClass({
 
     _onAddMembers: function() {
       this.refs.addMemberDialog.dismiss();
-      //TODO: Wire up the backend for adding members
       GroupActions.addMembers(this.state.addList);
     },
 
     render: function() {
       var members = [];
-      console.log(this.state.members);
       if (this.state.members) {
         var members = this.state.members.map(function(member) {
           return ({

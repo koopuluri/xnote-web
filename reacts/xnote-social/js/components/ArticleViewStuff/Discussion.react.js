@@ -27,7 +27,8 @@ var Discussion = React.createClass({
         return {
             highlight: DiscussionStore.getHighlight(),
             error: DiscussionStore.getError(),
-            isLoading: DiscussionStore.getLoading()
+            isLoading: DiscussionStore.getLoading(),
+            currentUser: GroupStore.getCurrentUser(),
         }
     },
 
@@ -38,10 +39,12 @@ var Discussion = React.createClass({
 
     componentDidMount: function() {
         DiscussionStore.addChangeListener(this._onChange);
+        GroupStore.addChangeListener(this._onChange);
     },
 
     componentWillUnmount: function() {
         DiscussionStore.removeChangeListener(this._onChange);
+        GroupStore.addChangeListener(this._onChange);
     },
 
     _socketGotNote: function(note) {
@@ -87,7 +90,7 @@ var Discussion = React.createClass({
               var post = {
                   type: 'HighlightFeedPost',
                   highlight: this.state.highlight,
-                  createdBy: {facebook: {name: 'Karthik Uppuluri', id: 'dkjsfkjs'}}
+                  createdBy: this.state.currentUser
               }
 
               comp = <FeedPost post={post} actions="Article" isLink = {false}/>
