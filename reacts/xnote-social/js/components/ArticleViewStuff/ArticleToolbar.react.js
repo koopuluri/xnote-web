@@ -15,15 +15,14 @@ var FlatButton = mui.FlatButton;
 var Colors = mui.Styles.Colors;
 
 function getState() {
-  return {
-    chatNotifs: NotificationStore.getChatNotifs(),
-    notifs: NotificationStore.getNotifs(),
-    groupTitle: GroupStore.getGroupTitle(),
-    currentUser: GroupStore.getCurrentUser(),
-    chat: ChatStore.getChat()
-  }
+    return {
+        chatNotifs: NotificationStore.getChatNotifs(),
+        notifs: NotificationStore.getNotifs(),
+        groupTitle: GroupStore.getGroupTitle(),
+        currentUser: GroupStore.getCurrentUser(),
+        chat: ChatStore.getChat()
+    }
 }
-
 
 
 var ArticleToolbar = React.createClass({

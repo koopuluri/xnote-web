@@ -39,16 +39,6 @@ var DB = {
             }
             console.log('group saved successfuly!');
             callback({groupId: groupObj._id});
-            // // now saving the ref to this group in the user object:
-            // user.groups.push(group._id);
-            // user.save(function(err) {
-            //     if (err) {
-            //         callback({error: err});
-            //     } else {
-            //         console.log('added group to user!');
-            //     }
-            // });
-
         });
      },
 

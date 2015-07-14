@@ -70,28 +70,28 @@ module.exports = function(app, passport) {
         res.render('index.ejs'); // load the index.ejs file
     });
 
-     // =====================================
-     // FACEBOOK ROUTES =====================
-     // =====================================
-     // route for facebook authentication and login
-     app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['email', 'user_friends'] }));
+    // =====================================
+    // FACEBOOK ROUTES =====================
+    // =====================================
+    // route for facebook authentication and login
+    app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['email', 'user_friends'] }));
 
-     // handle the callback after facebook has authenticated the user
-     app.get('/auth/facebook/callback',
-         passport.authenticate('facebook', {
-             successRedirect : '/dashboard',
-             failureRedirect : '/'
-         }));
+    // handle the callback after facebook has authenticated the user
+    app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+        successRedirect : '/dashboard',
+        failureRedirect : '/'
+    }));
 
-     // route for logging out
-     app.get('/logout', function(req, res) {
-         req.logout();
-         res.redirect('/');
-     });
+    // route for logging out
+    app.get('/logout', function(req, res) {
+        req.logout();
+        res.redirect('/');
+    });
 
 
-     // get list of friends for the user (using facebook api):
-     app.get('/_friends', isLoggedIn, function(req, res) {
+    // get list of friends for the user (using facebook api):
+    app.get('/_friends', isLoggedIn, function(req, res) {
         var FB = require('fb');
         FB.setAccessToken(req.user.facebook.token);
         FB.api('', 'post', {
@@ -102,17 +102,17 @@ module.exports = function(app, passport) {
             var friends = JSON.parse(obj[0].body).data;
             res.send({friends: friends});
         });
-     });
+    });
 
 
-     app.get('/group/', isLoggedIn, function(req, res) {
+    app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
         console.log('going to group: ' + groupId);
         //var groupId = "55a25931150ef26b44db57bb";
         res.render('social.ejs', {
             groupId: groupId
         });
-     });
+    });
 
     // process the signup form
     // app.post('/signup', do all our passport stuff here);
