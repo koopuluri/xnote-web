@@ -4,11 +4,10 @@ module.exports = {
     getGroups: function(callback) {
         $.get('/_groups', {}, function(data, status) {
             console.log('data: ' + Object.keys(data));
-            console.log('data.groups: ' + data.groups);
+            console.log(data);
             callback(data.groups);
         });
     },
-
 
     // adding group:
     addGroup: function(group, callback) {
@@ -16,7 +15,6 @@ module.exports = {
             callback(data.result);
         });
     },
-
 
     // Lonely and need friends? Just call this magic fun!
     getFriends: function(callback) {

@@ -317,7 +317,8 @@ var DB = {
      // get all groups associated with user:
      // ONLY POPULATE WITH: {title, members, createdAt}
      getGroups: function(user, callback) {
-        User.findOne({_id: user._id}).populate('groups')
+        User.findOne({_id: user._id})
+                    .populate('groups.groupRef')
                     .exec(function (err, populatedUser) {
                         callback({groups: populatedUser.groups});
         });
@@ -342,7 +343,8 @@ var DB = {
        // - feedPost: (sub-populate the article / highlight ref within each feedPost)
        // - articles: (title, url; sub-populate(createdBy));
        getGroup: function(user, groupRef, callback) {
-          Group.findOne({_id: groupRef})
+            console.log('getGroup: ' + groupRef);
+            Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
                .populate('createdBy', '-_id facebook.id facebook.name')
                .populate('members', '-_id facebook.id facebook.name')
@@ -353,7 +355,6 @@ var DB = {
                         callback({error: 'poop'});
                         return;
                     }
-
                     callback({group: doc});
                });
        },
@@ -540,35 +541,64 @@ var DB = {
         var articleRef = light.article;
 
         console.log('add notifs for highlight.articleRef: ' + articleRef);
-        // now finding all other highlights for this article, and sending notifs:
-        Highlight.find({article: articleRef}, function(err, docs) {
-            if(err) {
-                console.log('error finding highlights with article: ' + articleRef);
-                return;
-            }
 
-            for (var i = 0; i < docs.length; i++) {
-                var highlight = docs[i];
-                if (!highlight.createdBy.equals(user._id)) {
-                    // for all other users besides the one who created this highlight:
+        // now sending notif to the owner of the article that this highlight resides in:
+        Article.findOne({_id: articleRef}, function(err, art) {
+            if (err) {
+                console.log('error finding article for highlight in highlight notifs add: ' + err);
+            } else {
+                // add notif for owner of the article:
+                if (!art.createdBy.equals(user._id)) {
+                    // add notif for this user:
                     var notif = Notification({
                         group: light.group,
-                        user: highlight.createdBy,
+                        user: art.createdBy,
                         forNote: false,
-                        highlight: highlight,
+                        highlight: light._id,
                     });
 
-                    notif.save(function(err, savedLight) {
-                        if(err) {
-                            console.log('failed to save highlight for add notif: ' + err);
+                    notif.save(function(err, savedNotif) {
+                        if (err) {
+                            console.log('notif not saved for creator of article: ' + articleRef);
                         } else {
-                            // add notif:
-                            console.log('saved notif for highligth and now sending through io!');
-                            callback(notif);
+                            console.log('notif saved for article owner for highlight: ' + articleRef);
+                            callback(savedNotif);
                         }
                     });
                 }
-            }
+
+
+                // finding all other highlights for this article, and sending notifs:
+                Highlight.find({article: articleRef}, function(err, docs) {
+                    if(err) {
+                        console.log('error finding highlights with article: ' + articleRef);
+                        return;
+                    }
+
+                    for (var i = 0; i < docs.length; i++) {
+                        var highlight = docs[i];
+                        if (!highlight.createdBy.equals(user._id) && !highlight.createdBy.equals(art.createdBy)) {
+                            // for all other users besides the one who created this highlight:
+                            var notif = Notification({
+                                group: light.group,
+                                user: highlight.createdBy,
+                                forNote: false,
+                                highlight: light._id,
+                            });
+
+                            notif.save(function(err, savedLight) {
+                                if(err) {
+                                    console.log('failed to save highlight for add notif: ' + err);
+                                } else {
+                                    // add notif:
+                                    console.log('saved notif for highligth and now sending through io!');
+                                    callback(notif);
+                                }
+                            });
+                        }
+                    }
+                });
+            }   
         });
      },
 
@@ -608,14 +638,6 @@ var DB = {
                             console.log('added notification for note add for highlight: ' + savedHighlight._id);
                             //console.log('updatedNotif.highlight: ' + updatedNotif.highlight);
                             callback(updatedNotif);
-
-                            // // emitting the thing:
-                            // console.log('emitting note add for dnn')
-                            // io.emit('notif:' + user + ':' + savedHighlight.group,
-                            //     {
-                            //         notif: updatedNotif,
-                            //         highlight: savedHighlight
-                            //     });
                         }
                     });
             }
@@ -623,15 +645,32 @@ var DB = {
      },
 
      getNotifs: function(user, groupRef, callback) {
-        Notification.find({user: user._id, group: groupRef}, function(err, results) {
-            if (err) {
-                console.log('could not get notifs: ' + err);
-                return;
-            }
+        Notification.find({user: user._id, group: groupRef})
+                    .populate('article')
+                    .populate('highlight')
+                    .exec(function(err, notifs) {
+                        if (err) {
+                            console.log('could not get notifs: ' + err);
+                            return;
+                        }
 
-            // got notifs:
-            callback({notifs: results});
-        });
+                        User.populate(notifs, [{
+                            path: 'article.createdBy',
+                            select: '-_id'
+                        },
+                        {
+                            path: 'highlight.createdBy',
+                            select: '_id'
+                        }], function(err, poppedNotifs) {
+                            // got notifs:
+                            console.log("got popped notifs!!!");
+                            callback({notifs: poppedNotifs});
+                        }); 
+
+                        // populate highlight createdBy:
+
+  
+                    });
      },
 
      // clears notif count for this user:
@@ -699,14 +738,6 @@ module.exports = DB;
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
 
-//         //var id = mongoose.Types.ObjectId();
-//         // DB.addGroup(user, {
-//         //     title: 'Wincest',
-//         //     _id: groupId,
-//         // }, function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         //     console.log(poop.error);
-//         // });
 
 //         // var articleId = '5599e642f836bb36631e2e9c';
 //         // DB.getArticle(user, articleId, function(poop) {
@@ -718,9 +749,6 @@ module.exports = DB;
 //         // DB.addArticleFromUrl(user, groupId, 'http://paulgraham.com/ds.html', function(poop) {
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
-
-
-
 
 
 //         //adding note:

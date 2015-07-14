@@ -14,7 +14,9 @@ var bodyParser   = require('body-parser');
 var session      = require('express-session');
 
 // configuration ===============================================================
+//mongoose.connect('mongodb://localhost/myapp');
 mongoose.connect('mongodb://koopuluri:whyisblue@ds045882.mongolab.com:45882/xnotelabs');
+
 // require('./config/passport')(passport); // pass passport for configuration
 
 // set up our express application

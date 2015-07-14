@@ -64,6 +64,7 @@ var ArticleView = React.createClass({
 	componentDidMount: function() {
 		// adding listener:
 		ContentStore.addChangeListener(this._onArticleChange);
+		console.log('article view article id ' + this.props.articleId);
 		if (this.props.articleId) {
 			Actions.fetchAndSetArticle(this.props.articleId);
 		}
@@ -71,6 +72,8 @@ var ArticleView = React.createClass({
 			Actions.fetchAndSetHighlight(this.props.highlightId);
 			Actions.setPartialHighlight(this.props.highlightId);
 		}
+
+		
 	},
 
 	componentWillUnmount: function() {

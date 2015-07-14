@@ -87,7 +87,6 @@ AppDispatcher.register(function(payload) {
 
 
     case XnoteConstants.SOCKET_RECEIVE_NOTE:
-        console.log('RECEIVE SOCKET NOTE .highlightId: ' + _highlight._id);
         if (_highlight && action.highlightId === _highlight._id) {
             // time to add the note to this highlight:
             addNote(action.note);

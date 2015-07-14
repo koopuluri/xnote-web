@@ -7,6 +7,7 @@ var API = require('../utils/API');
 var GroupActions = {
 
 	fetchAndSetNotifs: function(group) {
+		var self = this;
 		API.getNotifs(group, function(obj) {
 			if(!obj.error) {
 				console.log(obj);
@@ -64,7 +65,8 @@ var GroupActions = {
 		var self = this;
 		API.getGroup(groupId, function(result) {
 				if (result.error) {
-					displaySnackMessage("Error: Could not find group");
+					console.log('getGroup.error: ' + result.error);
+					self.displaySnackMessage("Error: Could not find group");
 				} else {
 					// set the group:
 					var group = result.group
@@ -76,7 +78,7 @@ var GroupActions = {
 			if(!obj.error) {
 				self._setUser(obj.user);
 			} else {
-				displaySnackMessage("Error: Could not get current user")
+				self.displaySnackMessage("Error: Could not get current user")
 			}
 		});
 	},
@@ -224,6 +226,14 @@ var GroupActions = {
 				note: note,
 				highlightId: highlightId
 		});
+
+		API.addNoteForHighlight(note, highlightId, function(obj) {
+            if (obj.error) {
+                GroupActions.displaySnackMessage("Error could not add note");
+                console.log("error adding note to highlight: " + obj.error);
+                return;
+            }
+        });
 	},
 
 	editNote: function(note, content) {
@@ -336,11 +346,11 @@ var GroupActions = {
 
 	postChat: function(chat, groupId) {
 		this.addToChat(chat);
-
+		var self = this;
 		// cloud persistence:
 		API.postChat(chat, groupId, function(obj) {
 			if (obj.error) {
-				displaySnackMessage("Error posting chat");
+				self.displaySnackMessage("Error posting chat");
 			}
 		});
 	}

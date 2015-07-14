@@ -37,6 +37,7 @@ AppDispatcher.register(function(payload) {
 
 		case Constants.SET_GROUPS:
 			 _groups = action.groups;
+       console.log('groups set: ' + _groups.length);
 			 break;
 
     case Constants.SET_LOADING:

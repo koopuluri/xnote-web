@@ -8,6 +8,8 @@ var ChatNotifications = require('./ChatNotifications.react');
 var FeedNotifications = require('./FeedNotifications.react');
 var mui = require('material-ui');
 
+var GroupActions = require('../../actions/GroupActions');
+
 var AppBar = mui.AppBar;
 var FlatButton = mui.FlatButton;
 var Colors = mui.Styles.Colors;
@@ -32,6 +34,8 @@ var ArticleToolbar = React.createClass({
     componentDidMount: function() {
       NotificationStore.addChangeListener(this._onNotifChange);
       GroupStore.addChangeListener(this._onGroupChange);
+
+      GroupActions.fetchAndSetNotifs(this.props.groupId);
     },
 
     componentWillUnmount: function() {
@@ -42,7 +46,7 @@ var ArticleToolbar = React.createClass({
     _onNotifChange: function() {
       this.setState({
         chatNotifs: NotificationStore.getChatNotifs(),
-        feedNotifs: NotificationStore.getFeedNotifs()
+        notifs: NotificationStore.getNotifs()
       });
     },
 

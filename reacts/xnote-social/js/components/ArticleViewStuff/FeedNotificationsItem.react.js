@@ -1,15 +1,14 @@
 var React = require('react');
 
-
 var mui = require('material-ui');
 var Colors = mui.Styles.Colors;
 var ListItem = mui.ListItem;
 
 var getOnFeedPostClickedFunction = function(post) {
   return function() {
-    if (post.type === ARTICLE) {
+    if (post.article) {
       window.location.hash = '#articleId=' + post.article._id;
-    } else if (post.type === HIGHLIGHT) {
+    } else if (post.highlight) {
       window.location.hash = '#articleId=' + post.highlight.articleId + '&&highlightId=' + post.highlight.highlightId;
     } else {
       // fuck 

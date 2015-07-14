@@ -13,11 +13,14 @@ var Groups = React.createClass({
         }
     },
 
+    _onChange: function() {
+        this.setState({groups: Store.getGroups()});
+
+    },
+
+
     componentDidMount: function() {
-        var self = this;
-        Store.addChangeListener(function() {
-            self.setState({groups: Store.getGroups()});
-        });
+        Store.addChangeListener(this._onChange);
         Actions.fetchAndSetGroups();
     },
 
