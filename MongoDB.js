@@ -10,7 +10,6 @@ var Chat = require('./models/Chat');  //
 var Notification = require('./models/Notification');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
-var async = require('async');
 var DIFFBOT_ID = '68d394da976cdc973aa825a7927660aa';
 
 //Lets connect to our database using the DB server URL.
