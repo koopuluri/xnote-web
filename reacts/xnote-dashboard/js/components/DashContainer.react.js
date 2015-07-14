@@ -42,6 +42,11 @@ var DashContainer = React.createClass({
             }
         })
     },
+
+    componentDidMount: function() {
+        
+    },
+    
     render: function() {
         return (
             <div className="dash-container">

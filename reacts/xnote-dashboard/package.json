@@ -3,7 +3,13 @@
     "version": "0.0.1",
     "description": "xnote Dash",
     "main": "js/app.js",
-
+    "dependencies": {
+      "flux": "^2.0.0",
+      "react": "^0.13.0",
+      "underscore": "^1.7.0",
+      "material-ui": "0.10.0",
+      "mongoose": "~3.8.1"
+    },
     "scripts": {
       "start": "watchify -o ../../static/static/js/dashboard.js -v -d .",
       "build": "browserify . | uglifyjs -cm > ../../static/static/js/dashboard.js"

@@ -1,5 +1,4 @@
 window.React = require('react');
-var GroupData = require('./MockData');
 var API = require('./utils/API')
 var MainContainer = require('./components/MainContainer.react');
 var injectTapEventPlugin = require("react-tap-event-plugin");

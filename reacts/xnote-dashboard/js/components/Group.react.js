@@ -9,7 +9,7 @@ var ToolbarGroup = mui.ToolbarGroup;
 var Group = React.createClass({
 
 	_onSelect: function() {
-		window.location = '/group?id=' + this.props.group._id;
+		window.location = '/group?id=' + this.props.group.groupRef._id;
 	},
 
     render: function() {
@@ -17,7 +17,7 @@ var Group = React.createClass({
         return (
         	<ToolbarGroup float="left" style={{padding:10}}>
         		<Card onClick={this._onSelect} zDepth={1} style={{padding:10}}>
-            	    <p>{group.title}</p>
+            	    <p>{group.groupRef.title}</p>
             	</Card>
             </ToolbarGroup>
         );
