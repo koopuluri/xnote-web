@@ -96,14 +96,7 @@ var AppToolbar = React.createClass({
           this.refs.addMemberDialog.show();
           GroupActions.fetchAndSetFriends();
           break;
-
-        case LOGOUT:
-          break;
-
-        case GROUPS_PAGE:
-          break;
       }
-
     },
 
     _onQueryChange: function() {
@@ -136,6 +129,7 @@ var AppToolbar = React.createClass({
 
     render: function() {
       var members = [];
+      console.log(this.state.members);
       if (this.state.members) {
         var members = this.state.members.map(function(member) {
           return ({
@@ -150,18 +144,18 @@ var AppToolbar = React.createClass({
       menuItems.push(
         { type: MenuItem.Types.SUBHEADER, text: 'Settings' },
         {
-            payload: '/logout',
-            text: 'Logout',
-            type: MenuItem.Types.LINK,
+          payload: ADD_MEMBER,
+          text: 'Add Member'
         },
         {
           type: MenuItem.Types.LINK,
-          payload: '/groups',
+          payload: '/dashboard',
           text: 'Back to Groups',
         },
         {
-          payload: ADD_MEMBER,
-          text: 'Add Member'
+            payload: '/logout',
+            text: 'Logout',
+            type: MenuItem.Types.LINK,
         }
       );
       var self = this;

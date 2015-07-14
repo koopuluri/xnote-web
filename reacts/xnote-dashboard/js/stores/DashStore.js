@@ -6,7 +6,7 @@ var _ = require('underscore');
 var CHANGE_EVENT = 'dashChange';
 
 _groups = [];
-_user = [];
+_user = null;
 _friends = [];
 _isLoading = false;
 
@@ -47,7 +47,6 @@ AppDispatcher.register(function(payload) {
 
 		case Constants.SET_GROUPS:
 			 _groups = action.groups;
-       console.log('groups set: ' + _groups.length);
 			 break;
 
     case Constants.SET_LOADING:
@@ -63,6 +62,7 @@ AppDispatcher.register(function(payload) {
         break;
 
     case Constants.ADD_GROUP:
+
         _groups.push(action.group);
         break;
 

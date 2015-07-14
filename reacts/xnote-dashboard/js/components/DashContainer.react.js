@@ -2,6 +2,7 @@ var React = require('react');
 var Store = require('../stores/DashStore');
 var Navbar = require('./Navbar.react');
 var GroupsContainer = require('./GroupsContainer.react');
+var Actions = require('../actions/Actions');
 
 var mui = require('material-ui');
 var ThemeManager = new mui.Styles.ThemeManager();
@@ -21,13 +22,13 @@ var DashContainer = React.createClass({
 
     componentWillMount: function() {
         ThemeManager.setPalette({
-            primary1Color: '#FFFFFF',
+            primary1Color: Colors.green500,
             accent1Color: Colors.green500,
             focusColor: Colors.green500
         });
         ThemeManager.setComponentThemes({
             appBar: {
-                textColor: Colors.green500,
+                backgroundColor: Colors.green500,
                 height: 30
             },
             menuSubheader: {
@@ -44,7 +45,7 @@ var DashContainer = React.createClass({
     },
 
     componentDidMount: function() {
-        
+        Actions.fetchAndSetUser();
     },
     
     render: function() {

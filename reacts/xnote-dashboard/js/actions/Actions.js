@@ -45,8 +45,8 @@ var Actions = {
 
     fetchAndSetUser: function() {
         var self = this;
-        API.getUserInfo(function(userInfo) {
-            self._setUser(userInfo);
+        API.getUserInfo(function(data) {
+            self._setUserInfo(data.user);
         });
     },
 
@@ -72,10 +72,6 @@ var Actions = {
             // callback does nothing?
         });
     },
-
-    getFriends: function(callback) {
-
-    }
 }
 
 

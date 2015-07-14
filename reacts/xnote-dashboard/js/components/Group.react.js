@@ -15,11 +15,14 @@ var Group = React.createClass({
 
     render: function() {
         var group = this.props.group;
+        var groupDescription = group.groupRef.description ? group.groupRef.description : '';
         return (
         	<ToolbarGroup float="left" style={{padding:10}}>
-        		<Card zDepth={1} style={{padding:10}}>
+        		<Card zDepth={1}>
             	    <ListItem 
                         primaryText = {group.groupRef.title}
+                        secondaryText = {groupDescription}
+                        secondaryTextLines = {2}
                         onClick={this._onSelect} />
             	</Card>
             </ToolbarGroup>
