@@ -15,7 +15,7 @@ var GroupActions = {
 					notifs: obj.notifs
 				});
 			} else {
-				displaySnackMessage("Error: Could not get notifications");
+				self.displaySnackMessage("Error: Could not get notifications");
 			}
 		});
 	},
