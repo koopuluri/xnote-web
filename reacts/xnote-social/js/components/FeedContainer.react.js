@@ -26,7 +26,7 @@ var FeedContainer = React.createClass({
 
 		componentDidMount: function() {
 			FeedStore.addChangeListener(this._onChange);
-			GroupActions.fetchFeedSegment(this.props.groupId, 0, 5);
+			GroupActions.fetchFeedSegment(this.props.groupId, 0, FeedStore.SEG_SIZE);
 		},
 
 		componentWillUnmount: function() {
@@ -37,8 +37,11 @@ var FeedContainer = React.createClass({
 		_onScroll: function() {
 			var node = this.getDOMNode();
        		if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
-	            // load more items:
-	            GroupActions.fetchFeedSegment(this.props.groupId, this.state.index, 5);
+
+	            // load more items if limit not reached:
+	            if (FeedStore.isLazy()) {
+		            GroupActions.fetchFeedSegment(this.props.groupId, this.state.index, FeedStore.SEG_SIZE);
+		        }
 	        }
 		},
 

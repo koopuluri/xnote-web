@@ -5,9 +5,12 @@ var _ = require('underscore');
 
 var _chat = [];
 var _isLoading = false;
+var _isLazy = true;
 
 var _index = 0;
 var _lastAddedChatId = null;
+
+var SEG_SIZE = 15;
 
 function loadChatData(data) {
 	_chat = data;
@@ -18,6 +21,10 @@ var ChatStore = _.extend({}, EventEmitter.prototype, {
 	//Get chat items
 	getChat: function() {
 		return _chat;
+	},
+
+	isLazy: function() {
+		return _isLazy;
 	},
 
 	getLoading: function() {
@@ -63,6 +70,11 @@ GroupDispatcher.register(function(payload) {
 			} else {
 				// don't add the chat --> already exists
 			}
+
+			if(chats.length < SEG_SIZE) {
+				_isLazy = false;
+			}
+
 			break;
 
 		case Constants.SET_CHAT_LOADING:

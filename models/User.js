@@ -16,7 +16,8 @@ var userSchema = mongoose.Schema({
         id: String,
         token: String,
         name: String,
-        email: String
+        email: String,
+        picture: String
     },
     groups: [{
 	    groupRef: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},

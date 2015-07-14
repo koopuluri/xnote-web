@@ -44,13 +44,28 @@ module.exports = function(passport) {
 
             // find the user in the database based on their facebook id
             console.log('facebook thing');
-            console.log('token: ' + token);
-            console.log('profile.id: ' + profile.id);
+            console.log(profile);
             User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
                 //console.log('User.findOne area: ' + Object.keys(user));
 
                 if (user) {
-                    return done(null, user);
+                    if(!user.facebook.picture) {
+                        if(user.facebook.name === 'Vignesh Prasad') {
+                            user.facebook.picture = 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Yellow_mongoose_1.jpg';
+                        } else {
+                            user.facebook.picture = 'http://www.tortoisecentre.co.uk/images/ProductImages/Web_wm20036.jpg';
+                        }
+                        console.log('prof.pic set!');
+                        user.save(function(err) {
+                            if(err) {
+                                throw err;
+                            }
+
+                            return done(null, user);
+                        });
+                    } else {
+                        return done(null, user);
+                    }
                 }
 
                 if (err) {

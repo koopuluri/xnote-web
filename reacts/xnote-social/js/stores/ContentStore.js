@@ -9,6 +9,10 @@ var _selectedArticleId = null;
 var _isParsing = false;
 var _isLoading =true;
 
+var _isLazy = true;
+
+var SEG_SIZE = 10;
+
 var _index = 0;
 
 var CHANGE = 'contentStoreChange';
@@ -18,6 +22,10 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
 
     getIndex: function() {
         return _index;
+    },
+
+    isLazy: function() {
+      return _isLazy;
     },
 
   	getArticleList: function() {
@@ -102,6 +110,12 @@ GroupDispatcher.register(function(payload) {
               _articleList = _articleList.concat(articles);
               _index += articles.length;
           }
+
+          if (articles.length < SEG_SIZE) {
+              // need to stop lazy loading, reached limit:
+              _isLazy = false;
+          }
+
           break;
 
       case Constants.CLEAR_ARTICLE_LIST:

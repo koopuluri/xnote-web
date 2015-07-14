@@ -47,7 +47,7 @@ var ChatContainer = React.createClass({
 	componentDidMount: function() {
 		ChatStore.addChangeListener(this._onChange);
 		GroupStore.addChangeListener(this._onChange);
-		GroupActions.fetchChatSegment(this.props.groupId, 0, 10);
+		GroupActions.fetchChatSegment(this.props.groupId, 0, ChatStore.SEG_SIZE);
 	},
 
 	componentWillUnmount: function() {

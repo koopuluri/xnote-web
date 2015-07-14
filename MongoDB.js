@@ -60,7 +60,6 @@ var DB = {
             icon: article.icon,
             group: article.group,
             serialization: article.serialization,
-
             author: article.author,
             articleDate: article.articleDate,
             icon: article.icon,
@@ -73,11 +72,12 @@ var DB = {
                 return;
             }
 
+            console.log('SAVED ARTICLE: ' + savedArticle.createdBy);
+
             // adding a feedPost for this article:
             self._addFeedPostForArticle(user, savedArticle, callback);
-            console.log('SAVED ARTICLE: ' + savedArticle.createdBy);
             self.addNotifsForArticle(user, savedArticle, function(notif) {
-                console.log('this notif saved: ' + notif);
+                console.log('this notif saved for article: ' + notif);
             });
         });
      },
@@ -133,10 +133,9 @@ var DB = {
         });
      },
 
-
      // saves a new feedPost for an article
      _addFeedPostForArticle: function(user, article, callback) {
-        var groupRef = article.groupRef;
+        var groupRef = article.group;
         var post = FeedPost({
             createdBy: user,
             lastModifiedTimestamp: {type: Date, default: Date.now},
@@ -316,8 +315,8 @@ var DB = {
 
      getHighlight: function(user, highlightRef, callback) {
         Highlight.findOne({_id: highlightRef})
-                  .populate('createdBy', 'facebook.id facebook.name')
-                  .populate('notes.createdBy', 'facebook.id facebook.name')
+                  .populate('createdBy', 'facebook.id facebook.name facebook.picture')
+                  .populate('notes.createdBy', 'facebook.id facebook.name facebook.picture')
                   .exec(function(err, doc) {
                       if (err) {
                           console.log('highlight populate error; ' + err);
@@ -336,7 +335,7 @@ var DB = {
             console.log('getGroup: ' + groupRef);
             Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
-               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                .populate('members', '-_id')
                .exec(function(err, doc) {
                     if (err || !doc) {
@@ -373,7 +372,7 @@ var DB = {
         FeedPost.find({group: groupRef})
                 .sort({'lastModifiedTimestamp': 'desc'})
                 .skip(start).limit(count)
-                .populate('createdBy', '-_id facebook.id facebook.name')
+                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                 .populate('highlight', '-createdBy')
                 .populate('highlight.notes', '-createdBy')
                 .populate('article', '-createdBy')
@@ -392,7 +391,7 @@ var DB = {
         Article.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
-               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                .exec(function(err, results) {
                   if(err) {
                       console.log('articleListSegment: ' + err);
@@ -408,7 +407,7 @@ var DB = {
         Chat.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
-               .populate('createdBy', '-_id facebook.id facebook.name')
+               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
                .exec(function(err, results) {
                   if(err) {
                       console.log('chatSegment error: ' + err);
@@ -492,7 +491,7 @@ var DB = {
      // given article ref, goes through all members of the parent group, and 
      // adds notif for each one of them:
      addNotifsForArticle: function(creatingUser, article, callback) {
-        console.log('add notif for article!');
+        console.log('add notif for article!: ' + article.group);
         Group.findOne({_id: article.group}).populate('members')
              .exec(function(err, doc) {
                 if (err) {
@@ -698,21 +697,21 @@ module.exports = DB;
 //         // });
 
 
-//         var memberList = ['511989525640264', '853160004761049'];
-//         var viggy = ['853160004761049']
+//         // var memberList = ['511989525640264', '853160004761049'];
+//         // var viggy = ['853160004761049']
 
-//         var dummyGroup = {
-//             title: 'The test group, Viggy first!',
-//             _id: newGroupId
-//         }
+//         // var dummyGroup = {
+//         //     title: 'The test group, Viggy first!',
+//         //     _id: newGroupId
+//         // }
 
 //         // DB.addGroup(user, dummyGroup, viggy, function(obj) {
 //         //     console.log('poop: ' + Object.keys(obj));
 //         // });
 
-//         DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
-//             console.log('poop: ' );
-//         });
+//         // DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
+//         //     console.log('poop: ' );
+//         // });
 
 
 //         // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
@@ -762,9 +761,9 @@ module.exports = DB;
 
 //         //
 
-//         // DB.addArticleFromUrl(user, groupId, 'http://paulgraham.com/ds.html', function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
+//         DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
+//             console.log('poop: ' + Object.keys(poop));
+//         });
 
 
 //         //adding note:

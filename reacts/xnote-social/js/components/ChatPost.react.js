@@ -15,10 +15,10 @@ var ChatPost = React.createClass({
 		var message = this.props.message
 		if(message.createdBy.facebook.picture) {
 			var leftAvatar = 
-				<Avatar src={message.createdBy.facebook.picture} size={30} />
+				<Avatar src={message.createdBy.facebook.picture} size={40} />
 		} else {
 			var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
-			var leftAvatar = <Avatar size={30}>{avatarCharacter}</Avatar>
+			var leftAvatar = <Avatar size={40}>{avatarCharacter}</Avatar>
 		}
 		return (
 			<ListItem

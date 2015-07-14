@@ -84,10 +84,10 @@ var FeedPost = React.createClass({
 			var article = post.article;
 			if(post.createdBy.facebook.picture) {
 				var leftAvatar = 
-					<Avatar src={post.createdBy.facebook.picture} size={30} />
+					<Avatar src={post.createdBy.facebook.picture} size={40} />
 			} else {
 				var avatarCharacter = post.createdBy.facebook.name.substring(0, 1);
-				var leftAvatar = <Avatar size={30}>{avatarCharacter}</Avatar>
+				var leftAvatar = <Avatar size={40}>{avatarCharacter}</Avatar>
 			}
 			return (
 				<Card>
@@ -127,15 +127,15 @@ var FeedPost = React.createClass({
 				var self = this;
 				if(post.createdBy.facebook.picture) {
 					var leftAvatar = 
-						<Avatar src={post.createdBy.facebook.picture} size={30} />
+						<Avatar src={post.createdBy.facebook.picture} size={40} />
 				} else {
 					var avatarCharacter = post.createdBy.facebook.name.substring(0, 1);
-					var leftAvatar = <Avatar size={30}>{avatarCharacter}</Avatar>
+					var leftAvatar = <Avatar size={40}>{avatarCharacter}</Avatar>
 				}
 				var highlight = post.highlight;
 				var highlightClippedText = '';
-				if (highlight.clippedText.length > 203) {
-					highlightClippedText = '"' + highlight.clippedText.substring(0, 200) + '... "';
+				if (highlight.clippedText.length > 143) {
+					highlightClippedText = '"' + highlight.clippedText.substring(0, 140) + '... "';
 				} else {
 					highlightClippedText = '"' + highlight.clippedText + '"';
 				}
@@ -157,6 +157,7 @@ var FeedPost = React.createClass({
 							{notes}
 						</div>
 				}
+
 				var rightIconButton = '';
 				if (this.props.isLink) {
 					rightIconButton = (
@@ -193,8 +194,8 @@ var FeedPost = React.createClass({
 	        						}
 	        					}>
 	        					<div>
-	        						<p style={{padding : 5, fontSize : 16}}>
-	        							{highlightClippedText}
+	        						<p style={{padding : 5, fontSize : 16}} dangerouslySetInnerHTML={{__html: highlightClippedText}} >
+	        							
 	        						</p>
 									{noteList}
 								</div>
