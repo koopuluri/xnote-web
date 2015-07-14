@@ -50,17 +50,22 @@ module.exports = function(passport) {
 
                 if (user) {
                     if(!user.facebook.picture) {
-                        user.facebook.picture = 'graph.facebook.com/' + user.facebook.id + '/picture';
-                        user.save(function(err) {
-                            if(err) {
-                                throw err;
-                            }
 
-                            return done(null, user);
-                        });
+                        User.findOneAndUpdate({_id: user._id}, 
+                            {'facebook.picture': 'http://graph.facebook.com/' + user.facebook.id + '/picture?type=large'},
+                            {},
+                            function(err, updatedUser) {
+                                if(err) {
+                                    console.log('error adding picture to existing user: ' + err);
+                                    throw err;
+                                }
+
+                                return done(null, updatedUser);
+                            });
                     } else {
                         return done(null, user);
                     }
+                    return null;  // should not reach this statement! 
                 }
 
                 if (err) {
