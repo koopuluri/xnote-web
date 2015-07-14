@@ -28,7 +28,8 @@ function getState() {
         addList: [],
         friendsLoading : false,
         groupName : '',
-        currentUser: DashStore.getCurrentUser()
+        currentUser: DashStore.getCurrentUser(),
+        groupDescription: ''
     });
 }
 
@@ -49,13 +50,12 @@ var onDeleteFromAddList = function(addListItem, self) {
 var friendListOnClickFunction = function(member, self) {
   return function() {
     var newList = self.state.addList;
-    newList.push(member.id);
-    console.log('newlist.push: ' + member.id);
+    newList.push(member);
     self.setState({
         addList : newList
     })
-    //self.refs.addMemberQuery.clearValue();
-    //self.refs.addMemberQuery.focus();
+    self.refs.addMemberQuery.clearValue();
+    self.refs.addMemberQuery.focus();
   }
 }
 
@@ -84,6 +84,16 @@ var AddGroupComponent = React.createClass({
         }
     },
 
+
+    componentDidMount: function() {
+        Actions.fetchAndSetFriends();
+        DashStore.addChangeListener(this._onChange);
+    },
+
+    componentWillUnmount: function() {
+        DashStore.removeChangeListener(this._onChange);
+    },
+
     _onQueryChange: function() {
         var query = this.refs.addMemberQuery.getValue();
         if(query != '') {
@@ -93,6 +103,7 @@ var AddGroupComponent = React.createClass({
             for (var i = 0; i < friends.length; i++) {
                 var name = friends[i].name.toLowerCase();
                 if (name.includes(query)) {
+                    console.log(friends[i]);
                     queryList.push(friends[i]);
                 }   
             }
@@ -113,21 +124,36 @@ var AddGroupComponent = React.createClass({
     },
 
     _onGroupAdd: function() {
-        var newList = this.state.addList.slice();
+        var newList = [];
+        for (var i = 0; i < this.state.addList.length; i++) {
+            newList.push(this.state.addList[i].id);
+        }
         newList.push(this.state.currentUser.facebook.id);
+        var id = Utils.generateUUID();
         var group = {
+            groupRef: {
+                title: this.state.groupName,
+                description: this.state.groupDescription,
+                _id: id
+            },
             createdBy: this.state.currentUser,
-            _id: Utils.generateUUID(),
+            _id: id,
             title: this.state.groupName,
+            description: this.state.groupDescription,
             createdAt: Utils.getTimestamp()
         };
-
-
         Actions.addGroup(group, newList);
         this.setState({
             addList : []
         })
         this.refs.addGroupDialog.dismiss();
+    },
+
+    _onChange: function() {
+        this.setState({
+            friends: DashStore.getFriends(),
+            currentUser: DashStore.getCurrentUser()
+        });
     },
 
 
@@ -146,6 +172,11 @@ var AddGroupComponent = React.createClass({
                         fullWidth = {true}
                         hintText="Enter Group Name"
                         ref = 'groupName' />
+                    <TextField 
+                        fullWidth = {true}
+                        hintText="Enter Group Description"
+                        ref='groupDescription'
+                        multiLine={true} />              
                 </div>
         } else {
             var counter = 0;

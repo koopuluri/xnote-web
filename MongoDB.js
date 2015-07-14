@@ -337,7 +337,7 @@ var DB = {
             Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
                .populate('createdBy', '-_id facebook.id facebook.name')
-               .populate('members', '-_id facebook.id facebook.name')
+               .populate('members', '-_id')
                .exec(function(err, doc) {
                     if (err || !doc) {
                         if (err)
@@ -345,6 +345,8 @@ var DB = {
                         callback({error: 'poop'});
                         return;
                     }
+                    console.log('GETGROUP');
+                    console.log(doc);
                     callback({group: doc});
                });
        },
@@ -458,7 +460,7 @@ var DB = {
             // adding these users to the group:
             // first: add all the users to the group's list:
             Group.findOneAndUpdate({_id: groupRef},
-                {$addToSet: {members: usersToAdd}},
+                {$pushAll: {members: usersToAdd}},
                 {},
                 function(err, updatedGroup) {
                     if (err) {
