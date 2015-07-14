@@ -31,7 +31,6 @@ var getFeedPostOnClick = function(post) {
 		if (post.type === ARTICLE) {
 			window.location.hash = '#articleId=' + post.article._id;
 		} else if (post.type === HIGHLIGHT) {
-			console.log(post.highlight);
 			window.location.hash = '#articleId=' + post.highlight.article + '&&highlightId=' + post.highlight._id;
 		} else {
 			// fuck 
@@ -170,15 +169,7 @@ var FeedPost = React.createClass({
 								<p style = {{ paddingLeft: 60, fontSize: 10}}> {highlight.lastModifiedTimestamp} </p>
 							} 
 
-							rightIconButton = {
-								<FlatButton 
-									onClick = {getFeedPostOnClick(post)}
-									primary = {true}
-									style={{
-										height:40,
-									}}
-									label='HIGHLIGHT' />
-							}/>
+							rightIconButton = {rightIconButton}/>
 							<CardText
 								style = {
 	        						{

@@ -9,69 +9,56 @@ var Card = mui.Card;
 var CardText = mui.CardText;
 var CardTitle = mui.CardTitle;
 var Colors = mui.Styles.Colors;
-var DropDownIcon = mui.DropDownIcon;
+var FontIcon = mui.FontIcon;
 
 var NoteComponent = React.createClass ({
 
-		_menuOptions: function(e, key, payload) {
-			if(payload.text === "Delete") {
-				this.props.actions.deleteNote(payload.payload);
-			}
+		_menuOptions: function() {
+			this.props.actions.deleteNote(this.props.note, this.props.highlightId);
 		},
 
 		render: function() {
 				var note = this.props.note
 				var self = this
-				var noteOptions = [
-			  		{payload: {
-			  				note : note,
-			  				highlightId : this.props.highlightId,
-			  			},
-			  		 text: 'Delete'},
-				];
 				var options = null;
 				if (this.props.user && this.props.user.facebook.id === note.owner.id) {
 					var options =
-							<DropDownIcon
-								menuItems={noteOptions}
-								closeOnMenuItemTouchTap = {true}
-								onChange = {self._menuOptions}> +
-							</DropDownIcon>
+							<FontIcon
+								onClick = {self._menuOptions}> x
+							</FontIcon>
 				}
 
 				var ownerName = note.owner ? note.owner.name : 'PoopNoteOwner';
-
 				return (
 					<ListItem
-							disabled={true}
-							style ={{
-								padding : 10,
-								backgroundColor : Colors.green50,
-							}}
-							primaryText = {
-								<p style = {
-									{
-										fontSize : 13,
-										lineHeight : 1,
-										fontWeight: 800,
-										paddingBottom : 0,
-									}
-								}>
-									{ownerName}
-								</p>	
-								} 
-							secondaryText = {
-								<p style = {
+						disabled={true}
+						style ={{
+							padding : 10,
+							backgroundColor : Colors.green50,
+						}}
+						rightIconButton={options} >
+							<p style = {
+								{
+									fontSize : 13,
+									lineHeight : 1,
+									fontWeight: 800,
+									paddingBottom : 0,
+								}
+							}>
+								{ownerName}
+							</p>	
+							<p style = {
 									{
 										paddingBottom : 0,
 										fontSize : 15,
 										fontColor : Colors.DarkBlack
 									}
 								}>
-									{note.content}
-								</p>
-							}
-							rightIconButton={options} />
+								{note.content}
+							</p>
+					</ListItem>
+
+
 				);
 		}
 });

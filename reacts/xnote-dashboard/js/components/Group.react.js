@@ -3,6 +3,7 @@ var React = require('react');
 var mui = require('material-ui');
 var Card = mui.Card;
 var ToolbarGroup = mui.ToolbarGroup;
+var ListItem = mui.ListItem;
 
 // props:
 // - group
@@ -16,8 +17,10 @@ var Group = React.createClass({
         var group = this.props.group;
         return (
         	<ToolbarGroup float="left" style={{padding:10}}>
-        		<Card onClick={this._onSelect} zDepth={1} style={{padding:10}}>
-            	    <p>{group.groupRef.title}</p>
+        		<Card zDepth={1} style={{padding:10}}>
+            	    <ListItem 
+                        primaryText = {group.groupRef.title}
+                        onClick={this._onSelect} />
             	</Card>
             </ToolbarGroup>
         );

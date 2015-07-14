@@ -464,7 +464,7 @@ var DB = {
                     if (err) {
                         console.log('error saving group when updating members; ' + err);
                     } else {
-
+                        callback({groupId: updatedGroup._id});
                     }
                 });
 

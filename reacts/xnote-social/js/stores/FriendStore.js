@@ -5,8 +5,7 @@ var _ = require('underscore');
 
 var _loading = true;
 
-var _friends = [
-]
+var _friends = []
 
 var CHANGE = 'friendsChange';
 

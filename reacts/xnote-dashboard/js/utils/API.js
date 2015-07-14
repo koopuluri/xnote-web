@@ -12,14 +12,21 @@ module.exports = {
     // adding group:
     addGroup: function(group, members, callback) {
         $.post('/_add_group', {group: group, members: members}, function(data, status) {
-            callback(data.result);
+            callback(data.groupId);
+            console.log('added group: ' + data.groupId)
         });
     },
 
     // Lonely and need friends? Just call this magic fun!
     getFriends: function(callback) {
-      $.get('/_friends', {}, function(data, status) {
-          callback(data.friends);
-      });
-    }
+        $.get('/_friends', {}, function(data, status) {
+            callback(data.friends);
+        });
+    },
+
+    getUserInfo: function(callback) {
+        $.get('/_user_info', {}, function(data, status) {
+            callback(data);
+        });
+    },
 }

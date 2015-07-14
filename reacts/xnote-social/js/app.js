@@ -1,15 +1,8 @@
 window.React = require('react');
-var GroupData = require('./MockData');
 var API = require('./utils/API')
 var MainContainer = require('./components/MainContainer.react');
 var injectTapEventPlugin = require("react-tap-event-plugin");
 var Actions = require('./actions/GroupActions');
-
-//Load mock group data into local storage
-GroupData.init();
-
-//Load mock API call
-// GroupAPI.getGroupData();
 
 //Needed for onTouchTap
 //Can go away when react 1.0 release

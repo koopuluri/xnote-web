@@ -1,7 +1,6 @@
 var React = require('react');
 var Utils = require('../utils/Utils');
 var Actions = require('../actions/Actions')
-
 var DashStore = require('../stores/DashStore');
 
 var mui = require('material-ui');
@@ -50,7 +49,8 @@ var onDeleteFromAddList = function(addListItem, self) {
 var friendListOnClickFunction = function(member, self) {
   return function() {
     var newList = self.state.addList;
-    newList.push(member);
+    newList.push(member.id);
+    console.log('newlist.push: ' + member.id);
     self.setState({
         addList : newList
     })
@@ -114,14 +114,16 @@ var AddGroupComponent = React.createClass({
 
     _onGroupAdd: function() {
         var newList = this.state.addList.slice();
-        newList.push(this.state.currentUser);
+        newList.push(this.state.currentUser.facebook.id);
         var group = {
             createdBy: this.state.currentUser,
             _id: Utils.generateUUID(),
             title: this.state.groupName,
             createdAt: Utils.getTimestamp()
         };
-        Actions.addGroup(group, members);
+
+
+        Actions.addGroup(group, newList);
         this.setState({
             addList : []
         })
