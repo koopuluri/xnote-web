@@ -13,7 +13,6 @@ var Colors = mui.Styles.Colors;
 function getNotifsState() {
     return {
         chatNotifs: NotificationStore.getChatNotifs(),
-        feedNotifs: NotificationStore.getFeedNotifs()
     }
 }
 
@@ -44,16 +43,14 @@ var GroupSidebar = React.createClass({
         }
 
         var feedLabel = 'Feed'
-        if(this.state.feedNotifs > 0) {
-            var feedLabel = 'Feed (' + this.state.feedNotifs + ')'
-        }
 
         return (
             <div className = "group-sidebar-container">
                 <Tabs
-                    style = {{className: 'FUCK FUCK FUCK FUCK FUCK ', 'height': '100%'}}
+                    style = {{'height': '100%'}}
+                    tabItemContainerStyle = {{backgroundColor : Colors.grey150}}
                     className = 'discussion-view-tabs'
-                    contentContainerStyle={{ 'className' : 'Vignesh', 'height':'100%'}}>
+                    contentContainerStyle={{'height':'100%'}}>
                     <Tab
                         className = 'chat-tab'
                         label= {chatLabel}

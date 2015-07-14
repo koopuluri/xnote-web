@@ -67,7 +67,6 @@ var Discussion = React.createClass({
                 createdAt: Math.floor(Date.now() / 1000)
             }
         }
-
         Actions.addNote(this.state.highlight._id, newNote);
     },
 
@@ -91,7 +90,7 @@ var Discussion = React.createClass({
                   createdBy: {facebook: {name: 'Karthik Uppuluri', id: 'dkjsfkjs'}}
               }
 
-              comp = <FeedPost post={post} actions="Article"/>
+              comp = <FeedPost post={post} actions="Article" isLink = {false}/>
           } else {
               var messageStyle = {marginTop: '30%', marginLeft: '5%'};
               comp = <div className="message" style={messageStyle}>

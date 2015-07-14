@@ -4,6 +4,8 @@ var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _chat = [];
+var _isLoading = false;
+
 var _index = 0;
 var _lastAddedChatId = null;
 
@@ -11,12 +13,15 @@ function loadChatData(data) {
 	_chat = data;
 }
 
-
 var ChatStore = _.extend({}, EventEmitter.prototype, {
 
 	//Get chat items
 	getChat: function() {
 		return _chat;
+	},
+
+	getLoading: function() {
+		return _isLoading;
 	},
 
 	//emit change event
@@ -31,7 +36,11 @@ var ChatStore = _.extend({}, EventEmitter.prototype, {
 
 	removeChangeListener: function(callback) {
 		this.removeListener('chat-change', callback);
-	}
+	},
+
+	getLoading: function() {
+        return _isLoading;
+    },
 });
 
 GroupDispatcher.register(function(payload) {
@@ -55,11 +64,14 @@ GroupDispatcher.register(function(payload) {
 				// don't add the chat --> already exists
 			}
 			break;
+
+		case Constants.SET_CHAT_LOADING:
+	        _isLoading = action.isLoading;
+        	break;
 			
 		case Constants.CLEAR_CHAT:
 			_index = 0;
 			_chat = [];
-			console.log('CHAT CLEARED');
 			break;
 
 		default:

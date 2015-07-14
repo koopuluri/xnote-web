@@ -7,6 +7,7 @@ var _ = require('underscore');
 var _feed = [];
 var _index = 0;
 var _lastAddedNoteId = null;
+var _isLoading = false;
 
 var CHANGE = 'feedStoreChange';
 
@@ -64,6 +65,10 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 			  return _feed;
 		},
 
+		getLoading: function() {
+			return _isLoading;
+		},
+
 		//Emit Change event
 		emitChange: function() {
 			  this.emit(CHANGE);
@@ -85,6 +90,10 @@ GroupDispatcher.register(function(payload) {
 		switch(action.actionType) {
 			case GroupConstants.SET_FEED:
 				_feed = action.feed.reverse();
+				break;
+
+			case GroupConstants.SET_FEED_LOADING:
+				_isLoading = action.isLoading;
 				break;
 
 			case GroupConstants.ADD_NOTE:

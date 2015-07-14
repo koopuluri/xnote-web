@@ -4,6 +4,7 @@ var ChatPost = require('./ChatPost.react.js');
 var GroupActions = require('../actions/GroupActions');
 var GroupUtils = require('../utils/GroupUtils');
 var GroupStore = require('../stores/GroupStore');
+var Loading = require('./ArticleViewStuff/Loading.react')
 
 
 var ChatScrollContainer = require('./ChatScrollContainer.react');
@@ -24,7 +25,8 @@ var Colors = mui.Styles.Colors;
 function getChatState() {
 	return {
 		messages: ChatStore.getChat(),
-		currentUser : GroupStore.getCurrentUser()
+		currentUser : GroupStore.getCurrentUser(),
+		isLoading : ChatStore.getLoading(),
 	}
 }
 
@@ -55,30 +57,34 @@ var ChatContainer = React.createClass({
 	},
 
 	_chat: function(content) {
-		var message = {
+		if (content != '' ) {
+			var message = {
 				createdBy: this.state.currentUser,
 				createdAt: GroupUtils.getTimestamp(),
 				content: content,
 				chatId: GroupUtils.generateUUID(),
+			}
+			GroupActions.postChat(message, this.props.groupId);
 		}
-		GroupActions.postChat(message, this.props.groupId);
 	},
 
 	render: function() {
-		return (
-			<div className = 'chat-container' style={{backgroundColor: Colors.white}}>
-
-				<ChatScrollContainer currentUser={this.state.currentUser} messages={this.state.messages}/>
-
-				<div className = 'chat-form' style={{paddingLeft : 10}}>
-					<MultiLineInput
-						width="59"
-						startingContent = 'Send a message'
-	  					textareaClassName='chat-post-area'
-	  					onSave = {this._chat}/>
+		if (this.state.isLoading) {
+		    return (<Loading marginLeft = {40}/>);
+		} else {
+			return (
+				<div className = 'chat-container'>
+					<ChatScrollContainer currentUser={this.state.currentUser} messages={this.state.messages}/>
+					<div className = 'chat-form' style={{paddingLeft : 10}}>
+						<MultiLineInput
+							width="59"
+							startingContent = 'Send a message'
+	  						textareaClassName='chat-post-area'
+	  						onSave = {this._chat}/>
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}
 	}
 
 });

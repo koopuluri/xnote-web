@@ -7,13 +7,17 @@ var API = require('../utils/API');
 var GroupActions = {
 
 	fetchAndSetNotifs: function(group) {
+		var self = this;
 		API.getNotifs(group, function(obj) {
-			console.log('notifs: ' + obj.notifs);
-			console.log(obj);
-			GroupDispatcher.handleAction({
-				actionType: Constants.SET_NOTIFS,
-				notifs: obj.notifs
-			});
+			if(!obj.error) {
+				console.log(obj);
+				GroupDispatcher.handleAction({
+					actionType: Constants.SET_NOTIFS,
+					notifs: obj.notifs
+				});
+			} else {
+				self.displaySnackMessage("Error: Could not get notifications");
+			}
 		});
 	},
 
@@ -61,17 +65,20 @@ var GroupActions = {
 		var self = this;
 		API.getGroup(groupId, function(result) {
 				if (result.error) {
-					// do nothing for now.
-
+					console.log('getGroup.error: ' + result.error);
+					self.displaySnackMessage("Error: Could not find group");
+				} else {
+					// set the group:
+					var group = result.group
+					self._setGroup(group);
 				}
-				// set the group:
-				var group = result.group
-				self._setGroup(group);
 		});
 
 		API.getUserInfo(function(obj) {
 			if(!obj.error) {
 				self._setUser(obj.user);
+			} else {
+				self.displaySnackMessage("Error: Could not get current user")
 			}
 		});
 	},
@@ -178,13 +185,6 @@ var GroupActions = {
 		});
 	},
 
-	// // sets all the feed, articleList, and chat lengths to the default lengths:
-	// resetFeedAndArticleListAndChatSegments: function() {
-	// 	GroupDispatcher.handleAction({
-	// 		actionType: Constants.RESET_SEGMENTS,
-	// 	});
-	// },
-
 	// =========================================================================
 
 	_setContentIsParsing: function(isParsing) {
@@ -206,11 +206,12 @@ var GroupActions = {
 		var self = this;
 		API.addArticleFromUrl(url, groupId, function(data) {
 				if (data.error) {
-					return;
+					self._setContentIsParsing(false);
+					self.displaySnackMessage("Error: Could not add article");
 				}
 				self._addArticle(data.article);
 				self._setContentIsParsing(false);
-				self.displaySnackMessage("Article Parsed");
+				self.displaySnackMessage("Article Added");
 		});
 	},
 
@@ -225,6 +226,14 @@ var GroupActions = {
 				note: note,
 				highlightId: highlightId
 		});
+
+		API.addNoteForHighlight(note, highlightId, function(obj) {
+            if (obj.error) {
+                GroupActions.displaySnackMessage("Error could not add note");
+                console.log("error adding note to highlight: " + obj.error);
+                return;
+            }
+        });
 	},
 
 	editNote: function(note, content) {
@@ -337,33 +346,14 @@ var GroupActions = {
 
 	postChat: function(chat, groupId) {
 		this.addToChat(chat);
-
+		var self = this;
 		// cloud persistence:
 		API.postChat(chat, groupId, function(obj) {
 			if (obj.error) {
-				console.log('errored in chatting: ' + obj.error);
+				self.displaySnackMessage("Error posting chat");
 			}
-
-			console.log('chatted');
-			console.log(chat);
 		});
 	}
 }
 
 module.exports = GroupActions;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

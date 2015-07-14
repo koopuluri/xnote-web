@@ -23,20 +23,23 @@
   overflow-y: scroll;
 }
 
-.article-container {
-  position: fixed;
-  top: 35px;
-}
-
 .add-article-button {
   position: fixed;
   bottom: 24px;
   right: 24px;
 }
 
+.add-article-spinner {
+  position: fixed;
+  bottom: 24px;
+  right: 48px;
+}
+
 .feed-container {
   overflow-y : scroll;
   height : 100%;
+  background-color : #F6F6F6;
+  color : #f6f6f6;
 }
 
 .chat-container {
@@ -65,4 +68,16 @@ textarea {
   border-right : 0px;
   border-top : 0px;
   border-bottom: 5px;
+}
+
+*:focus {
+    outline: 0;
+}
+
+.no-articles-message, .no-chat-message, .no-feed-message {
+  position: relative;
+  top: 50%; 
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  text-align: center;
 }

@@ -155,7 +155,8 @@ var MainContainer = React.createClass({
                             <Discussion />,
                         </div>
                     </div>
-                    <ArticleToolbar />
+                    <ArticleToolbar groupId={this.props.groupId}/>
+                    <SnackbarComponent />
 
                 </div>
             );

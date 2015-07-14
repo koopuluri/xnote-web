@@ -1,6 +1,7 @@
 var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var Utils = require('../utils/GroupUtils');
 var Constants = require('../constants/Constants');
+var GroupActions = require('../actions/GroupActions');
 var API = require('../utils/API');
 
 var Actions = {
@@ -51,13 +52,18 @@ var Actions = {
 
     fetchAndSetArticle: function(articleId) {
         var self = this;
+        console.log('fetchAndSEtARticle');
         API.getArticle(articleId, function(data) {
+            console.log('article returned!');
+            console.log(data);
             if (data.error) {
-                console.log('fetchAndSetArticle error!');
+                GroupActions.displaySnackMessage("Error could not fetch article");
                 self._setSelectedArticleId(null);  // turning off the loading.
                 return;
             }
+
             // got article:
+            self._setContentLoading(false);
             self._setSelectedArticle(data.article);
         });
     },
@@ -104,9 +110,9 @@ var Actions = {
         API.getHighlight(highlightId, function(obj) {
             if (obj.error) {
                 self._setDiscussionLoading(false);
+                GroupActions.displaySnackMessage("Error could not fetch highlight");
                 return;
             }
-
             // got highlight:
             self._setDiscussionLoading(false);
             self.setHighlight(obj.highlight);
@@ -125,6 +131,7 @@ var Actions = {
 
         API.addNoteForHighlight(note, highlightId, function(obj) {
             if (obj.error) {
+                GroupActions.displaySnackMessage("Error could not add note");
                 console.log("error adding note to highlight: " + obj.error);
                 return;
             }
@@ -141,7 +148,7 @@ var Actions = {
         this.setPartialHighlight(highlight._id);
         API.addHighlightForArticle(highlight, newSerialization, function(obj) {
             if (obj.error) {
-                
+                GroupActions.displaySnackMessage("Error could not add highlight");
             }
         });
     },

@@ -343,8 +343,8 @@ var DB = {
        // - feedPost: (sub-populate the article / highlight ref within each feedPost)
        // - articles: (title, url; sub-populate(createdBy));
        getGroup: function(user, groupRef, callback) {
-
-          Group.findOne({_id: groupRef})
+            console.log('getGroup: ' + groupRef);
+            Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
                .populate('createdBy', '-_id facebook.id facebook.name')
                .populate('members', '-_id facebook.id facebook.name')
@@ -352,10 +352,9 @@ var DB = {
                     if (err || !doc) {
                         if (err)
                             console.log('err in executing the population: ' + err);
-                        callback({error: err});
+                        callback({error: 'poop'});
                         return;
                     }
-
                     callback({group: doc});
                });
        },
@@ -646,15 +645,32 @@ var DB = {
      },
 
      getNotifs: function(user, groupRef, callback) {
-        Notification.find({user: user._id, group: groupRef}, function(err, results) {
-            if (err) {
-                console.log('could not get notifs: ' + err);
-                return;
-            }
+        Notification.find({user: user._id, group: groupRef})
+                    .populate('article')
+                    .populate('highlight')
+                    .exec(function(err, notifs) {
+                        if (err) {
+                            console.log('could not get notifs: ' + err);
+                            return;
+                        }
 
-            // got notifs:
-            callback({notifs: results});
-        });
+                        User.populate(notifs, [{
+                            path: 'article.createdBy',
+                            select: '-_id'
+                        },
+                        {
+                            path: 'highlight.createdBy',
+                            select: '_id'
+                        }], function(err, poppedNotifs) {
+                            // got notifs:
+                            console.log("got popped notifs!!!");
+                            callback({notifs: poppedNotifs});
+                        }); 
+
+                        // populate highlight createdBy:
+
+  
+                    });
      },
 
      // clears notif count for this user:
@@ -675,8 +691,8 @@ var DB = {
 
 module.exports = DB;
 
-// // testing out the highlight saving / deleting:
-// User.findOne({'facebook.name': 'Karthik Uppuluri'}, function(err, user) {
+// testing out the highlight saving / deleting:
+// User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
 //     if (err) {
 //         console.log('pooped in getting user!');
 //     } else {
@@ -686,8 +702,8 @@ module.exports = DB;
 //         // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
 //         //     console.log(obj);
 //         // });
-//         // DB.addGroupMember(user, 'testPoopGroup', {id: user.facebook.id}, function(obj) {
-//         //     console.log('obj: ' + obj);
+//         // DB.addGroupMember(user, '55a25931150ef26b44db57bb', {id: user.facebook.id}, function(obj) {
+//         //      console.log('obj: ' + obj);
 //         // });
 
 //         // DB.addChat(user, groupId, mongoose.Types.ObjectId(), 'poopopopopopop', function(obj) {
@@ -722,13 +738,6 @@ module.exports = DB;
 //         //     console.log('poop: ' + Object.keys(poop));
 //         // });
 
-//         // var id = mongoose.Types.ObjectId();
-//         DB.addGroup(user, {
-//             title: 'pooping the grouping 2',
-//             _id: groupId,
-//         }, function(poop) {
-//             console.log('poop: ' + poop.error);
-//         });
 
 //         // var articleId = '5599e642f836bb36631e2e9c';
 //         // DB.getArticle(user, articleId, function(poop) {

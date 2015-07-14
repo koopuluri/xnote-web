@@ -82,7 +82,6 @@ Annotator = {
 			}
 
 			// we have the idString!
-			console.log('found id: ' + idString);
 			ids.push(idString);
 		}
 
@@ -147,11 +146,9 @@ Annotator = {
 
 	// for a given highlight object, renders the PartialNotes associated with it.
 	_renderPartialHighlights: function(highId) {
-		console.log('-_renderPartialHighlights.className: ' + className);
   		// get all elements associated with this note:
   		var className = XnoteConstants.BASE_HIGHLIGHT_CLASS + "-" + highId;
   		var elements = $('.' + className);
-  		console.log('_renderPartialHighlights.className: ' + className);
   		elements.map(function(index) {
     			// render PartialNote for this element:
     			React.render(<PartialHighlight

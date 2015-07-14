@@ -67,7 +67,6 @@ var PartialHighlight = React.createClass({
 	},
 
 	componentWillUnmount: function() {
-			console.log('PartialHighlight unmount!');
 			PartialHighlightStore.removeChangeListener(this._onChange);
 	},
 
@@ -95,7 +94,6 @@ var PartialHighlight = React.createClass({
 	// called when NoteStore emits "partialNoteChange"
 	// resets the isHovered, and isSelected.
 	_onChange: function() {
-		console.log('PartialHighlight.setState');
 		this.setState(this.getInitialState());
 	},
 

@@ -10,6 +10,7 @@ var CardTitle = mui.CardTitle;
 var CardText = mui.CardText;
 var TextField = mui.TextField;
 var FlatButton = mui.FlatButton;
+var Colors = mui.Styles.Colors;
 
 
 // props:
@@ -34,29 +35,29 @@ var ScrollContainer = React.createClass({
 		var messages = this.props.messages;
 		var self = this;
 		if (messages.length == 0) {
-			var messages =
-				<div>
-					<CardTitle
-        				title = "You have no chat messages."
-        				style = {{ padding: 10 }}
-        				titleStyle = {{	fontSize: 14,lineHeight: '14px'	}} />
+			var chatPosts =
+				<div className = "no-chat-message"
+					style={{backgroundColor: Colors.grey150}}>
+        			<p>  You have no chat messages. </p>
 				</div>;
 		} else {
 			var messages = messages.map(function(message) {
 				return (
-					<div>
+					<div style={{backgroundColor: Colors.grey150}}>
 						<ChatPost
 							message={message}
 							user = {self.props.currentUser}/>
 					</div>
 				);
 			});
-		}
-		return (
-			<div className ='chat-messages'>
-   				<List>
+			var chatPosts = 
+				<List style={{backgroundColor: Colors.grey150}}>
 					{messages}
 				</List>
+		}
+		return (
+			<div className ='chat-messages' style={{backgroundColor: Colors.grey150}}>
+   				{chatPosts}
 			</div>
 		);
 	}

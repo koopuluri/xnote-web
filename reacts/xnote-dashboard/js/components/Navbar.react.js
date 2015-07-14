@@ -13,7 +13,7 @@ var DashNavbar = React.createClass({
 	render: function() {
 		return (
 			<AppBar className='app-toolbar'
-				title="Tatr"
+				title="Tatr Groups"
   				iconElementRight={<FlatButton label="Logout" />}>
 			</AppBar>
 		);

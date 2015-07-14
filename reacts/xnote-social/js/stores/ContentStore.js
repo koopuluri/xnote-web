@@ -7,6 +7,7 @@ var _articleList = [];
 var _selectedArticle = null;
 var _selectedArticleId = null;
 var _isParsing = false;
+var _isLoading =true;
 
 var _index = 0;
 
@@ -36,7 +37,7 @@ var ContentStore = _.extend({}, EventEmitter.prototype, {
     },
 
     getLoading: function() {
-        return false;
+        return _isLoading;
     },
 
     emitArticleIdChange: function() {
@@ -72,6 +73,10 @@ GroupDispatcher.register(function(payload) {
 
       case Constants.CONTENT_SET_PARSING:
           _isParsing = action.isParsing;
+          break;
+
+      case Constants.SET_CONTENT_LOADING:
+          _isLoading = action.isLoading;
           break;
 
   		case Constants.SET_ARTICLE_LIST:

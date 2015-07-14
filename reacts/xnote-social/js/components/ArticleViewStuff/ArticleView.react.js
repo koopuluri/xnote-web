@@ -28,7 +28,7 @@ var ArticleView = React.createClass({
 				selectionCoordinates: [],
 				owner: '',
 				currentUser: GroupStore.getCurrentUser(),
-				isError: null
+				isError: null,
  		};
 	},
 
@@ -47,8 +47,6 @@ var ArticleView = React.createClass({
 		} else {
 				// don't change the hack num!
 		}
-
-		console.log('ArticleView.setState');
 		this.setState(this.getInitialState());
 	},
 
@@ -60,14 +58,13 @@ var ArticleView = React.createClass({
 						Annotator.deserialize(article.serialization);
 				}
 				HACK_NUM++;
-
-				console.log('ARTICLE VIEW DESERIALIZE!');
 		}
 	},
 
 	componentDidMount: function() {
 		// adding listener:
 		ContentStore.addChangeListener(this._onArticleChange);
+		console.log('article view article id ' + this.props.articleId);
 		if (this.props.articleId) {
 			Actions.fetchAndSetArticle(this.props.articleId);
 		}
@@ -75,6 +72,8 @@ var ArticleView = React.createClass({
 			Actions.fetchAndSetHighlight(this.props.highlightId);
 			Actions.setPartialHighlight(this.props.highlightId);
 		}
+
+		
 	},
 
 	componentWillUnmount: function() {
@@ -87,8 +86,8 @@ var ArticleView = React.createClass({
 
 	render: function() {
 		return (
-			<Paper style={{margin: '2px'}} zDepth={1}>
-					{this.getRenderredInnerThing()}
+			<Paper style={{margin: '2px', 'height':'100%'}} zDepth={1}>
+				{this.getRenderredInnerThing()}
 			</Paper>
 		);
 	},
@@ -115,11 +114,11 @@ var ArticleView = React.createClass({
 		}
 
 		if (this.state.isLoading) {
-				return (
-					<div className="poop-article-container">
-							<Loading marginTop={20} marginLeft={40}/>
-					</div>
-				);
+			return (
+				<div className="poop-article-container">
+					<Loading marginTop={20} marginLeft={45}/>
+				</div>
+			);
 		}
 
 		// if no article selected:

@@ -8,3 +8,9 @@
   bottom: 24px;
   right: 24px;
 }
+
+.groups-div {
+  position:absolute;
+  top:40px;
+  height:calc(100% - 30px);	
+}

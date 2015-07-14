@@ -39,6 +39,7 @@ module.exports = KeyMirror({
 
 	SET_CONTENT_LOADING: null,
 	SET_FEED_LOADING: null,
+	SET_CHAT_LOADING: null,
 	ADD_ARTICLE_LIST_SEGMENT: null,
 	ADD_FEED_SEGMENT: null,
 
