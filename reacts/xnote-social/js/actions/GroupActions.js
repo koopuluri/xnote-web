@@ -244,10 +244,11 @@ var GroupActions = {
 			});
 	},
 
-	deleteNote: function(note) {
+	deleteNote: function(note, highlightId) {
 			GroupDispatcher.handleAction({
 				actionType: Constants.DELETE_NOTE,
-				note: note
+				note: note,
+				highlightId: highlightId
 			});
 	},
 

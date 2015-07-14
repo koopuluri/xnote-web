@@ -26,7 +26,9 @@ var SnackbarComponent = React.createClass({
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
-		this.refs.SnackbarComponent.show();
+		if(this.state.message) {
+			this.refs.SnackbarComponent.show();
+		}
 	},
 
 	_dismiss: function() {
@@ -38,14 +40,20 @@ var SnackbarComponent = React.createClass({
 	},
 
 	render: function() {
-		return (
-			<Snackbar
-	  			message={this.state.message}
-	  			ref = 'SnackbarComponent'
-  				action='DONE'
-	  			autoHideDuration={5000}
-  				onActionTouchTap={this._dismiss}/>
-  		);
+		if(this.state.message) {
+			return (
+				<Snackbar
+	  				message={this.state.message}
+	  				ref = 'SnackbarComponent'
+  					action='DONE'
+	  				autoHideDuration={5000}
+  					onActionTouchTap={this._dismiss}/>
+  			);
+  		} else {
+  			return (
+  				<div></div>
+  			);
+  		}
 	}
 });
 

@@ -15,7 +15,7 @@
       "build": "browserify . | uglifyjs -cm > ../../static/static/js/dashboard.js"
     },
 
-    "author": "koopuluri",
+    "author": "Xnote Labs",
 
     "browserify": {
       "transform": [

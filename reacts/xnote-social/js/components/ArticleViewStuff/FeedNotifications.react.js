@@ -5,7 +5,7 @@ var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
 var FlatButton = mui.FlatButton;
 
-// state:
+// state
 // - message
 var FeedNotifications = React.createClass({
   render: function() {
@@ -18,7 +18,7 @@ var FeedNotifications = React.createClass({
       } else if(post.highlight) {
         highlight = post.highlight;
         var feedOwner = highlight.createdBy.facebook.name;
-        if(post.forNote) {
+        if(post.notes.length > 0) {
             feedOwner = highlight.notes[-1].owner;
             feedText = 'Added a note ';
             feedText = feedText + '"' + highlight.notes[noteLength - 1].content + '" for the highlight ';

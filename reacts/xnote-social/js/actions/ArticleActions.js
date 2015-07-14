@@ -52,10 +52,7 @@ var Actions = {
 
     fetchAndSetArticle: function(articleId) {
         var self = this;
-        console.log('fetchAndSEtARticle');
         API.getArticle(articleId, function(data) {
-            console.log('article returned!');
-            console.log(data);
             if (data.error) {
                 GroupActions.displaySnackMessage("Error could not fetch article");
                 self._setSelectedArticleId(null);  // turning off the loading.

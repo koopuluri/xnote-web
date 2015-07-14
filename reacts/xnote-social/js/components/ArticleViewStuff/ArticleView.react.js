@@ -36,7 +36,7 @@ var ArticleView = React.createClass({
 	_onArticleChange: function() {
 
 		// reset article:
-	//	Annotator.clearAllHighlightsAndComponents();
+		// Annotator.clearAllHighlightsAndComponents();
 		var article = ContentStore.getSelectedArticle();
 		if ((article && !this.state.article) || (!article && this.state.article) || (!article && !this.state.article)) {
 				HACK_NUM = 0;
@@ -64,7 +64,6 @@ var ArticleView = React.createClass({
 	componentDidMount: function() {
 		// adding listener:
 		ContentStore.addChangeListener(this._onArticleChange);
-		console.log('article view article id ' + this.props.articleId);
 		if (this.props.articleId) {
 			Actions.fetchAndSetArticle(this.props.articleId);
 		}
