@@ -50,12 +50,7 @@ module.exports = function(passport) {
 
                 if (user) {
                     if(!user.facebook.picture) {
-                        if(user.facebook.name === 'Vignesh Prasad') {
-                            user.facebook.picture = 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Yellow_mongoose_1.jpg';
-                        } else {
-                            user.facebook.picture = 'http://www.tortoisecentre.co.uk/images/ProductImages/Web_wm20036.jpg';
-                        }
-                        console.log('prof.pic set!');
+                        user.facebook.picture = 'graph.facebook.com/' + user.facebook.id + '/picture';
                         user.save(function(err) {
                             if(err) {
                                 throw err;
@@ -82,6 +77,7 @@ module.exports = function(passport) {
                 newUser.facebook.token = token; // we will save the token that facebook provides to the user
                 newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
                 newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                newUser.facebook.picture = 'graph.facebook.com/' + profile.id + '/picture';
 
                 // save our user to the database
                 newUser.save(function(err) {
