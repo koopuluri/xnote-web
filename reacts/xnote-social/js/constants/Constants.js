@@ -2,6 +2,9 @@ var KeyMirror = require('react/lib/keyMirror');
 
 //Define action constants
 module.exports = KeyMirror({
+
+	ADD_NOTIF: null,
+
 	ADD_CHAT_SEGMENT: null,
 	SET_CHAT_LOADING: null,
 

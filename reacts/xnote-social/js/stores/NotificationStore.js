@@ -74,23 +74,18 @@ GroupDispatcher.register(function(payload) {
 			resetFeedNotifs();
 			break;
 
-		case Constants.SOCKET_RECEIVE_POST:
-			console.log('socket.io receive post!?!?!?!');
-			_feedNotifs++;
-			break;
-
-		case Constants.INCREMENT_FEED_NOTIFS:
-			console.log('feed notifs increment!');
-				_feedNotifs++;
-				break;
-
 		case Constants.SET_NOTIFS:
 			_notifs = action.notifs;
+			break;
+
+		case Constants.ADD_NOTIF:
+			_notifs.unshift(action.notif);
 			break;
 
 		default:
 			return true;
 	}
+	
 	NotificationStore.emitChange();
 	return true;
 })

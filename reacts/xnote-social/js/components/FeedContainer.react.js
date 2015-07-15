@@ -50,7 +50,7 @@ var FeedContainer = React.createClass({
 			if(this.state.isLoading) {
 				return(
 					<div>
-						<Loading marginLeft = {40}/>
+						<Loading marginLeft = {40} />
 					</div>
 				);
 			} else {
@@ -63,20 +63,23 @@ var FeedContainer = React.createClass({
 						</div>
 					)
 				}
-				var feed = feed.map(function(post) {
+
+				var feedList = feed.map(function(post) {
 					return (
 						<div>
 							<ListItem disabled={true}>
-								<FeedPost post={post} isLink={true}/>
+								<FeedPost post={post} isLink={true} />
 							</ListItem>
 						</div>
 					)
 				});
+
 				return (
 					<div className = "feed-container"
 						 onScroll={this._onScroll}>
-						<List style={{backgroundColor:Colors.grey150}}>
-							{feed}
+
+						<List style={{backgroundColor: Colors.grey150}}>
+							{feedList}
 						</List>
 					</div>
 				);

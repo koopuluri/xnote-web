@@ -123,7 +123,8 @@ module.exports = function(app, passport) {
         var groupId = req.query.id;
         console.log('going to group: ' + groupId);
         res.render('social.ejs', {
-            groupId: groupId
+            groupId: groupId,
+            userId: req.user._id
         });
     });
 
@@ -227,7 +228,7 @@ module.exports = function(app, passport) {
     app.post('/_add_article_from_url', isLoggedIn, function(req, res) {
         var url = req.body.url;
         var groupId = req.body.groupId;
-        DB.addArticleFromUrl(req.user, groupId, url, _callbackPostAdd(req.user, res, req.io));
+        DB.addArticleFromUrl(req.user, groupId, url, _callbackPostAdd(req.user, res, req.io), req.io);
     });
 
     app.post('/_delete_article', isLoggedIn, function(req, res) {

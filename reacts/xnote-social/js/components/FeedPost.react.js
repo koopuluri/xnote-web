@@ -173,6 +173,7 @@ var FeedPost = React.createClass({
 
 				return (
 					<Card>
+
 						<ListItem
 							leftAvatar = {leftAvatar}
 							style = {{padding : 10}}
@@ -183,20 +184,20 @@ var FeedPost = React.createClass({
 							secondaryText = {
 								<p style = {{ paddingLeft: 60, fontSize: 10}}> {highlight.lastModifiedTimestamp} </p>
 							} 
+							rightIconButton = {rightIconButton} />
 
-							rightIconButton = {rightIconButton}/>
-							<CardText
-								style = {
-	        						{
-	        							paddingLeft: 15,
-	        							paddingBottom: 0,
-	        							fontSize: 15,
-	        						}
-	        					}>
+						<CardText
+							style = {
+        						{
+        							paddingLeft: 15,
+        							paddingBottom: 0,
+        							fontSize: 15,
+        						}
+        					}>
 	        					<div>
-	        						<p style={{padding : 5, fontSize : 16}} dangerouslySetInnerHTML={{__html: highlightClippedText}} >
+	        						<p style={{padding : 5, fontSize : 16}}>
+	        						 {highlightClippedText} </p>
 	        							
-	        						</p>
 									{noteList}
 								</div>
 								<MultiLineInput
@@ -204,8 +205,8 @@ var FeedPost = React.createClass({
 									textareaClassName = {"feed-post-text-area" + highlight._id}
 
 		  							startingContent="Post Note"
-		  							onSave = {this._addComment}/>
-							</CardText>
+		  							onSave = {this._addComment} />
+						</CardText>
 					</Card>
 				);
 			}

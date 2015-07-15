@@ -51,7 +51,7 @@ var DB = {
 
      // ========================= ARTICLE ======================================
 
-     addArticle: function(user, article, callback) {
+     addArticle: function(user, article, callback, io) {
         var self = this;
         var a = Article({
             createdBy: user._id,
@@ -64,7 +64,6 @@ var DB = {
             author: article.author,
             articleDate: article.articleDate,
             icon: article.icon,
-
         });
 
         a.save(function(err, savedArticle) {
@@ -73,12 +72,12 @@ var DB = {
                 return;
             }
 
-            console.log('SAVED ARTICLE: ' + savedArticle.createdBy);
-
             // adding a feedPost for this article:
             self._addFeedPostForArticle(user, savedArticle, callback);
             self.addNotifsForArticle(user, savedArticle, function(notif) {
-                io.emit('notification:' + savedArticle.group + user._id, {notif: notif}); 
+                console.log('emiting notif for article: ' + savedArticle.group + ':' + notif.user);
+                io.emit('notification:' + savedArticle.group + notif.user, 
+                    {notif: notif, article: savedArticle, user: {facebook: user.facebook} }); 
             });
         });
      },
@@ -99,8 +98,7 @@ var DB = {
         });
      },
 
-
-     addArticleFromUrl: function(user, groupRef, url, callback) {
+     addArticleFromUrl: function(user, groupRef, url, callback, io) {
         if (!url) {
             console.log('url is null');
             callback({error: 'empty url'});
@@ -130,7 +128,7 @@ var DB = {
                 articleDate: response.date
 
             }
-            self.addArticle(user, article, callback);
+            self.addArticle(user, article, callback, io);
         });
      },
 
@@ -200,7 +198,8 @@ var DB = {
 
             // adding notifs for highlight: 
             self.addNotifsForHighlight(user, savedHighlight, function(notif) {
-                io.emit('notification:' + savedHighlight.group + user._id, {notif: notif}); 
+                io.emit('notification:' + savedHighlight.group + notif.user,
+                     {notif: notif, highlight: savedHighlight, user: {facebook: user.facebook} }); 
             });
         });
      },
@@ -296,7 +295,9 @@ var DB = {
                 // notifs:
                 self.addNotifsForNoteAdd(user, savedHighlight, function(notif) {
                     // socket.io'ing the notif:
-                    io.emit('notification:' + savedHighlight.group + user._id, {notif: notif});
+                    console.log('emitting notification: ' + notif.user);
+                    io.emit('notification:' + savedHighlight.group + notif.user,
+                         {notif: notif, highlight: savedHighlight, user: {facebook: user.facebook} });
                 });
             });
      },

@@ -37,6 +37,7 @@ var MainContainer = React.createClass({
         if ((oldParams.articleId && !newParams.articleId) || (!oldParams.articleId && newParams.articleId)) {
             this.setState(this.getInitialState());  
         }
+
         // basically don't set state for highlight changes.
         
     },
@@ -48,6 +49,8 @@ var MainContainer = React.createClass({
     componentDidMount: function() {
         var self = this;
         var groupId = this.props.groupId;
+        var userId = this.props.userId;
+
         window.addEventListener('hashchange', function() {
             self.setState({
                 route: window.location.hash.substr(1)
@@ -59,38 +62,46 @@ var MainContainer = React.createClass({
         var self = this;
         ContentStore.addArticleIdChangeListener(this._onChange);
 
-        // setting the socket to receive posts and chat:
+        // setting the socket to receive posts, chat, and notifications:
         var socket = io.connect();
 
         //receiving posts:
         socket.on('feedPost:' + groupId, function(post) {
+            console.log('socket.io feedPost received, adding to stores');
+            console.log(post);
             GroupActions.socketReceivePost(post);
         });
 
-        socket.on('note:' + groupId, function(obj) {
-            var postNotifCount = NotifStore.getFeedNotifs();
-
-            // going to grab the current feed list
-            // Let 'i' be the index of the highlightId for this note in that feed list (from top)
-            // if 'i' + 1 > postNotifCount, that means that this highlihgt has already been seen,
-            // and there's no notification for this highlight; so we will increment the feedNotifCount.
-            // if this highlight is unseen (implying one of the feedNotifcounts is for this highlight),
-            // then we will NOT increment the feedNotifCount.
-
-            var feedList = FeedStore.getFeed();
-            for (var i = 0; i < feedList.length; i++) {
-                var post = feedList[i];
-                if (post.type === 'HighlightFeedPost' && post.highlight._id === obj.highlightId) {
-                    if (i+1 > postNotifCount) {
-                        GroupActions.incrementFeedNotifs();
-                    }
-                }
+        socket.on('notification:' + groupId + userId, function(obj) {
+            var notif = obj.notif;
+            var createdUser = obj.user;
+            if (notif.article) {
+                notif.article = obj.article;
+                notif.article.createdBy = createdUser;
+            } else if (notif.highlight) {
+                notif.highlight = obj.highlight;
+                notif.highlight.createdBy = createdUser;
+            } else {
+                // should not reach this!
             }
 
-            GroupActions.socketReceiveNote(obj.note, obj._id, postNotifCount);
+            console.log('notif received');
+            console.log(notif);
+            GroupActions.addNotif(notif);
+        });
+
+        socket.on('note:' + groupId, function(obj) {
+            var highlightId = obj.highlightId;
+            var note = obj.note;
+
+            if (note && highlightId) {
+                console.log('socket.io note received, adding to stores')
+                GroupActions.socketReceiveNote(obj.note, obj._id);
+            }
         });
 
         socket.on('chat:' + groupId, function(chatObj) {
+            console.log('socket.io chat received');
             GroupActions.socketReceiveChat(chatObj.chat);
         });
     },
