@@ -15,7 +15,12 @@ var session      = require('express-session');
 
 // configuration ===============================================================
 //mongoose.connect('mongodb://localhost/myapp');
-mongoose.connect('mongodb://koopuluri:whyisblue@ds045882.mongolab.com:45882/xnotelabs');
+
+try {
+	mongoose.connect('mongodb://koopuluri:whyisblue@ds045882.mongolab.com:45882/xnotelabs');
+} catch (err) {
+	console.log('mongo connecting error: ' + err);
+}
 
 // require('./config/passport')(passport); // pass passport for configuration
 
