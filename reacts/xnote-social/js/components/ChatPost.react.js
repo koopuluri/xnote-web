@@ -15,7 +15,7 @@ var ChatPost = React.createClass({
 		var message = this.props.message
 		if(message.createdBy.facebook.picture) {
 			var leftAvatar = 
-				<Avatar src={src} size={35} />
+				<Avatar src={message.createdBy.facebook.picture} size={35} />
 		} else {
 			var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
 			var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
