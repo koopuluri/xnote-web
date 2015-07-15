@@ -253,8 +253,15 @@ var AddGroupComponent = React.createClass({
                     {dialogComponent}
                 </Dialog>
                 <span className='add-group-button'>
-                    <FloatingActionButton
-                        onTouchTap = {this._openDialog} />
+                    <FloatingActionButton onClick={this._openDialog}>
+                        <FontIcon 
+                            style={{
+                                color:"#FFF",
+                            }}
+                            className="material-icons">
+                                add
+                        </FontIcon>
+                    </FloatingActionButton>
                 </span>
             </div>
         );

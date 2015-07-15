@@ -4,6 +4,8 @@ var FeedNotificationsItem = require('./FeedNotificationsItem.react');
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
 var FlatButton = mui.FlatButton;
+var FontIcon = mui.FontIcon;
+var Colors = mui.Styles.Colors;
 
 // state
 // - message
@@ -44,14 +46,28 @@ var FeedNotifications = React.createClass({
           );
       });
       var feedLabel = 'Notifs'
-      var feedButton = <FlatButton primary={true} label={feedLabel} />
+      var feedButton =  <FontIcon 
+                          style={{
+                            color:Colors.green500,
+                          }}
+                          className="material-icons">
+                              notifications
+                        </FontIcon>
       if(notifs.length > 0) {
-          var feedLabel = ' Notifs (' + notifs.length + ')'
+          var feedLabel = '(' + notifs.length + ')'
           var feedButton = 
               <IconMenu iconButtonElement={
-                  <FlatButton
-                    primary={true}
-                    label={feedLabel}/>
+                  <MenuItem>
+                  <FontIcon 
+                      style={{
+                        color:Colors.green500,
+                        paddingTop:10
+                      }}
+                      className="material-icons">
+                        notifications
+                  </FontIcon>
+                  <p>{feedLabel}</p>
+                  </MenuItem>
               }>
                   {feedNotifsList}  
               </IconMenu>
@@ -61,7 +77,7 @@ var FeedNotifications = React.createClass({
               {feedButton}
           </div>
       );
-    });
+    }
 });
 
 module.exports = FeedNotifications;

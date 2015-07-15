@@ -5,7 +5,7 @@ var React = require('react');
 // onButtonClick
 var mui = require('material-ui');
 var FloatingActionButton = mui.FloatingActionButton;
-
+var FontIcon = mui.FontIcon;
 var AddNoteButton = React.createClass({
 
 	_getStyle: function() {
@@ -21,9 +21,17 @@ var AddNoteButton = React.createClass({
 		}
 
 		return (
-			<div className="add-note-button" onClick={this.props.onButtonClick}
+			<div className="add-note-button"
 			 style={this._getStyle()}>
-	        	<FloatingActionButton />
+	        	<FloatingActionButton onClick={this.props.onButtonClick}>
+	        		<FontIcon 
+                  		style={{
+                    		color:"#FFF",
+                  		}}
+                  		className="material-icons">
+                    		add
+	                </FontIcon>
+	            </FloatingActionButton>
 		    </div>
 		);
 	}
