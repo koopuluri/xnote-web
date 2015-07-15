@@ -6,6 +6,7 @@ var IconMenu = mui.IconMenu;
 var FlatButton = mui.FlatButton;
 var FontIcon = mui.FontIcon;
 var Colors = mui.Styles.Colors;
+var MenuItem = mui.MenuItem;
 
 // state
 // - message
