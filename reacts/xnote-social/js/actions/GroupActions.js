@@ -76,6 +76,8 @@ var GroupActions = {
 
 		API.getUserInfo(function(obj) {
 			if(!obj.error) {
+				console.log('getUserInfo');
+				console.log(obj.user);
 				self._setUser(obj.user);
 			} else {
 				self.displaySnackMessage("Error: Could not get current user")
@@ -326,12 +328,22 @@ var GroupActions = {
     },
 
     addMembers: function(groupId, memberList) {
+    	console.log('memberList!');
+    	console.log(memberList);
     	GroupDispatcher.handleAction({
             actionType: Constants.ADD_MEMBER,
-            member: member
+            members: memberList
         });
 
-        API.addMembers(groupId, memberList, function() {
+
+    	var memberIdList = [];
+        for (var i = 0; i < memberList.length; i++) {
+        	memberIdList.push(memberList[i].facebook.id);
+        }
+
+        console.log('membersIdLIt');
+        console.log(memberIdList);
+        API.addMembers(groupId, memberIdList, function() {
 			// do nothing.
         });
     },

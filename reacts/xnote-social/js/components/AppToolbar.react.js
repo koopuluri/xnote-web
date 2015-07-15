@@ -60,8 +60,8 @@ var friendListOnClickFunction = function(member, self) {
     var newList = self.state.addList;
     newList.push(member);
     self.setState({
-      addList : newList
-    })
+        addList : newList
+    });
     self.refs.addMemberQuery.clearValue();
     self.refs.addMemberQuery.focus();
   }
@@ -123,10 +123,12 @@ var AppToolbar = React.createClass({
 
     _onAddMembers: function() {
       this.refs.addMemberDialog.dismiss();
-      GroupActions.addMembers(this.state.addList);
+      GroupActions.addMembers(this.state.groupId, this.state.addList);
     },
 
     render: function() {
+      console.log('MEMBERS IN RENDER');
+      console.log(this.state.members);
       var members = [];
       if (this.state.members) {
         var members = this.state.members.map(function(member) {
@@ -135,6 +137,7 @@ var AppToolbar = React.createClass({
           });
         });
       }
+
       var menuItems = [
         { type: MenuItem.Types.SUBHEADER, text: 'Members' },
       ]
@@ -156,26 +159,29 @@ var AppToolbar = React.createClass({
             type: MenuItem.Types.LINK,
         }
       );
+
       var self = this;
       var addMemberActions = [
         { text: 'Cancel', primary: true },
         { text: 'Add', primary: true, onTouchTap: this._onAddMembers}
       ];
+
       var counter = 0;
       var queryList = this.state.queryList.map(function(queryListItem) {
         counter ++;
         var found = false;
         for(var i = 0; i < self.state.addList.length; i++) {
-          if (self.state.addList[i].id == queryListItem.id) {
+          if (self.state.addList[i].facebook.id == queryListItem.id) {
             found = true;
             break;
           }
         }
+
         if(!found && counter <= 5) {
           return (
             <div>
               <ListItem
-                onTouchTap = {friendListOnClickFunction(queryListItem, self)}>
+                onTouchTap = {friendListOnClickFunction({facebook: {name: queryListItem.name, id: queryListItem.id}}, self)}>
                 {queryListItem.name}
               </ListItem>
             </div>
@@ -199,22 +205,26 @@ var AppToolbar = React.createClass({
           );
       }
       
+      console.log('ADDLIST');
+      console.log(this.state.addList);
       var addListComponent = this.state.addList.map(function(addListItem) {
         return (
           <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
           <ListItem 
+
             style={{
-              backgroundColor:Colors.green200,
-              paddingRight:5,
-              paddingBottom:2,
-              paddingLeft:5,
-              paddingTop:2}}
-            primaryText = {<p style={{paddingRight:15}}> {addListItem.name} </p>}
+                backgroundColor:Colors.green200,
+                paddingRight:5,
+                paddingBottom:2,
+                paddingLeft:5,
+                paddingTop:2}}
+
+            primaryText = {<p style={{paddingRight:15}}> {addListItem.facebook.name} </p>}
             rightIconButton = {
-              <FontIcon 
-                onClick={onDeleteFromAddList(addListItem, self)}>
-                 x 
-              </FontIcon>}
+                <FontIcon 
+                  onClick={onDeleteFromAddList(addListItem, self)}>
+                   x 
+                </FontIcon>}
             disabled = {true} />
           </ToolbarGroup>
         );
@@ -233,12 +243,14 @@ var AppToolbar = React.createClass({
                 
                   usernameElement}>
             </AppBar>
+
             <LeftNav
                 docked={false}
                 menuItems = {menuItems}
                 ref = 'menuBar'
                 onChange={this._onLeftNavChange}>
             </LeftNav>
+
             <Dialog
                 title = "Add Member"
                 ref = "addMemberDialog"

@@ -336,7 +336,7 @@ var DB = {
             Group.findOne({_id: groupRef})
                .select('createdBy members groupId')
                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
-               .populate('members', '-_id')
+               .populate('members', '-_id facebook.id facebook.name facebook.picture')
                .exec(function(err, doc) {
                     if (err || !doc) {
                         if (err)

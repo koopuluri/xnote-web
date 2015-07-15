@@ -89,7 +89,6 @@ module.exports = function(app, passport) {
         res.redirect('/');
     });
 
-
     // get list of friends for the user (using facebook api):
     app.get('/_friends', isLoggedIn, function(req, res) {
         var FB = require('fb');
@@ -104,6 +103,18 @@ module.exports = function(app, passport) {
         });
     });
 
+    // user not logged in if they hit this page:
+    app.get('/referral', function(req, res) {
+        var fromUser = req.fromUser;
+        var group = req.group;
+        console.log('referral: ' + group + "; " + fromUser);
+
+        res.render('index.ejs', {
+            groupId: group,
+            fromUser: fromUser
+        });
+
+    });
 
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
@@ -127,7 +138,6 @@ module.exports = function(app, passport) {
         });
     });
 
-
     // =========================================================================
 
     app.get('/_notifs', isLoggedIn, function(req, res) {
@@ -138,7 +148,11 @@ module.exports = function(app, passport) {
 
     app.get('/_user_info', isLoggedIn, function(req, res) {
         console.log('hit /_user_info: ' + req.user.facebook.name);
-        res.send({user: {facebook: {name: req.user.facebook.name, id: req.user.facebook.id} } });
+        res.send({user: {facebook: {
+                                name: req.user.facebook.name,
+                                id: req.user.facebook.id,
+                                picture: req.user.facebook.picture}
+                            }});
     });
 
     app.get('/_get_feed_segment', isLoggedIn, function(req, res) {
@@ -200,7 +214,6 @@ module.exports = function(app, passport) {
         DB.removeGroupMembers(req.user, groupId, members, _dbCallback(res));
     });
 
-
     // -------------------------------------------------------------------------
 
     app.get('/_article', isLoggedIn, function(req, res) {
@@ -258,9 +271,6 @@ module.exports = function(app, passport) {
         var content = req.body.content;
         DB.editNote(req.user, highlightId, noteId, content, _dbCallback(res));
     });
-
-
-
 };
 
 // route middleware to make sure a user is logged in
@@ -272,6 +282,17 @@ function isLoggedIn(req, res, next) {
         return next();
     }
 
-    // if they aren't redirect them to the home page
-    res.redirect('/');
+    var groupId = req.query.id;
+    var fromUser = req.query.fromUser;
+    if(groupId && fromUser) {
+        // this means that this is a share link, that when logged in through will 
+        // add the member to the group and open the group page.
+        res.redirect('/referral', {group: groupId, fromUser: fromUser});
+    } else {
+        // no ids at all, vanilla landing page.
+        res.redirect('/');
+    }
 }
+
+
+
