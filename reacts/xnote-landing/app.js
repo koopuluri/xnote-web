@@ -1,8 +1,8 @@
 window.React = require('react');
 var API = require('./utils/API')
-var LandingContainer = require('./components/MainContainer.react');
+var LandingContainer = require('./components/LandingContainer.react');
 var injectTapEventPlugin = require("react-tap-event-plugin");
-var Actions = require('./actions/LandingActions');
+var Actions = require('./actions/Actions');
 
 //Needed for onTouchTap
 //Check this repo:
@@ -10,8 +10,6 @@ var Actions = require('./actions/LandingActions');
 injectTapEventPlugin();
 
 var groupId = $('.group-id-span').attr('id');
-
-//TODO: Remove dummy inviter from here"
 var inviter = $('inviter-id-span').attr('inviter');
 
 console.log('got inviter: ' + inviter);
@@ -26,7 +24,6 @@ if(inviter) {
 	Actions._setInviter(inviter);
 }
 
-//Render Flux Group App
 React.render(
 	<LandingContainer />,
 	document.getElementById('landing-container')
