@@ -11,6 +11,7 @@ var FlatButton = mui.FlatButton;
 var TextField = mui.TextField;
 var CircularProgress = mui.CircularProgress;
 var Colors = mui.Styles.Colors;
+var FontIcon = mui.FontIcon;
 
 
 var AddArticle = React.createClass({
@@ -89,8 +90,15 @@ var AddArticle = React.createClass({
 			  		</div>
 				</Dialog>
             	<div className='add-article-button'>
-	            	<FloatingActionButton
-	            		onTouchTap = {this._openDialog} />
+	            	<FloatingActionButton onClick={this._openDialog}>
+	        			<FontIcon 
+                  			style={{
+                    			color:"#FFF",
+                  			}}
+                  			className="material-icons">
+	                    		add
+		                </FontIcon>
+	    	        </FloatingActionButton>
     	        </div>
     	    </div>
         );

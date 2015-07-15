@@ -206,7 +206,9 @@ var GroupActions = {
 				if (data.error) {
 					self._setContentIsParsing(false);
 					self.displaySnackMessage("Error: Could not add article");
+					return;
 				}
+				console.log('ADD ARTICLE RETURNED! ' + data.article.title);
 				self._addArticle(data.article);
 				self._setContentIsParsing(false);
 				self.displaySnackMessage("Article Added");
@@ -249,6 +251,12 @@ var GroupActions = {
 			});
 	},
 
+	addNotif: function(notif) {
+		GroupDispatcher.handleAction({
+			actionType: Constants.ADD_NOTIF,
+			notif: notif
+		});
+	},
 
 	resetChatNotifs: function() {
 			GroupDispatcher.handleAction({
@@ -327,7 +335,6 @@ var GroupActions = {
             actionType: Constants.ADD_MEMBER,
             members: memberList
         });
-
 
     	var memberIdList = [];
         for (var i = 0; i < memberList.length; i++) {

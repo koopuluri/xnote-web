@@ -15,6 +15,7 @@ var Group = React.createClass({
 
     render: function() {
         var group = this.props.group;
+        console.log(group);
         var groupDescription = group.groupRef.description ? group.groupRef.description : '';
         return (
         	<ToolbarGroup float="left" style={{padding:10}}>

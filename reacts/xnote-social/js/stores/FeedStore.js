@@ -14,27 +14,12 @@ var CHANGE = 'feedStoreChange';
 
 var SEG_SIZE = 6;
 
-// got from: http://stackoverflow.com/a/5306832:
-Array.prototype.move = function (old_index, new_index) {
-    if (new_index >= this.length) {
-        var k = new_index - this.length;
-        while ((k--) + 1) {
-            this.push(undefined);
-        }
-    }
-    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
-    return this; // for testing purposes
-};
-
 //Method to add a note to a post
 function addNote(highlightId, note) {
 		for(var i = 0; i < _feed.length; i++) {
 				if(_feed[i].type === 'HighlightFeedPost') {
 						if(_feed[i].highlight._id=== highlightId) {
 								_feed[i].highlight.notes.unshift(note);
-
-								// now need to put this post at the top:
-								_feed.move(i, 0);
 						}
 				}
 		}

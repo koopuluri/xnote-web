@@ -13,6 +13,7 @@ var GroupActions = require('../../actions/GroupActions');
 var AppBar = mui.AppBar;
 var FlatButton = mui.FlatButton;
 var Colors = mui.Styles.Colors;
+var FontIcon = mui.FontIcon;
 
 function getState() {
     return {
@@ -84,6 +85,7 @@ var ArticleToolbar = React.createClass({
                 paddingTop:8,
                 fontSize:20,
                 fontWeight:500,
+                lineHeight:1
               }}>
                   {this.state.groupTitle}
               </p>
@@ -91,13 +93,19 @@ var ArticleToolbar = React.createClass({
             zDepth={1}
             showMenuIconButton = {true}
             iconElementLeft = {
-            <FlatButton 
-              label='Back'
-              primary={true}
-              onClick={this._onBackButtonPressed}
-              style={{paddingTop:7}}/>
-          }>
-            <ChatNotifications 
+              <FontIcon 
+                  style={{
+                    color:Colors.green500,
+                    cursor:"pointer",
+                    fontSize:24,
+                    paddingTop:15
+                  }}
+                  onClick = {this._onBackButtonPressed}
+                  className="material-icons">
+                    arrow_back
+              </FontIcon>
+            }>
+            <ChatNotifications
               chatNotifs={this.state.chatNotifs}
               chat={this.state.chat} />
             <FeedNotifications 

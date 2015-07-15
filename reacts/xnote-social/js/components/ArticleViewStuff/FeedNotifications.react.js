@@ -4,74 +4,96 @@ var FeedNotificationsItem = require('./FeedNotificationsItem.react');
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
 var FlatButton = mui.FlatButton;
+
 var Card = mui.Card;
+var FontIcon = mui.FontIcon;
+var Colors = mui.Styles.Colors;
 
 // state
 // - message
 var FeedNotifications = React.createClass({
   render: function() {
-    notifs = this.props.notifs;
-    var feedNotifsList = notifs.map(function(post) {
-      if (post.article) {
-        var article = post.article;
-        var feedOwner = article.createdBy.facebook.name;
-        var feedText = 'Added an article "' + article.title + '"';
-      } else if(post.highlight) {
-        highlight = post.highlight;
-        var feedOwner = highlight.createdBy.facebook.name;
-        if(highlight.notes && highlight.notes.length > 0) {
-            var noteLength = highlight.notes.length;
-            feedOwner = highlight.notes[noteLength-1].owner.name;
-            feedText = 'Added a note ';
-            feedText = feedText + '"' + highlight.notes[noteLength-1].content + '" for the highlight ';
-            feedText = feedText + '"' + highlight.clippedText + '"';
-        } else {
-            feedText = 'Added a highlight "' + highlight.clippedText + '"';
-        }
-      } 
-      //Counting characters to see if the list requires two or one line
-      var secondaryTextLines = 1;
-      if(feedText.length > 67) {
-        secondaryTextLines = 2;
+
+      var notifs = this.props.notifs;
+
+      var feedNotifsList = notifs.map(function(post) {
+          if (post.article) {
+              var article = post.article;
+              var feedOwner = article.createdBy.facebook.name;
+              var feedText = 'Added an article "' + article.title + '"';
+          } else if(post.highlight) {
+              highlight = post.highlight;
+              var feedOwner = highlight.createdBy.facebook.name;
+              if(post.notes && post.notes.length > 0) {
+                  feedOwner = highlight.notes[-1].owner;
+                  feedText = 'Added a note ';
+                  feedText = feedText + '"' + highlight.notes[noteLength - 1].content + '" for the highlight ';
+                  feedText = feedText + '"' + highlight.clippedText + '"';
+              } else {
+                  feedText = 'Added a highlight "' + highlight.clippedText + '"';
+              }
+          } 
+          //Counting characters to see if the list requires two or one line
+          var secondaryTextLines = 1;
+          if(feedText.length > 67) {
+            secondaryTextLines = 2;
+          }
+          return (
+              <FeedNotificationsItem 
+                secondaryTextLines={secondaryTextLines}
+                feedOwner={feedOwner}
+                feedText={feedText}
+                post={post}/>
+          );
+      });
+      var feedLabel = 'Notifs'
+      var feedButton =  
+        <FontIcon
+            style={{
+                color:Colors.green500,
+                paddingTop:8,
+                paddingRight:5,
+                paddingLeft:5,
+                cursor:"pointer"
+            }}
+            className="material-icons">
+                notifications
+        </FontIcon>
+      if(notifs.length > 0) {
+          var feedLabel = '(' + notifs.length + ')'
+          var feedButton = 
+              <IconMenu 
+                style={{
+                  paddingRight:5,
+                  paddingLeft:5,
+                  cursor:"pointer"
+                }}
+                iconButtonElement={
+                  <span>
+                    <FontIcon 
+                        style={{
+                          "display":"inline-block",
+                          color:Colors.green500,
+                          paddingTop:8
+                        }}
+                        className="material-icons">
+                          notifications
+                      </FontIcon>
+                      <p style={{
+                          "display":"inline-block",
+                           margin:0
+                         }}>{feedLabel}</p>
+                  </span>
+              }>
+                  {feedNotifsList}  
+              </IconMenu>
       }
       return (
-        <FeedNotificationsItem 
-          secondaryTextLines={secondaryTextLines}
-          feedOwner={feedOwner}
-          feedText={feedText}
-          post={post}/>
+          <div>
+              {feedButton}
+          </div>
       );
-    });
-    var feedLabel = 'Notifs'
-    var feedButton = 
-      <FlatButton 
-        style={{paddingTop:4}}
-        primary={true} 
-        label={feedLabel} />
-    if(notifs.length > 0) {
-      var feedLabel = ' Notifs (' + notifs.length + ')'
-      var feedButton = 
-        <IconMenu menuStyle={{padding:0}} iconButtonElement={
-            <FlatButton
-              style={{paddingTop:4}}
-              primary={true}
-              label={feedLabel}/>
-        }>
-          <Card style={{
-              'overflowY': 'scroll',
-              'maxHeight': '400px',
-              padding:0
-            }} zDepth={2}>
-            {feedNotifsList}  
-          </Card>
-        </IconMenu>
     }
-    return (
-      <div>
-        {feedButton}
-      </div>
-    );
-  }
 });
 
 module.exports = FeedNotifications;

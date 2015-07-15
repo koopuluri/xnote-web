@@ -1,10 +1,10 @@
 var React = require('react');
 var GroupStore = require('../stores/GroupStore');
 var FriendStore = require('../stores/FriendStore');
-
+var NotificationStore = require('../stores/NotificationStore');
 var GroupActions = require('../actions/GroupActions');
-
-var Loading = require('./ArticleViewStuff/Loading.react.js')
+var Loading = require('./ArticleViewStuff/Loading.react')
+var FeedNotification = require('./ArticleViewStuff/FeedNotifications.react');
   
 var mui = require('material-ui');
 var Dialog = mui.Dialog;
@@ -37,7 +37,8 @@ function getState() {
         queryList: [],
         friendsLoading: FriendStore.getLoading(),
         currentUser: GroupStore.getCurrentUser(),
-        addList: []
+        addList: [],
+        notifs: NotificationStore.getNotifs()
     }
 }
 
@@ -75,11 +76,13 @@ var AppToolbar = React.createClass({
     componentDidMount: function() {
       GroupStore.addChangeListener(this._onChange);
       FriendStore.addChangeListener(this._onChange);
+      NotificationStore.addChangeListener(this._onChange);
     },
 
     componentWillUnmount: function() {
       GroupStore.removeChangeListener(this._onChange);
       FriendStore.removeChangeListener(this._onChange);
+      NotificationStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
@@ -220,7 +223,6 @@ var AppToolbar = React.createClass({
         return (
           <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
           <ListItem 
-
             style={{
                 backgroundColor:Colors.green200,
                 paddingRight:5,
@@ -245,6 +247,7 @@ var AppToolbar = React.createClass({
                 title= {
                     <p style={{
                         color: Colors.grey500,
+                        lineHeight:1,
                         paddingTop:8,
                         fontSize:20,
                         fontWeight:500,
@@ -254,9 +257,20 @@ var AppToolbar = React.createClass({
                 }
                 zDepth={1}
                 showMenuIconButton = {true}
-                iconLeftStyle = {{paddingTop:2}}
-                onLeftIconButtonTouchTap = {this._showMenuBar}
-                iconElementRight={usernameElement}>
+                iconElementLeft={
+                    <FontIcon 
+                        style={{
+                          color:Colors.green500,
+                          paddingTop:15,
+                          cursor:"pointer"
+                        }}
+                        onClick={this._showMenuBar}
+                        className="material-icons">
+                          menu
+                    </FontIcon>
+                }>
+                <FeedNotification notifs={this.state.notifs}/>
+                {usernameElement}
             </AppBar>
 
             <LeftNav
