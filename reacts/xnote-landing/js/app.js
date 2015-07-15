@@ -10,18 +10,11 @@ var Actions = require('./actions/LandingActions');
 injectTapEventPlugin();
 
 var groupId = null;
-var inviter = null;
 var groupId = $('.group-id-span').attr('id');
-
-console.log('got groupId: ' + groupId);
 
 // set the group associated with the groupId in the stores:
 if(groupId) {
 	Actions.fetchAndSetGroup(groupId);
-}
-
-if(inviter) {
-	Actions.fetchAndSetInviter(inviterId);
 }
 
 React.render(

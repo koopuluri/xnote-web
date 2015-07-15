@@ -207,7 +207,8 @@ var AppToolbar = React.createClass({
       var me = this.state.currentUser;
       if (me && me.facebook.name) {
           usernameElement = (
-            <FlatButton primary={true} 
+            <FlatButton 
+              primary={true} 
               label={me.facebook.name}
               disabled={true} />
           );
@@ -238,19 +239,24 @@ var AppToolbar = React.createClass({
         );
       });
 
-
       return (
           <div>
             <AppBar className="app-toolbar"
                 title= {
-                  <FlatButton primary={true} label={this.state.groupTitle} disabled={true}> </FlatButton>
+                    <p style={{
+                        color: Colors.grey500,
+                        paddingTop:8,
+                        fontSize:20,
+                        fontWeight:500,
+                    }}>
+                        {this.state.groupTitle}
+                    </p>
                 }
                 zDepth={1}
                 showMenuIconButton = {true}
+                iconLeftStyle = {{paddingTop:2}}
                 onLeftIconButtonTouchTap = {this._showMenuBar}
-                iconElementRight={
-                
-                  usernameElement}>
+                iconElementRight={usernameElement}>
             </AppBar>
 
             <LeftNav

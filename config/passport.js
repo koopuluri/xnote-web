@@ -37,14 +37,11 @@ module.exports = function(passport) {
     },
 
     // facebook will send back the token and profile
-    function(token, refreshToken, profile, done) {
-
+    function(req, token, refreshToken, profile, done) {
         // asynchronous
         process.nextTick(function() {
 
             // find the user in the database based on their facebook id
-            console.log('facebook thing');
-            console.log(profile);
             User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
                 //console.log('User.findOne area: ' + Object.keys(user));
 

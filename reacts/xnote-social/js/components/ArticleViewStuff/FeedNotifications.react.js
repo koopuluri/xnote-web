@@ -61,7 +61,7 @@ var FeedNotifications = React.createClass({
               {feedButton}
           </div>
       );
-    }
+    });
 });
 
 module.exports = FeedNotifications;

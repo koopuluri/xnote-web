@@ -3,6 +3,9 @@ var React = require('react');
 // x: coordinates on the screen.
 // y
 // onButtonClick
+var mui = require('material-ui');
+var FloatingActionButton = mui.FloatingActionButton;
+
 var AddNoteButton = React.createClass({
 
 	_getStyle: function() {
@@ -20,10 +23,7 @@ var AddNoteButton = React.createClass({
 		return (
 			<div className="add-note-button" onClick={this.props.onButtonClick}
 			 style={this._getStyle()}>
-	        	<img src="/static/plus-note-web.png"
-	        		height="30"
-		        	className="add-note-image">
-	        	</img>
+	        	<FloatingActionButton />
 		    </div>
 		);
 	}

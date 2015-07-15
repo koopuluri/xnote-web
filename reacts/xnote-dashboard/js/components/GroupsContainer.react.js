@@ -25,7 +25,6 @@ var Groups = React.createClass({
     },
 
     render: function() {
-
         var groups = this.state.groups.map(function(group) {
             return (
                 <Group group={group} />

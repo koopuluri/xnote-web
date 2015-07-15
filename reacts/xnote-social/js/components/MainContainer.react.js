@@ -31,38 +31,21 @@ var MainContainer = React.createClass({
         }
     },
 
-    _onChange: function() {
-        var newParams = GroupUtils.getUrlVars(window.location.hash.substr(1));
-        var oldParams = GroupUtils.getUrlVars(this.state.route);
-        if ((oldParams.articleId && !newParams.articleId) || (!oldParams.articleId && newParams.articleId)) {
-            this.setState(this.getInitialState());  
-        }
-
-        // basically don't set state for highlight changes.
-        
-    },
-
-    componentWillUnmount: function() {
-        ContentStore.removeArticleIdChangeListener(this._onChange);
-    },
-
     componentDidMount: function() {
         var self = this;
         var groupId = this.props.groupId;
         var userId = this.props.userId;
 
         window.addEventListener('hashchange', function() {
+            console.log("I'm getting hit");
             self.setState({
                 route: window.location.hash.substr(1)
             });
         });
 
         GroupActions.fetchAndSetNotifs(groupId);
-        
-        var self = this;
-        ContentStore.addArticleIdChangeListener(this._onChange);
-
-        // setting the socket to receive posts, chat, and notifications:
+    
+        // setting the socket to receive posts and chat:
         var socket = io.connect();
 
         //receiving posts:
@@ -133,6 +116,7 @@ var MainContainer = React.createClass({
             flatButton: {
                 primaryTextColor: Colors.green500,
                 secondaryTextColor: Colors.green500,
+                disabledTextColor: Colors.green500
             },
             textField: {
                 focusColor: Colors.green500
@@ -142,8 +126,6 @@ var MainContainer = React.createClass({
 
     render: function() {
         // renderring the container
-        
-        
         var params = GroupUtils.getUrlVars(this.state.route);
         if (!params || !params.articleId) {
             return (

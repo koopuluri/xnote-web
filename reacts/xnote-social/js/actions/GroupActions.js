@@ -64,39 +64,19 @@ var GroupActions = {
 
 	fetchAndSetGroup: function(groupId) {
 		var self = this;
-		var group = null;
 		API.getGroup(groupId, function(result) {
 			if (result.error) {
 				console.log('getGroup.error: ' + result.error);
 				self.displaySnackMessage("Error: Could not find group");
 			} else {
 				// set the group:
-				group = result.group
-				self._setGroup(group);
-				console.log("GROUP: ", group);
-				//HACK METHOD TO ADD A MEMBER IF NOT IN THE GROUP
-				//TODO: REMOVE AS SOON AS POSSIBLE
-				var isInGroup = false;
-				for(var i = 0; i < group.members.length; i++) {
-					if(group.members[i].facebook.id === user.facebook.id) {
-						console.log(group.members[i]);
-						isInGroup = true;
-					}
-				}
-				var addList = [user];
-				console.log("USER", user);
-				if(!isInGroup) {
-					console.log(user);
-					self.addMembers(group._id, addList);
-				}
+				self._setGroup(result.group);
 			}
 		});
 
-		var user = null;
 		API.getUserInfo(function(obj) {
 			if(!obj.error) {
-				user = obj.user;
-				self._setUser(user);
+				self._setUser(obj.user);
 			} else {
 				self.displaySnackMessage("Error: Could not get current user")
 			}
