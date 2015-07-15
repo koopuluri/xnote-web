@@ -33,6 +33,7 @@ module.exports = KeyMirror({
 	RESET_FEED_NOTIFS: null,
 
 	SET_GROUP: null,
+	SET_GROUP_TITLE: null,
 	SET_FEED: null,
 	SET_ARTICLE_LIST: null,
 	SET_USER: null,

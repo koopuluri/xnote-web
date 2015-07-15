@@ -42,12 +42,17 @@ var FeedNotifications = React.createClass({
       );
     });
     var feedLabel = 'Notifs'
-    var feedButton = <FlatButton primary={true} label={feedLabel} />
+    var feedButton = 
+      <FlatButton 
+        style={{paddingTop:4}}
+        primary={true} 
+        label={feedLabel} />
     if(notifs.length > 0) {
       var feedLabel = ' Notifs (' + notifs.length + ')'
       var feedButton = 
         <IconMenu iconButtonElement={
             <FlatButton
+              style={{paddingTop:4}}
               primary={true}
               label={feedLabel}/>
         }>

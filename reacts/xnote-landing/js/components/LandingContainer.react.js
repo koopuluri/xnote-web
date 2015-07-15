@@ -52,7 +52,7 @@ var LandingContainer = React.createClass({
         var group = this.state.group;
         if(group) {
             var groupMessage =  "Your have been invited to join this group "
-            var members = group.groupRefs.members.map(function(member) {
+            var members = group.members.map(function(member) {
                 var picture = member.facebook.picture;
                 if(picture) {
                     var leftAvatar = 

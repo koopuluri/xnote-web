@@ -53,7 +53,16 @@ var DashNavbar = React.createClass({
 		return (
 			<div>
 			<AppBar className='app-toolbar'
-				title="Tatr Groups"
+				title= {
+					<p style={{
+							paddingTop:7,
+							fontSize:20,
+							fontWeight:500,
+							color:'#FFF'
+						}}>
+						Tatr Groups
+					</p>
+				}
 				onLeftIconButtonTouchTap = {this._showMenuBar}
   				iconElementRight={
   					<FlatButton 

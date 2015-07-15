@@ -18,8 +18,6 @@ var Actions = {
 			if (result.error) {
 			} else {
 				// set the group:
-				console.log('RESULT');
-				console.log(result);
 				var group = result.group
 				self._setGroup(group);
 			}

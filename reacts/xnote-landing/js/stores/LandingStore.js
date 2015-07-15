@@ -6,6 +6,7 @@ var _ = require('underscore');
 var _group = null;
 
 var LandingStore = _.extend({}, EventEmitter.prototype, {
+  
   	getGroup: function() {
         return _group;
     },

@@ -69,7 +69,8 @@ var ArticleToolbar = React.createClass({
       var me = this.state.currentUser;
       if (me && me.facebook.name) {
           usernameElement = (
-            <FlatButton primary={true} 
+            <FlatButton 
+              primary={true} 
               label={me.facebook.name}
               disabled={true} />
           );
@@ -78,7 +79,14 @@ var ArticleToolbar = React.createClass({
         <div>
           <AppBar className="article-toolbar"
             title= {
-              <FlatButton primary={true} label= {this.state.groupTitle} disabled={true}> </FlatButton>
+              <p style={{
+                color: Colors.grey500,
+                paddingTop:8,
+                fontSize:20,
+                fontWeight:500,
+              }}>
+                  {this.state.groupTitle}
+              </p>
             }
             zDepth={1}
             showMenuIconButton = {true}
@@ -87,16 +95,13 @@ var ArticleToolbar = React.createClass({
               label='Back'
               primary={true}
               onClick={this._onBackButtonPressed}
-              style = {
-                {
-                 padding: 8
-                }
-              } />
+              style={{paddingTop:7}}/>
           }>
             <ChatNotifications 
               chatNotifs={this.state.chatNotifs}
               chat={this.state.chat} />
-            <FeedNotifications notifs={this.state.notifs} />
+            <FeedNotifications 
+              notifs={this.state.notifs} />
             {usernameElement}
           </AppBar>
         </div>

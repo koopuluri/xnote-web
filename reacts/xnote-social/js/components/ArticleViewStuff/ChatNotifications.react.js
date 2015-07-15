@@ -32,13 +32,18 @@ var ChatNotifications = React.createClass({
     });
 
     var chatLabel = 'Chat'
-    var chatButton = <FlatButton primary={true} label={chatLabel}/> 
+    var chatButton = 
+      <FlatButton 
+        style={{paddingTop:4}} 
+        primary={true} 
+        label={chatLabel}/> 
       
     if(chatNotifs > 0) {
       var chatLabel = 'Chat (' + chatNotifs + ')'
       var chatButton = 
         <IconMenu iconButtonElement={
           <FlatButton 
+            style={{paddingTop:4}}
             primary={true}
             label={chatLabel} />
         }>
