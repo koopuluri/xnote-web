@@ -17,6 +17,7 @@ var groupSchema = new Schema({
     feedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: 'FeedPost'}],
     articles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Article'}],
     title: String,
+    description: String,
     createdAt: {type: Date, default: Date.now},
 });
 

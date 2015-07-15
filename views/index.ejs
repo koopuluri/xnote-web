@@ -1,24 +1,27 @@
 <!doctype html>
 <html>
 <head>
-    <title>Node Authentication</title>
+    <title>Tatr Home</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <style>
-        body        { padding-top:80px; }
+        body { padding-top:80px; }
     </style>
 </head>
 <body>
 <div class="container">
 
+    <span id="<%= group %>" class="group-id-span"></span>
+    <span id="<%= fromUser %>" class="inviter-id-span"></span>
+
     <div class="jumbotron text-center">
-        <h1><span class="fa fa-lock"></span> Node Authentication</h1>
-
-        <p>Login or Register with:</p>
-
-        <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-
+        <div id="landing-container">
+        
     </div>
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/landing.js"></script>
 
 </div>
 </body>

@@ -48,7 +48,8 @@ var _callbackPostAdd = function(user, res, io) {
                 console.log('INVALID POST TYPE: ' + feedPost.type);
             }
 
-            var groupId = feedPost.groupId;
+            var groupId = feedPost.group;
+            console.log('emitting feedPOst! for group: ' + groupId);
             io.emit('feedPost:' + groupId, feedPost);
         }
 
@@ -67,7 +68,10 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        res.render('index.ejs'); // load the index.ejs file
+        res.render('index.ejs', {
+            group: null,
+            fromUser: null
+        }); // load the index.ejs file
     });
 
     // =====================================
@@ -105,12 +109,11 @@ module.exports = function(app, passport) {
 
     // user not logged in if they hit this page:
     app.get('/referral', function(req, res) {
-        var fromUser = req.fromUser;
-        var group = req.group;
-        console.log('referral: ' + group + "; " + fromUser);
+        var fromUser = req.query.fromUser;
+        var group = req.query.group;
 
         res.render('index.ejs', {
-            groupId: group,
+            group: group,
             fromUser: fromUser
         });
 
@@ -180,7 +183,7 @@ module.exports = function(app, passport) {
         DB.getGroups(req.user, _dbCallback(res));
     });
 
-    app.get('/_group', isLoggedIn, function(req, res) {
+    app.get('/_group', function(req, res) {
         var groupId = req.query.groupId;
         console.log('groupId: ' + groupId);
         DB.getGroup(req.user, groupId, _dbCallback(res));
@@ -243,7 +246,7 @@ module.exports = function(app, passport) {
         var highlightObj = req.body.highlight;
         var serialization = req.body.serialization;
         console.log(highlightObj);
-        DB.addHighlight(req.user, highlightObj, serialization, _callbackPostAdd(req.user, res, req.io));
+        DB.addHighlight(req.user, highlightObj, serialization, _callbackPostAdd(req.user, res, req.io), req.io);
     });
 
     app.post('/_remove_highlight', isLoggedIn, function(req, res) {
@@ -256,7 +259,7 @@ module.exports = function(app, passport) {
     app.post('/_add_note', isLoggedIn, function(req, res) {
         var note = req.body.note;
         var highlightId = req.body.highlightId;
-        DB.addNote(req.user, highlightId, note, _callbackNoteAdd(req.user, res, req.io));
+        DB.addNote(req.user, highlightId, note, _callbackNoteAdd(req.user, res, req.io), req.io);
     });
 
     app.post('/_delete_note', isLoggedIn, function(req, res) {
@@ -287,7 +290,9 @@ function isLoggedIn(req, res, next) {
     if(groupId && fromUser) {
         // this means that this is a share link, that when logged in through will 
         // add the member to the group and open the group page.
-        res.redirect('/referral', {group: groupId, fromUser: fromUser});
+        req.group = groupId;
+        req.fromUser = fromUser;
+        res.redirect('/referral?group=' + groupId + '&&fromUser=' + fromUser);
     } else {
         // no ids at all, vanilla landing page.
         res.redirect('/');

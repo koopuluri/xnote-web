@@ -127,8 +127,6 @@ var AppToolbar = React.createClass({
     },
 
     render: function() {
-      console.log('MEMBERS IN RENDER');
-      console.log(this.state.members);
       var members = [];
       if (this.state.members) {
         var members = this.state.members.map(function(member) {
@@ -205,8 +203,6 @@ var AppToolbar = React.createClass({
           );
       }
       
-      console.log('ADDLIST');
-      console.log(this.state.addList);
       var addListComponent = this.state.addList.map(function(addListItem) {
         return (
           <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">

@@ -10,6 +10,7 @@ var GroupActions = {
 		var self = this;
 		API.getNotifs(group, function(obj) {
 			if(!obj.error) {
+				console.log('NOTFS');
 				console.log(obj);
 				GroupDispatcher.handleAction({
 					actionType: Constants.SET_NOTIFS,
@@ -76,8 +77,7 @@ var GroupActions = {
 
 		API.getUserInfo(function(obj) {
 			if(!obj.error) {
-				console.log('getUserInfo');
-				console.log(obj.user);
+
 				self._setUser(obj.user);
 			} else {
 				self.displaySnackMessage("Error: Could not get current user")
@@ -222,7 +222,6 @@ var GroupActions = {
 	},
 
 	addNote: function(highlightId, note) {
-		console.log('add note feedPOst');
 		GroupDispatcher.handleAction({
 				actionType: Constants.ADD_NOTE,
 				note: note,
@@ -328,8 +327,6 @@ var GroupActions = {
     },
 
     addMembers: function(groupId, memberList) {
-    	console.log('memberList!');
-    	console.log(memberList);
     	GroupDispatcher.handleAction({
             actionType: Constants.ADD_MEMBER,
             members: memberList
@@ -341,8 +338,6 @@ var GroupActions = {
         	memberIdList.push(memberList[i].facebook.id);
         }
 
-        console.log('membersIdLIt');
-        console.log(memberIdList);
         API.addMembers(groupId, memberIdList, function() {
 			// do nothing.
         });

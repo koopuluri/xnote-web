@@ -14,8 +14,6 @@ var ChatPost = React.createClass({
 	render: function() {
 		var message = this.props.message
 		var picture = message.createdBy.facebook.picture
-		console.log("CHATPOST");
-		console.log(message);
 		if(picture) {
 			var leftAvatar = 
 				<Avatar src={picture} size={35} />
