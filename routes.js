@@ -78,15 +78,56 @@ module.exports = function(app, passport) {
     // =====================================
     // route for facebook authentication and login
     app.get('/auth/facebook',
-            passport.authenticate('facebook', {
-                scope : ['email', 'user_friends'] }));
+        passport.authenticate('facebook', {
+            scope : ['email', 'user_friends'] }));
+    
+
+    app.get('/auth/facebook/callback', function(req, res, next) {
+        passport.authenticate('facebook', function(err, user, info) {
+            var redirectUrl = '/dashboard';
+            if(err) { return next(err); }
+            if (!user) { return res.redirect('/'); }
+
+            // If we have previously stored a redirectUrl, use that, 
+            // otherwise, use the default.
+            var group = req.session.group;
+            if(group) {
+                redirectUrl = '/group?id=' + group;
+                req.session.group = null;
+            }
+
+            req.logIn(user, function(err){
+                if (err) { return next(err); }
+                // if this user is not part of the group to redirect to (if group exists)
+                // then add this user to that group:
+                if (group) {
+                    DB.addGroupMembers(user, group, [user.facebook.id], function(obj) {
+                        if(!obj.error) {
+                            console.log('error adding new user to group after login: ' + group);
+                            res.redirect('/');
+                        }
+
+                        // no issues:
+                        res.redirect(redirectUrl);
+                    });
+                } else {
+                    res.redirect(redirectUrl);
+                }
+            });
+
+            if (!group) {
+                res.redirect(redirectUrl);
+            }
+        }) (req, res, next);
+    })
+
 
     // handle the callback after facebook has authenticated the user
-    app.get('/auth/facebook/callback',
-    passport.authenticate('facebook', {
-        successRedirect : '/dashboard',
-        failureRedirect : '/'
-    }));
+    // app.get('/auth/facebook/callback',
+    // passport.authenticate('facebook', {
+    //     successRedirect : '/dashboard',
+    //     failureRedirect : '/'
+    // }));
 
     // route for logging out
     app.get('/logout', function(req, res) {
@@ -111,7 +152,8 @@ module.exports = function(app, passport) {
     // user not logged in if they hit this page:
     app.get('/referral', function(req, res) {
         var group = req.query.group;
-
+        console.log('setting session for referral redirect: ' + group);
+        req.session.group = group;
         res.render('index.ejs', {
             group: group,
         });

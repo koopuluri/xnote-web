@@ -4,6 +4,7 @@ var FeedNotificationsItem = require('./FeedNotificationsItem.react');
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
 var FlatButton = mui.FlatButton;
+var Card = mui.Card;
 
 // state
 // - message
@@ -50,13 +51,19 @@ var FeedNotifications = React.createClass({
     if(notifs.length > 0) {
       var feedLabel = ' Notifs (' + notifs.length + ')'
       var feedButton = 
-        <IconMenu iconButtonElement={
+        <IconMenu menuStyle={{padding:0}} iconButtonElement={
             <FlatButton
               style={{paddingTop:4}}
               primary={true}
               label={feedLabel}/>
         }>
+          <Card style={{
+              'overflowY': 'scroll',
+              'maxHeight': '400px',
+              padding:0
+            }} zDepth={2}>
             {feedNotifsList}  
+          </Card>
         </IconMenu>
     }
     return (
