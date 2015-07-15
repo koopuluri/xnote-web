@@ -33,7 +33,6 @@ var ArticleToolbar = React.createClass({
     componentDidMount: function() {
       NotificationStore.addChangeListener(this._onNotifChange);
       GroupStore.addChangeListener(this._onGroupChange);
-
       GroupActions.fetchAndSetNotifs(this.props.groupId);
     },
 
@@ -65,6 +64,16 @@ var ArticleToolbar = React.createClass({
     },
 
     render: function() {
+      //Stores the username in the right of the appbar.
+      var usernameElement = '';
+      var me = this.state.currentUser;
+      if (me && me.facebook.name) {
+          usernameElement = (
+            <FlatButton primary={true} 
+              label={me.facebook.name}
+              disabled={true} />
+          );
+      }
       return (
         <div>
           <AppBar className="article-toolbar"
@@ -88,6 +97,7 @@ var ArticleToolbar = React.createClass({
               chatNotifs={this.state.chatNotifs}
               chat={this.state.chat} />
             <FeedNotifications notifs={this.state.notifs} />
+            {usernameElement}
           </AppBar>
         </div>
       );

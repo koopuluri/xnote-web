@@ -70,7 +70,6 @@ module.exports = function(app, passport) {
     app.get('/', function(req, res) {
         res.render('index.ejs', {
             group: null,
-            fromUser: null
         }); // load the index.ejs file
     });
 
@@ -109,7 +108,6 @@ module.exports = function(app, passport) {
 
     // user not logged in if they hit this page:
     app.get('/referral', function(req, res) {
-        var fromUser = req.query.fromUser;
         var group = req.query.group;
 
         res.render('index.ejs', {
@@ -287,13 +285,11 @@ function isLoggedIn(req, res, next) {
     }
 
     var groupId = req.query.id;
-    var fromUser = req.query.fromUser;
-    if(groupId && fromUser) {
+    if(groupId) {
         // this means that this is a share link, that when logged in through will 
         // add the member to the group and open the group page.
         req.group = groupId;
-        req.fromUser = fromUser;
-        res.redirect('/referral?group=' + groupId + '&&fromUser=' + fromUser);
+        res.redirect('/referral?group=' + groupId);
     } else {
         // no ids at all, vanilla landing page.
         res.redirect('/');

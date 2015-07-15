@@ -34,7 +34,6 @@ var LandingContainer = React.createClass({
 	getInitialState: function() {
         return {
             group: LandingStore.getGroup(),
-            inviter: LandingStore.getInviter()
         }
     },
 
@@ -48,15 +47,12 @@ var LandingContainer = React.createClass({
     },
     
     render: function() {
-        console.log('LANDING CONT. ');
-        console.log(this.state.group);
         var groupMessage ='';
         var groupCard ='';
         var group = this.state.group;
-        var inviter = this.state.inviter;
-        if(inviter && group) {
-            var groupMessage =  "Your friend " + inviter + " invited you to join the group "
-            var members = group.members.map(function(member) {
+        if(group) {
+            var groupMessage =  "Your have been invited to join this group "
+            var members = group.groupRefs.members.map(function(member) {
                 var picture = member.facebook.picture;
                 if(picture) {
                     var leftAvatar = 

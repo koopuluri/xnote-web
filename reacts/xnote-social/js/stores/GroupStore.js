@@ -61,8 +61,6 @@ GroupDispatcher.register(function(payload) {
 
     case GroupConstants.SET_USER:
         _user = action.user;
-        console.log('SET USER: ' );
-        console.log(_user);
         break;
 
     case GroupConstants.ADD_MEMBER:

@@ -16,7 +16,6 @@ var Actions = {
 		var self = this;
 		API.getGroup(groupId, function(result) {
 			if (result.error) {
-				console.log('getGroup.error: ' + result.error);
 			} else {
 				// set the group:
 				console.log('RESULT');
@@ -24,13 +23,6 @@ var Actions = {
 				var group = result.group
 				self._setGroup(group);
 			}
-		});
-	},
-
-	_setInviter: function(inviter) {
-		Dispatcher.handleAction({
-			actionType: Constants.SET_INVITER,
-			inviter: inviter
 		});
 	},
 }
