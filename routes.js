@@ -258,9 +258,6 @@ module.exports = function(app, passport) {
         var content = req.body.content;
         DB.editNote(req.user, highlightId, noteId, content, _dbCallback(res));
     });
-
-
-
 };
 
 // route middleware to make sure a user is logged in

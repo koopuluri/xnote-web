@@ -63,24 +63,41 @@ var GroupActions = {
 
 	fetchAndSetGroup: function(groupId) {
 		var self = this;
+		var group = null;
 		API.getGroup(groupId, function(result) {
 				if (result.error) {
 					console.log('getGroup.error: ' + result.error);
 					self.displaySnackMessage("Error: Could not find group");
 				} else {
 					// set the group:
-					var group = result.group
+					group = result.group
 					self._setGroup(group);
 				}
 		});
 
+		var user = null;
 		API.getUserInfo(function(obj) {
 			if(!obj.error) {
-				self._setUser(obj.user);
+				user = obj.user;
+				self._setUser(user);
 			} else {
 				self.displaySnackMessage("Error: Could not get current user")
 			}
 		});
+
+		//HACK METHOD TO ADD A MEMBER IF NOT IN THE GROUP
+		//TODO: REMOVE AS SOON AS POSSIBLE
+		console.log(group);
+		console.log(user);
+		var isInGroup = false;
+		for(var i = 0; i < group.members.length; i++) {
+			if(group.members[i].facebook.id === user.facebook.id) {
+				console.log(group.members[i]);
+				isInGroup = true;
+			}
+		}
+
+		
 	},
 
 	// ========================= SEGS ==========================================
@@ -164,8 +181,6 @@ var GroupActions = {
 				}
 		});
 	},
-
-
 
 	clearFeed: function() {
 		GroupDispatcher.handleAction({

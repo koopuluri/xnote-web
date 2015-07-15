@@ -131,6 +131,8 @@ var MainContainer = React.createClass({
 
     render: function() {
         // renderring the container
+        
+        
         var params = GroupUtils.getUrlVars(this.state.route);
         if (!params || !params.articleId) {
             return (
@@ -157,7 +159,6 @@ var MainContainer = React.createClass({
                     </div>
                     <ArticleToolbar groupId={this.props.groupId}/>
                     <SnackbarComponent />
-
                 </div>
             );
         }

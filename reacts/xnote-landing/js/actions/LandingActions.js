@@ -16,8 +16,6 @@ var Actions = {
 		var self = this;
 		API.getGroup(groupId, function(result) {
 			if (result.error) {
-				console.log('getGroup.error: ' + result.error);
-				self.displaySnackMessage("Error: No group found");
 			} else {
 				// set the group:
 				var group = result.group
@@ -30,6 +28,18 @@ var Actions = {
 		GroupDispatcher.handleAction({
 			actionType: Constants.SET_INVITER,
 			inviter: inviter
+		});
+	},
+
+	fetchAndSetInviter: function(inviterId) {
+		var self = this;
+		API.getInviter(inviterId, function(result) {
+			if (result.error) {
+			} else {
+				// set the inviter:
+				var inviter = result.inviter
+				self._setInviter(inviter);
+			}
 		});
 	},
 }

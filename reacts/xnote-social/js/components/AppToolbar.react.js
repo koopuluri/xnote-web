@@ -90,8 +90,9 @@ var AppToolbar = React.createClass({
       this.refs.menuBar.toggle();
     },
 
+    //Checks which menu item in the left nav has been clicked
     _onLeftNavChange: function(e, selectedIndex, menuItem) {
-      switch (menuItem.payload) {
+        switch (menuItem.payload) {
         case ADD_MEMBER:
           this.refs.addMemberDialog.show();
           GroupActions.fetchAndSetFriends();
@@ -99,6 +100,7 @@ var AppToolbar = React.createClass({
       }
     },
 
+    //Changes the query list based on the query the user has entered
     _onQueryChange: function() {
       var query = this.refs.addMemberQuery.getValue();
       if(query != '') {
@@ -127,6 +129,7 @@ var AppToolbar = React.createClass({
     },
 
     render: function() {
+      //Maps the member variables to menu items
       var members = [];
       if (this.state.members) {
         var members = this.state.members.map(function(member) {
@@ -161,6 +164,10 @@ var AppToolbar = React.createClass({
         { text: 'Cancel', primary: true },
         { text: 'Add', primary: true, onTouchTap: this._onAddMembers}
       ];
+
+      //Querylist holds the list of users that match with the query
+      //entered. It stores a max of 5 items and checks are made
+      //so the members of add list are excluded
       var counter = 0;
       var queryList = this.state.queryList.map(function(queryListItem) {
         counter ++;
@@ -182,13 +189,17 @@ var AppToolbar = React.createClass({
           );
         }
       });
+
+      //MemberDialogInternals sets the loading spinner when the friends
+      //list is still being fetched from the database.
       var memberDialogInternals = '';
       if (this.state.friendsLoading) {
           memberDialogInternals = <Loading marginLeft={45} marginTop={5}/>
       } else {
           memberDialogInternals = <div><List> {queryList} </List></div>
       }
-        
+      
+      //Stores the username in the right of the appbar.
       var usernameElement = '';
       var me = this.state.currentUser;
       if (me && me.facebook.name) {
@@ -199,6 +210,8 @@ var AppToolbar = React.createClass({
           );
       }
       
+      //Stores the members that the user has selected to be added
+      //in chips. 
       var addListComponent = this.state.addList.map(function(addListItem) {
         return (
           <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
@@ -219,6 +232,7 @@ var AppToolbar = React.createClass({
           </ToolbarGroup>
         );
       });
+
 
       return (
           <div>

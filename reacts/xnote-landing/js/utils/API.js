@@ -8,6 +8,14 @@ module.exports = {
 			callback(data);
 		});
 	},
+
+	getInviter: function(inviterId, callback) {
+		$.get('/_inviter', {
+			inviterId: inviterId
+		}, function(data, status) {
+			callback(data);
+		});
+	},
 };
 
 

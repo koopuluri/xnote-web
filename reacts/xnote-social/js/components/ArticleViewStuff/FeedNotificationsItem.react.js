@@ -44,8 +44,8 @@ var FeedNotificationsItem = React.createClass({
                     fontSize : 16,
                     fontColor : Colors.DarkBlack
                   }
-              }>
-                  {this.props.feedText}
+                }>
+                {this.props.feedText}
               </p>
             }
             onClick = {getOnFeedPostClickedFunction(this.props.post)}/>

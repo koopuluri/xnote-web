@@ -11,8 +11,8 @@ injectTapEventPlugin();
 
 var groupId = null;
 var inviter = null;
-//var groupId = $('.group-id-span').attr('id');
-//var inviter = $('inviter-id-span').attr('inviter');
+var groupId = $('.group-id-span').attr('id');
+var inviterId = $('inviter-id-span').attr('inviter');
 
 console.log('got inviter: ' + inviter);
 console.log('got groupId: ' + groupId);
@@ -23,7 +23,7 @@ if(groupId) {
 }
 
 if(inviter) {
-	Actions._setInviter(inviter);
+	Actions.fetchAndSetInviter(inviterId);
 }
 
 React.render(
