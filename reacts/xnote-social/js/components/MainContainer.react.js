@@ -13,6 +13,7 @@ var AddArticle = require('./AddArticle.react');
 var GroupUtils = require('../utils/GroupUtils');
 
 var GroupActions = require('../actions/GroupActions');
+var ArticleActions = require('../actions/ArticleActions');
 
 var ArticleView = require('../components/ArticleViewStuff/ArticleView.react');
 var Discussion = require('../components/ArticleViewStuff/Discussion.react');
@@ -31,16 +32,29 @@ var MainContainer = React.createClass({
         }
     },
 
+    _onRouteChange: function() {
+        var newRoute = window.location.hash.substr(1);
+        var newParams = GroupUtils.getUrlVars(newRoute);
+        var oldParams = GroupUtils.getUrlVars(this.state.route);
+
+        if(oldParams.articleId && newParams.articleId &&
+             oldParams.articleId !== newParams.articleId) {
+            ArticleActions.fetchAndSetArticle(newParams.articleId);
+            if(newParams.highlightId) {
+                ArticleActions.fetchAndSetHighlight(newParams.highlightId);
+            }
+        }
+
+        this.setState({route: newRoute});
+    },
+
     componentDidMount: function() {
         var self = this;
         var groupId = this.props.groupId;
         var userId = this.props.userId;
 
         window.addEventListener('hashchange', function() {
-            console.log("I'm getting hit");
-            self.setState({
-                route: window.location.hash.substr(1)
-            });
+            self._onRouteChange();
         });
 
         GroupActions.fetchAndSetNotifs(groupId);

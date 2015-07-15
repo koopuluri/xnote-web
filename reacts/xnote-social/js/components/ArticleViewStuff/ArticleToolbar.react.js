@@ -85,6 +85,7 @@ var ArticleToolbar = React.createClass({
                 paddingTop:8,
                 fontSize:20,
                 fontWeight:500,
+                lineHeight:1
               }}>
                   {this.state.groupTitle}
               </p>
@@ -97,14 +98,14 @@ var ArticleToolbar = React.createClass({
                     color:Colors.green500,
                     cursor:"pointer",
                     fontSize:24,
-                    paddingTop:18
+                    paddingTop:15
                   }}
                   onClick = {this._onBackButtonPressed}
                   className="material-icons">
                     arrow_back
               </FontIcon>
             }>
-            <ChatNotifications 
+            <ChatNotifications
               chatNotifs={this.state.chatNotifs}
               chat={this.state.chat} />
             <FeedNotifications 

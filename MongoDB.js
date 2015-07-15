@@ -161,7 +161,7 @@ var DB = {
 
 
      // TODO: add Notification for users that have added highlight(s) to the same article / creator of the article.
-     addHighlight: function(user, highlight, newSerialization, callback) {
+     addHighlight: function(user, highlight, newSerialization, callback, io) {
         var self = this;
         var light = Highlight({
             _id: highlight._id,
@@ -466,6 +466,7 @@ var DB = {
                 function(err, updatedGroup) {
                     if (err) {
                         console.log('error saving group when updating members; ' + err);
+                        callback({error: 'some group fetching error'});
                     } else {
                         callback({groupId: updatedGroup._id});
                     }
@@ -480,6 +481,7 @@ var DB = {
                     function(err, savedMem) {
                         if(err) {
                             console.log('err updating groups for a member: ' + err);
+                            callback({error: 'some user fetching error for adding member(s) to group'});
                         } else {
                             console.log('user successfuly saved new group for it: ' + savedMem.facebook.name);
                         }

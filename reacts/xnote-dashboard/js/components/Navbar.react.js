@@ -7,6 +7,8 @@ var AppBar = mui.AppBar;
 var FlatButton = mui.FlatButton;
 var LeftNav = mui.LeftNav;
 var MenuItem = mui.MenuItem;
+var FontIcon = mui.FontIcon;
+var Colors = mui.Styles.Colors;
 
 var DashNavbar = React.createClass({
 
@@ -55,17 +57,31 @@ var DashNavbar = React.createClass({
 			<AppBar className='app-toolbar'
 				title= {
 					<p style={{
-							paddingTop:7,
-							fontSize:20,
-							fontWeight:500,
+                        color: Colors.grey500,
+                        lineHeight:1,
+                        paddingTop:8,
+                        fontSize:20,
+                        fontWeight:500,
 							color:'#FFF'
 						}}>
 						Tatr Groups
 					</p>
 				}
-				onLeftIconButtonTouchTap = {this._showMenuBar}
+				iconElementLeft={
+                    <FontIcon 
+                        style={{
+                          color:Colors.white,
+                          paddingTop:15,
+                          cursor:"pointer"
+                        }}
+                        onClick={this._showMenuBar}
+                        className="material-icons">
+                          menu
+                    </FontIcon>
+                }
   				iconElementRight={
   					<FlatButton 
+  						style={{paddingTop:2}}
   						label= {name}
   						disabled = {true}/>}>
 			</AppBar>

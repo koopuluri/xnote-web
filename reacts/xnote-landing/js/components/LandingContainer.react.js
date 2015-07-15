@@ -103,7 +103,7 @@ var LandingContainer = React.createClass({
                 <p> To get started log in with Facebook.</p>
                 <RaisedButton 
                     linkButton={true}
-                    href='/auth/facebook'
+                    href='/auth/facebook?id=poopopopop'
                     style={{lineHeight:1}}>
                     <p style={
                         {

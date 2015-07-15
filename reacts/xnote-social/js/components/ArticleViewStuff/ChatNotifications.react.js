@@ -4,6 +4,8 @@ var ChatNotificationsItem = require('./FeedNotificationsItem.react');
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
 var FlatButton = mui.FlatButton;
+var FontIcon = mui.FontIcon;
+var Colors = mui.Styles.Colors;
 
 // state:
 // - message
@@ -33,21 +35,45 @@ var ChatNotifications = React.createClass({
 
     var chatLabel = 'Chat'
     var chatButton = 
-      <FlatButton 
-        style={{paddingTop:4}} 
-        primary={true} 
-        label={chatLabel}/> 
+      <FontIcon 
+          style={{
+            color:Colors.green500,
+            paddingTop:8,
+            paddingLeft:5,
+            paddingRight:5,
+            cursor:"pointer"
+          }}
+          className="material-icons">
+            message
+      </FontIcon> 
       
     if(chatNotifs > 0) {
-      var chatLabel = 'Chat (' + chatNotifs + ')'
+      var chatLabel = '(' + chatNotifs + ')'
       var chatButton = 
-        <IconMenu iconButtonElement={
-          <FlatButton 
-            style={{paddingTop:4}}
-            primary={true}
-            label={chatLabel} />
-        }>
-          {ChatNotifications}
+         <IconMenu 
+            style= {{
+              paddingRight:5,
+              paddingLeft:5,
+              cursor:"pointer"
+            }}
+            iconButtonElement={
+                  <span>
+                    <FontIcon 
+                        style={{
+                          "display":"inline-block",
+                          color:Colors.green500,
+                          paddingTop:8
+                        }}
+                        className="material-icons">
+                          message
+                    </FontIcon>
+                    <p style={{
+                        "display":"inline-block",
+                        margin:0
+                    }}>{chatLabel}</p>
+                  </span>
+              }>
+                  {ChatNotifications}  
         </IconMenu>
     }
     return (
