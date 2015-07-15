@@ -10,6 +10,7 @@ var GroupActions = {
 		var self = this;
 		API.getNotifs(group, function(obj) {
 			if(!obj.error) {
+				console.log('NOTFS');
 				console.log(obj);
 				GroupDispatcher.handleAction({
 					actionType: Constants.SET_NOTIFS,
@@ -65,14 +66,30 @@ var GroupActions = {
 		var self = this;
 		var group = null;
 		API.getGroup(groupId, function(result) {
-				if (result.error) {
-					console.log('getGroup.error: ' + result.error);
-					self.displaySnackMessage("Error: Could not find group");
-				} else {
-					// set the group:
-					group = result.group
-					self._setGroup(group);
+			if (result.error) {
+				console.log('getGroup.error: ' + result.error);
+				self.displaySnackMessage("Error: Could not find group");
+			} else {
+				// set the group:
+				group = result.group
+				self._setGroup(group);
+				console.log("GROUP: ", group);
+				//HACK METHOD TO ADD A MEMBER IF NOT IN THE GROUP
+				//TODO: REMOVE AS SOON AS POSSIBLE
+				var isInGroup = false;
+				for(var i = 0; i < group.members.length; i++) {
+					if(group.members[i].facebook.id === user.facebook.id) {
+						console.log(group.members[i]);
+						isInGroup = true;
+					}
 				}
+				var addList = [user];
+				console.log("USER", user);
+				if(!isInGroup) {
+					console.log(user);
+					self.addMembers(group._id, addList);
+				}
+			}
 		});
 
 		var user = null;
@@ -84,20 +101,6 @@ var GroupActions = {
 				self.displaySnackMessage("Error: Could not get current user")
 			}
 		});
-
-		//HACK METHOD TO ADD A MEMBER IF NOT IN THE GROUP
-		//TODO: REMOVE AS SOON AS POSSIBLE
-		console.log(group);
-		console.log(user);
-		var isInGroup = false;
-		for(var i = 0; i < group.members.length; i++) {
-			if(group.members[i].facebook.id === user.facebook.id) {
-				console.log(group.members[i]);
-				isInGroup = true;
-			}
-		}
-
-		
 	},
 
 	// ========================= SEGS ==========================================
@@ -235,7 +238,6 @@ var GroupActions = {
 	},
 
 	addNote: function(highlightId, note) {
-		console.log('add note feedPOst');
 		GroupDispatcher.handleAction({
 				actionType: Constants.ADD_NOTE,
 				note: note,
@@ -343,10 +345,16 @@ var GroupActions = {
     addMembers: function(groupId, memberList) {
     	GroupDispatcher.handleAction({
             actionType: Constants.ADD_MEMBER,
-            member: member
+            members: memberList
         });
 
-        API.addMembers(groupId, memberList, function() {
+
+    	var memberIdList = [];
+        for (var i = 0; i < memberList.length; i++) {
+        	memberIdList.push(memberList[i].facebook.id);
+        }
+
+        API.addMembers(groupId, memberIdList, function() {
 			// do nothing.
         });
     },

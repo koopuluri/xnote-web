@@ -48,7 +48,8 @@ var _callbackPostAdd = function(user, res, io) {
                 console.log('INVALID POST TYPE: ' + feedPost.type);
             }
 
-            var groupId = feedPost.groupId;
+            var groupId = feedPost.group;
+            console.log('emitting feedPOst! for group: ' + groupId);
             io.emit('feedPost:' + groupId, feedPost);
         }
 
@@ -67,7 +68,9 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        res.render('index.ejs'); // load the index.ejs file
+        res.render('index.ejs', {
+            group: null,
+        }); // load the index.ejs file
     });
 
     // =====================================
@@ -89,7 +92,6 @@ module.exports = function(app, passport) {
         res.redirect('/');
     });
 
-
     // get list of friends for the user (using facebook api):
     app.get('/_friends', isLoggedIn, function(req, res) {
         var FB = require('fb');
@@ -104,6 +106,16 @@ module.exports = function(app, passport) {
         });
     });
 
+    // user not logged in if they hit this page:
+    app.get('/referral', function(req, res) {
+        var group = req.query.group;
+
+        res.render('index.ejs', {
+            group: group,
+            fromUser: fromUser
+        });
+
+    });
 
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
@@ -127,7 +139,6 @@ module.exports = function(app, passport) {
         });
     });
 
-
     // =========================================================================
 
     app.get('/_notifs', isLoggedIn, function(req, res) {
@@ -138,7 +149,11 @@ module.exports = function(app, passport) {
 
     app.get('/_user_info', isLoggedIn, function(req, res) {
         console.log('hit /_user_info: ' + req.user.facebook.name);
-        res.send({user: {facebook: {name: req.user.facebook.name, id: req.user.facebook.id} } });
+        res.send({user: {facebook: {
+                                name: req.user.facebook.name,
+                                id: req.user.facebook.id,
+                                picture: req.user.facebook.picture}
+                            }});
     });
 
     app.get('/_get_feed_segment', isLoggedIn, function(req, res) {
@@ -166,7 +181,7 @@ module.exports = function(app, passport) {
         DB.getGroups(req.user, _dbCallback(res));
     });
 
-    app.get('/_group', isLoggedIn, function(req, res) {
+    app.get('/_group', function(req, res) {
         var groupId = req.query.groupId;
         console.log('groupId: ' + groupId);
         DB.getGroup(req.user, groupId, _dbCallback(res));
@@ -200,7 +215,6 @@ module.exports = function(app, passport) {
         DB.removeGroupMembers(req.user, groupId, members, _dbCallback(res));
     });
 
-
     // -------------------------------------------------------------------------
 
     app.get('/_article', isLoggedIn, function(req, res) {
@@ -230,7 +244,7 @@ module.exports = function(app, passport) {
         var highlightObj = req.body.highlight;
         var serialization = req.body.serialization;
         console.log(highlightObj);
-        DB.addHighlight(req.user, highlightObj, serialization, _callbackPostAdd(req.user, res, req.io));
+        DB.addHighlight(req.user, highlightObj, serialization, _callbackPostAdd(req.user, res, req.io), req.io);
     });
 
     app.post('/_remove_highlight', isLoggedIn, function(req, res) {
@@ -243,7 +257,7 @@ module.exports = function(app, passport) {
     app.post('/_add_note', isLoggedIn, function(req, res) {
         var note = req.body.note;
         var highlightId = req.body.highlightId;
-        DB.addNote(req.user, highlightId, note, _callbackNoteAdd(req.user, res, req.io));
+        DB.addNote(req.user, highlightId, note, _callbackNoteAdd(req.user, res, req.io), req.io);
     });
 
     app.post('/_delete_note', isLoggedIn, function(req, res) {
@@ -269,6 +283,17 @@ function isLoggedIn(req, res, next) {
         return next();
     }
 
-    // if they aren't redirect them to the home page
-    res.redirect('/');
+    var groupId = req.query.id;
+    if(groupId) {
+        // this means that this is a share link, that when logged in through will 
+        // add the member to the group and open the group page.
+        req.group = groupId;
+        res.redirect('/referral?group=' + groupId);
+    } else {
+        // no ids at all, vanilla landing page.
+        res.redirect('/');
+    }
 }
+
+
+

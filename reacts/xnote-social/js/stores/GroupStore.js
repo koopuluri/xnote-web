@@ -64,7 +64,7 @@ GroupDispatcher.register(function(payload) {
         break;
 
     case GroupConstants.ADD_MEMBER:
-        _members.push(action.member);
+        _group.members = _group.members.concat(action.members);
         break;
 
 		default:

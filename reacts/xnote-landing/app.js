@@ -10,7 +10,7 @@ var Actions = require('./actions/Actions');
 injectTapEventPlugin();
 
 var groupId = $('.group-id-span').attr('id');
-var inviter = $('inviter-id-span').attr('inviter');
+var inviter = $('.inviter-id-span').attr('id');
 
 console.log('got inviter: ' + inviter);
 console.log('got groupId: ' + groupId);

@@ -12,9 +12,7 @@ injectTapEventPlugin();
 var groupId = null;
 var inviter = null;
 var groupId = $('.group-id-span').attr('id');
-var inviterId = $('inviter-id-span').attr('inviter');
 
-console.log('got inviter: ' + inviter);
 console.log('got groupId: ' + groupId);
 
 // set the group associated with the groupId in the stores:

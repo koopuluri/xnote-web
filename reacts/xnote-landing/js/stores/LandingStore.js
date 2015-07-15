@@ -4,14 +4,8 @@ var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _group = null;
-var _inviter = null;
 
 var LandingStore = _.extend({}, EventEmitter.prototype, {
-
-    getInviter: function() {
-        return _inviter;
-    },
-
   	getGroup: function() {
         return _group;
     },
@@ -39,10 +33,6 @@ LandingDispatcher.register(function(payload) {
   	    case Constants.SET_GROUP:
     		    _group = action.group;
 	  		    break;
-
-        case Constants.SET_INVITER:
-            _inviter = action.inviter;
-            break;
 
 	  	  default:
 		   	    return true;

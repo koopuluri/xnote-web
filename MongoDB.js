@@ -26,6 +26,7 @@ var DB = {
         var group = Group({
             createdBy: user,
             title: groupObj.title,
+            description: groupObj.description,
             members: [],
             _id: groupObj._id
         });
@@ -77,7 +78,7 @@ var DB = {
             // adding a feedPost for this article:
             self._addFeedPostForArticle(user, savedArticle, callback);
             self.addNotifsForArticle(user, savedArticle, function(notif) {
-                console.log('this notif saved for article: ' + notif);
+                io.emit('notification:' + savedArticle.group + user._id, {notif: notif}); 
             });
         });
      },
@@ -199,9 +200,8 @@ var DB = {
 
             // adding notifs for highlight: 
             self.addNotifsForHighlight(user, savedHighlight, function(notif) {
-                console.log('notif sent through io: ' + notif);
+                io.emit('notification:' + savedHighlight.group + user._id, {notif: notif}); 
             });
-
         });
      },
 
@@ -258,7 +258,7 @@ var DB = {
      // ========================= NOTE =========================================
 
      // TODO: add notifications for users that have also added notes to the same highlight / creator of highlight.
-     addNote: function(user, highlightRef, noteObj, callback) {
+     addNote: function(user, highlightRef, noteObj, callback, io) {
         var self = this;
         var note = {
             createdBy: user,
@@ -294,8 +294,9 @@ var DB = {
                     });
 
                 // notifs:
-                self.addNotifsForNoteAdd(user, savedHighlight, function() {
-                    console.log("notif sent for note: " + savedHighlight);
+                self.addNotifsForNoteAdd(user, savedHighlight, function(notif) {
+                    // socket.io'ing the notif:
+                    io.emit('notification:' + savedHighlight.group + user._id, {notif: notif});
                 });
             });
      },
@@ -334,9 +335,9 @@ var DB = {
        getGroup: function(user, groupRef, callback) {
             console.log('getGroup: ' + groupRef);
             Group.findOne({_id: groupRef})
-               .select('createdBy members groupId')
+               .select('createdBy members groupId title description')
                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
-               .populate('members', '-_id')
+               .populate('members', '-_id facebook.id facebook.name facebook.picture')
                .exec(function(err, doc) {
                     if (err || !doc) {
                         if (err)
@@ -599,9 +600,12 @@ var DB = {
      addNotifsForNoteAdd: function(noteCreator, savedHighlight, callback) {
         var notes = savedHighlight.notes;
         console.log('addNotifsForNoteAdd notes.length: ' + notes.length);
+
         for(var i = 0; i < notes.length; i++) {
             var note = notes[i];
             var user = note.createdBy;
+            console.log('addNotifsForNoteAdd noteCreator: ' + noteCreator._id);
+            console.log('addNotifsForNoteAdd user: ' + user);
             if (!user.equals(noteCreator._id)) {
                 // now have to check if this user already has this highlight as a notification:
                 // if it does, then just update it so: (forNote = true).
@@ -614,12 +618,13 @@ var DB = {
                     forNote: true
                 });
 
+                console.log('about to add a notification for the user :' + user);
                 // so finding one and updating if existing otherwise inserting.
                 Notification.findOneAndUpdate({user: user, group: savedHighlight.group},
                     {$set: {
                         group: savedHighlight.group,
                         highlight: savedHighlight._id,
-                        user: user._id,
+                        user: user,
                         forNote: true }
                     },
                     {upsert: true}, 

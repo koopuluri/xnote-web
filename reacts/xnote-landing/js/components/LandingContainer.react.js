@@ -34,12 +34,11 @@ var LandingContainer = React.createClass({
 	getInitialState: function() {
         return {
             group: LandingStore.getGroup(),
-            inviter: LandingStore.getInviter()
         }
     },
 
     _onChange: function() {
-        this.setState(this.getInitalState());
+        this.setState(this.getInitialState());
     },
 
 
@@ -51,9 +50,8 @@ var LandingContainer = React.createClass({
         var groupMessage ='';
         var groupCard ='';
         var group = this.state.group;
-        var inviter = this.state.inviter;
-        if(inviter && group) {
-            var groupMessage =  "Your friend " + inviter.facebook.name + " invited you to join the group "
+        if(group) {
+            var groupMessage =  "Your have been invited to join this group "
             var members = group.groupRefs.members.map(function(member) {
                 var picture = member.facebook.picture;
                 if(picture) {
@@ -78,8 +76,8 @@ var LandingContainer = React.createClass({
                         'text-align':'center',
                         'margin':'auto'}}>
                     <ListItem 
-                        primaryText = {group.groupRefs.title}
-                        secondaryText = {group.groupRefs.description}
+                        primaryText = {group.title}
+                        secondaryText = {group.description}
                         secondaryTextLines = {2}
                         disabled={true} 
                         style={{paddingBottom: 0}}/>

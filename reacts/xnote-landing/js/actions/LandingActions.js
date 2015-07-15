@@ -1,4 +1,4 @@
-var LandingDispatcher = require('../dispatcher/LandingDispatcher');
+var Dispatcher = require('../dispatcher/LandingDispatcher');
 var Constants = require('../constants/Constants');
 var API = require('../utils/API');
 
@@ -6,7 +6,7 @@ var API = require('../utils/API');
 var Actions = {
 
 	_setGroup: function(group) {
-		GroupDispatcher.handleAction({
+		Dispatcher.handleAction({
 			actionType: Constants.SET_GROUP,
 			group: group
 		});
@@ -18,27 +18,10 @@ var Actions = {
 			if (result.error) {
 			} else {
 				// set the group:
+				console.log('RESULT');
+				console.log(result);
 				var group = result.group
 				self._setGroup(group);
-			}
-		});
-	},
-
-	_setInviter: function(inviter) {
-		GroupDispatcher.handleAction({
-			actionType: Constants.SET_INVITER,
-			inviter: inviter
-		});
-	},
-
-	fetchAndSetInviter: function(inviterId) {
-		var self = this;
-		API.getInviter(inviterId, function(result) {
-			if (result.error) {
-			} else {
-				// set the inviter:
-				var inviter = result.inviter
-				self._setInviter(inviter);
 			}
 		});
 	},
