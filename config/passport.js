@@ -50,17 +50,22 @@ module.exports = function(passport) {
 
                 if (user) {
                     if(!user.facebook.picture) {
-                        user.facebook.picture = 'graph.facebook.com/' + user.facebook.id + '/picture';
-                        user.save(function(err) {
-                            if(err) {
-                                throw err;
-                            }
 
-                            return done(null, user);
-                        });
+                        User.findOneAndUpdate({_id: user._id}, 
+                            {'facebook.picture': 'http://graph.facebook.com/' + user.facebook.id + '/picture?type=large'},
+                            {},
+                            function(err, updatedUser) {
+                                if(err) {
+                                    console.log('error adding picture to existing user: ' + err);
+                                    throw err;
+                                }
+
+                                return done(null, updatedUser);
+                            });
                     } else {
                         return done(null, user);
                     }
+                    return null;  // should not reach this statement! 
                 }
 
                 if (err) {
@@ -77,7 +82,7 @@ module.exports = function(passport) {
                 newUser.facebook.token = token; // we will save the token that facebook provides to the user
                 newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
                 newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
-                newUser.facebook.picture = 'graph.facebook.com/' + profile.id + '/picture';
+                newUser.facebook.picture = 'http://graph.facebook.com/' + profile.id + '/picture';
 
                 // save our user to the database
                 newUser.save(function(err) {

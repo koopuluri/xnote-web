@@ -351,7 +351,7 @@ var DB = {
        },
 
      getUserInfo: function(user, callback) {
-        callback({name: user.facebook.name, id: user.facebook.id});
+        callback({name: user.facebook.name, id: user.facebook.id, picture: user.facebook.picture});
      },
 
      getArticle: function(user, articleId, callback) {
