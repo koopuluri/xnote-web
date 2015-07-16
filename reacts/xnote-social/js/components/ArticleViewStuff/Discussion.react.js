@@ -90,7 +90,7 @@ var Discussion = React.createClass({
               var post = {
                   type: 'HighlightFeedPost',
                   highlight: this.state.highlight,
-                  createdBy: this.state.currentUser
+                  createdBy: this.state.highlight.createdBy,
               }
 
               comp = <FeedPost post={post} actions="Article" isLink = {false}/>
