@@ -144,8 +144,10 @@ module.exports = function(app, passport) {
                 { method: 'get', relative_url: 'me/friends' }
             ]
         }, function(obj) {
-            var friends = JSON.parse(obj[0].body).data;
-            res.send({friends: friends});
+            if(obj && obj.length > 0) {
+                var friends = JSON.parse(obj[0].body).data;
+                res.send({friends: friends});
+            }
         });
     });
 
