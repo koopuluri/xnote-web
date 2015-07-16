@@ -116,7 +116,15 @@ var Actions = {
         });
     },
 
-    deleteNote: function(payload) {
+    deleteNote: function(note, highlightId) {
+        console.log('delete Note: ' + highlightId);
+        console.log(note);
+        GroupDispatcher.handleAction({
+            actionType: Constants.DISCUSSION_DELETE_NOTE,
+            highlightId: highlightId,
+            note: note
+        });
+
     },
 
     addNote: function(highlightId, note) {

@@ -87,6 +87,20 @@ AppDispatcher.register(function(payload) {
         }
         break;
 
+    case XnoteConstants.DISCUSSION_DELETE_NOTE:
+        var highlightId = action.highlightId;
+        var noteId = action.note.noteId;
+        if (_highlight && _highlight._id === highlightId) {
+            // delete the note;
+            for (var i = 0; i < _highlight.notes.length; i++) {
+                var note = _highlight.notes[i];
+                if (note.noteId === noteId) {
+                    // delete this note:
+                    _highlight.notes.splice(i, 1);
+                }
+            }
+        }
+        break;
 
     case XnoteConstants.SOCKET_RECEIVE_NOTE:
         if (_highlight && action.highlightId === _highlight._id) {

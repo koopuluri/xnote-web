@@ -9,11 +9,10 @@ var Actions = require('./actions/LandingActions');
 //https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
 
-var groupId = null;
 var groupId = $('.group-id-span').attr('id');
 
 // set the group associated with the groupId in the stores:
-if(groupId) {
+if(groupId && !groupId === null) {
 	Actions.fetchAndSetGroup(groupId);
 }
 

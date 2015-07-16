@@ -11,6 +11,7 @@ var ListItem = mui.ListItem;
 var Avatar = mui.Avatar;
 var ToolbarGroup = mui.ToolbarGroup;
 var Toolbar = mui.Toolbar;
+var CircularProgress = mui.CircularProgress;
 
 var LandingContainer = React.createClass({
 
@@ -34,6 +35,7 @@ var LandingContainer = React.createClass({
 	getInitialState: function() {
         return {
             group: LandingStore.getGroup(),
+            isLoading: LandingStore.getLoading()
         }
     },
 
@@ -50,6 +52,33 @@ var LandingContainer = React.createClass({
         var groupMessage ='';
         var groupCard ='';
         var group = this.state.group;
+
+        if(this.state.isLoading) {
+            return (
+                <div>
+                    <p> Hey! Welcome to Tatr! </p>
+                    <p> {groupMessage} </p>
+                    <div style={{padding:10}}>
+                        <CircularProgress mode="indeterminate" />
+                    </div>
+                    <p> To get started log in with Facebook.</p>
+                    <RaisedButton 
+                        linkButton={true}
+                        href='/auth/facebook/poop'
+                        style={{lineHeight:1}}>
+                        <p style={
+                            {
+                                color:"#fff",
+                                paddingLeft:10,
+                                paddingRight:10,
+                                paddingTop: 2
+                            }
+                        }>Facebook</p>
+                    </RaisedButton>
+                </div>
+            );
+        }
+
         if(group) {
             var groupMessage =  "Your have been invited to join this group "
             var members = group.members.map(function(member) {
@@ -90,9 +119,9 @@ var LandingContainer = React.createClass({
                     </Toolbar>
                     <div></div>
                 </Card>
-
-
         }
+
+
         return (
             <div>
                 <p> Hey! Welcome to Tatr! </p>
@@ -103,7 +132,7 @@ var LandingContainer = React.createClass({
                 <p> To get started log in with Facebook.</p>
                 <RaisedButton 
                     linkButton={true}
-                    href='/auth/facebook?id=poopopopop'
+                    href='/auth/facebook/'
                     style={{lineHeight:1}}>
                     <p style={
                         {

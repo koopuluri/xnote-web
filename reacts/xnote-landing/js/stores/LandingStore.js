@@ -4,11 +4,16 @@ var Constants = require('../constants/Constants');
 var _ = require('underscore');
 
 var _group = null;
+var _loading = false;
 
 var LandingStore = _.extend({}, EventEmitter.prototype, {
   
   	getGroup: function() {
         return _group;
+    },
+
+    getLoading: function() {
+        return _loading;
     },
     
   	//emit change event
@@ -34,6 +39,10 @@ LandingDispatcher.register(function(payload) {
   	    case Constants.SET_GROUP:
     		    _group = action.group;
 	  		    break;
+
+        case Constants.SET_LOADING:
+            _loading = action.isLoading;
+            break;
 
 	  	  default:
 		   	    return true;
