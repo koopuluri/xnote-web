@@ -159,16 +159,26 @@ module.exports = function(app, passport) {
         res.render('index.ejs', {
             group: group,
         });
-
     });
 
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
-        console.log('going to group: ' + groupId);
-        res.render('social.ejs', {
-            groupId: groupId,
-            userId: req.user._id
-        });
+        for (var i = 0; i < req.user.groups.length; i++) {
+            var group = req.user.groups[i];
+            console.log(group.groupRef + 'vs.' + groupId);
+            if (group.groupRef == groupId) {
+                res.render('social.ejs', {
+                    groupId: groupId,
+                    userId: req.user._id
+                });
+                return;
+            }
+        }
+        console.log('this user is not in group!: ' + req.user._id + ':' + groupId);
+
+        res.redirect('/');
+
+
     });
 
     // process the signup form
