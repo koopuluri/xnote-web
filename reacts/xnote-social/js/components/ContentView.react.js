@@ -49,7 +49,6 @@ var ContentView = React.createClass({
     componentWillUnMount: function() {
         ContentStore.removeChangeListener(this._onChange);
         //GroupActions.clearArticleList();
-        //console.log('ContentView.unmount');
     },
 
     render: function() {

@@ -14,11 +14,9 @@ var _lastViewed = 0;
 // expects to get notifs sorted by timestamp (desc) ==> newest one first!
 function getCount(notifs, lastViewed) {
 	var count = 0;
-	console.log("GETCounT: " + lastViewed);
 	for (var i = 0; i < notifs.length; i++) {
 		var notif = notifs[i];
 		var notifTstamp = new Date(notifs[i].createdAt).getTime();
-		console.log('notifTstamp: ' + notifTstamp);
 		// now comparing the tstamps:
 		if (notifTstamp > lastViewed) {
 			count++;
@@ -102,9 +100,6 @@ GroupDispatcher.register(function(payload) {
 
 		case Constants.SET_NOTIFS:
 			_lastViewed = new Date(action.lastViewed).getTime();
-
-			// 1437011474040
-			console.log('lastViewed: ' + _lastViewed);
 			_notifs = action.notifs;
 			_count = getCount(_notifs, _lastViewed);
 			break;
@@ -112,7 +107,6 @@ GroupDispatcher.register(function(payload) {
 		case Constants.ADD_NOTIF:
 			var notifTstamp = new Date(action.notif.createdAt).getTime()
 			if (_lastViewed < notifTstamp) {
-				console.log('add note incrementing count: ' + _lastViewed + 'vs' + notifTstamp);
 				_count++;
 			}
 

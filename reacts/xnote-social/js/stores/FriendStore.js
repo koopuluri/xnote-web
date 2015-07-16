@@ -41,12 +41,10 @@ GroupDispatcher.register(function(payload) {
 
 		case GroupConstants.SET_FRIENDS:
   			_friends = action.friends;
-        console.log('set freinds: ' + _friends);
   			break;
 
     case GroupConstants.SET_FRIENDS_LOADING:
         _loading = action.isLoading;
-        console.log('set loading: ' + _loading);
         break;
 
 		default:

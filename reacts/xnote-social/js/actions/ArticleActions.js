@@ -137,7 +137,6 @@ var Actions = {
         API.addNoteForHighlight(note, highlightId, function(obj) {
             if (obj.error) {
                 GroupActions.displaySnackMessage("Error could not add note");
-                console.log("error adding note to highlight: " + obj.error);
                 return;
             }
 

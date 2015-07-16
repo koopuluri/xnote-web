@@ -24,10 +24,6 @@ var GroupActions = {
 			if(!obj.error) {
 				var notifs = obj.notifs;
 				var lastViewed = obj.lastViewed;
-
-				console.log('fetch and set notifs: ' + notifs);
-				console.log('fetch and set notifs: ' + lastViewed);
-
 				GroupDispatcher.handleAction({
 					actionType: Constants.SET_NOTIFS,
 					notifs: notifs,
@@ -83,7 +79,6 @@ var GroupActions = {
 		var self = this;
 		API.getGroup(groupId, function(result) {
 			if (result.error) {
-				console.log('getGroup.error: ' + result.error);
 				self.displaySnackMessage("Error: Could not find group");
 			} else {
 				// set the group:
@@ -225,7 +220,6 @@ var GroupActions = {
 					self.displaySnackMessage("Error: Could not add article");
 					return;
 				}
-				console.log('ADD ARTICLE RETURNED! ' + data.article.title);
 				self._addArticle(data.article);
 				self._setContentIsParsing(false);
 				self.displaySnackMessage("Article Added");
@@ -246,26 +240,25 @@ var GroupActions = {
 		API.addNoteForHighlight(note, highlightId, function(obj) {
             if (obj.error) {
                 GroupActions.displaySnackMessage("Error could not add note");
-                console.log("error adding note to highlight: " + obj.error);
                 return;
             }
         });
 	},
 
 	editNote: function(note, content) {
-			note.content = content;
-			GroupDispatcher.handleAction({
-					actionType: Constants.EDIT_NOTE,
-					note: note
-			});
+		note.content = content;
+		GroupDispatcher.handleAction({
+			actionType: Constants.EDIT_NOTE,
+			note: note
+		});
 	},
 
 	deleteNote: function(note, highlightId) {
-			GroupDispatcher.handleAction({
-				actionType: Constants.DELETE_NOTE,
-				note: note,
-				highlightId: highlightId
-			});
+		GroupDispatcher.handleAction({
+			actionType: Constants.DELETE_NOTE,
+			note: note,
+			highlightId: highlightId
+		});
 	},
 
 	addNotif: function(notif) {
@@ -276,37 +269,36 @@ var GroupActions = {
 	},
 
 	resetChatNotifs: function() {
-			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_CHAT_NOTIFS
-			});
+		GroupDispatcher.handleAction({
+			actionType: Constants.RESET_CHAT_NOTIFS
+		});
 	},
 
 	resetFeedNotifs: function() {
-			GroupDispatcher.handleAction({
-				actionType: Constants.RESET_FEED_NOTIFS
-			});
+		GroupDispatcher.handleAction({
+			actionType: Constants.RESET_FEED_NOTIFS
+		});
 	},
 
 	incrementFeedNotifs: function() {
-			console.log('incrementFeedNotifs');
-			GroupDispatcher.handleAction({
-					actionType: Constants.INCREMENT_FEED_NOTIFS
-			});
+		GroupDispatcher.handleAction({
+			actionType: Constants.INCREMENT_FEED_NOTIFS
+		});
 	},
 
 	socketReceivePost: function(post) {
-			GroupDispatcher.handleAction({
-					actionType: Constants.SOCKET_RECEIVE_POST,
-					post: post
-			});
+		GroupDispatcher.handleAction({
+			actionType: Constants.SOCKET_RECEIVE_POST,
+			post: post
+		});
 	},
 
 	socketReceiveNote: function(note, highlightId, postNotifCount) {
-			GroupDispatcher.handleAction({
-					actionType: Constants.SOCKET_RECEIVE_NOTE,
-					note: note,
-					highlightId: highlightId,
-			});
+		GroupDispatcher.handleAction({
+			actionType: Constants.SOCKET_RECEIVE_NOTE,
+			note: note,
+			highlightId: highlightId,
+		});
 	},
 
 	socketReceiveChat: function(chat) {

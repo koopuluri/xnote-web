@@ -80,12 +80,11 @@ var ArticleView = React.createClass({
 		ContentStore.removeChangeListener(this._onArticleChange);
 		Annotator.clearAllHighlightsAndComponents();
 		Actions.unselectArticle();
-		console.log('ArticleView.unmount');
 	},
 
 	render: function() {
 		return (
-			<Paper style={{margin: '2px', 'height':'100%'}} zDepth={1}>
+			<Paper style={{margin: '2px', 'height':'100%'}} zDepth={1} >
 				{this.getRenderredInnerThing()}
 			</Paper>
 		);
@@ -149,12 +148,7 @@ var ArticleView = React.createClass({
 
 		return (
 			<div className="poop-article-container">
-					<AddNoteButton
-							render={buttonRender}
-							onButtonClick={this._onAddNoteButtonClicked}
-							x={this.state.selectionCoordinates[0]}
-							y={this.state.selectionCoordinates[1]}/>
-
+					
 					<ArticleHeader
 							mouseUp={this._articleHeaderMouseUp}
 							title={this.state.article.title}
@@ -167,6 +161,13 @@ var ArticleView = React.createClass({
 						 onMouseUp={this._onMouseUp}
 						 dangerouslySetInnerHTML={{__html: content}}>
 					</div>
+
+					<AddNoteButton
+							render={buttonRender}
+							onButtonClick={this._onAddNoteButtonClicked}
+							x={this.state.selectionCoordinates[0]}
+							y={this.state.selectionCoordinates[1]}/>
+
 			</div>
 		);
 	},

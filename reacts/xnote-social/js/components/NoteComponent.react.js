@@ -26,6 +26,7 @@ var NoteComponent = React.createClass ({
 					var options =
 						<FontIcon 
 							style={{
+								right: 0,
 								color:Colors.grey500,
 								cursor:"pointer",
 							}}

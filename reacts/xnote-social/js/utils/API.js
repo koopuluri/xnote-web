@@ -1,7 +1,6 @@
 module.exports = {
 
 		notifsViewed: function(groupId, callback) {
-			console.log('posting notifsViewed!!!: ' + groupId);
 			$.post('/_viewed_notifs', {
 				groupId: groupId 
 			})

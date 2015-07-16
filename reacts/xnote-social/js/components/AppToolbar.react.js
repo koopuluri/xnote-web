@@ -214,7 +214,7 @@ var AppToolbar = React.createClass({
       if (me && me.facebook.name) {
           usernameElement = (
             <FlatButton 
-              primary={true} 
+              style={{color:Colors.grey500}}
               label={me.facebook.name}
               disabled={true} />
           );

@@ -32,7 +32,6 @@ var FeedNotifications = React.createClass({
   },
 
   _onNotifsOpened: function() {
-      console.log('notifsOpened: ' + this.props.groupId);
       GroupActions.notifsViewed(this.props.groupId);
   },
 
@@ -70,11 +69,12 @@ var FeedNotifications = React.createClass({
                 post={post}/>
           );
       });
+
       var feedLabel = 'Notifs'
       var feedButton =  
         <FontIcon
             style={{
-                color:Colors.green500,
+                color:Colors.grey500,
                 paddingTop:8,
                 paddingRight:5,
                 paddingLeft:5,
@@ -85,9 +85,13 @@ var FeedNotifications = React.createClass({
         </FontIcon>
       if(notifs.length > 0) {
           var count = this.state.count;
-          var feedLabel = (count > 0) ? '(' + this.state.count + ')' : '';
+          var feedLabel = (count > 0) ? count : '';
           var feedButton = 
-              <IconMenu 
+              <IconMenu
+                menuStyle={{
+                  marginTop:25,
+                  padding:0
+                }}
                 style={{
                   paddingRight:5,
                   paddingLeft:5,
@@ -105,12 +109,26 @@ var FeedNotifications = React.createClass({
                           notifications
                       </FontIcon>
                       <p style={{
+                          borderRadius:1000,
+                          paddingLeft:3,
+                          paddingRight:3,
+                          paddingTop:0,
+                          paddingBottom:0,
+                          backgroundColor:Colors.red500,
+                          color:Colors.white,
                           "display":"inline-block",
-                           margin:0
+                          margin:0
                          }}>{feedLabel}</p>
                   </span>
-              }>
+              }> 
+                <Card 
+                  zDepth={0}
+                  style = {{
+                    maxHeight:400,
+                    overflowY:'scroll'
+                  }}>
                   {feedNotifsList}  
+                </Card>
               </IconMenu>
       }
       return (
