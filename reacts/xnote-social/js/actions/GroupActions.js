@@ -6,15 +6,32 @@ var API = require('../utils/API');
 //Define actions object
 var GroupActions = {
 
+	// reset notifCount to 0.
+	// make a call to server to set latest notifs viewed tstamp to NOW().	
+	notifsViewed: function(groupId) {
+		GroupDispatcher.handleAction({
+			actionType: Constants.NOTIFS_VIEWED,
+		});
+
+		API.notifsViewed(groupId, function(obj) {
+			// do nothing.
+		});
+	},
+
 	fetchAndSetNotifs: function(group) {
 		var self = this;
 		API.getNotifs(group, function(obj) {
 			if(!obj.error) {
-				console.log('NOTFS');
-				console.log(obj);
+				var notifs = obj.notifs;
+				var lastViewed = obj.lastViewed;
+
+				console.log('fetch and set notifs: ' + notifs);
+				console.log('fetch and set notifs: ' + lastViewed);
+
 				GroupDispatcher.handleAction({
 					actionType: Constants.SET_NOTIFS,
-					notifs: obj.notifs
+					notifs: notifs,
+					lastViewed: lastViewed
 				});
 			} else {
 				self.displaySnackMessage("Error: Could not get notifications");

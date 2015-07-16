@@ -145,7 +145,7 @@ var MainContainer = React.createClass({
             return (
                 <div className="main-container">
                     <ContentView groupId={this.props.groupId}/>
-                    <AppToolbar />
+                    <AppToolbar groupId={this.props.groupId}/>
                     <GroupSidebar groupId={this.props.groupId}/>
                     <AddArticle />
                     <SnackbarComponent />

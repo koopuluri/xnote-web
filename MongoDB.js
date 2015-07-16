@@ -207,7 +207,6 @@ var DB = {
      _addFeedPostForHighlight: function(user, hl, callback) {
          var post = FeedPost({
              createdBy: user,
-             lastModifiedTimestamp: {type: Date, default: Date.now},
              type: 'HighlightFeedPost',
              group: hl.group,
              highlight: hl,
@@ -645,12 +644,15 @@ var DB = {
      },
 
      getNotifs: function(user, groupRef, callback) {
+        var self = this;
         Notification.find({user: user._id, group: groupRef})
                     .populate('article')
                     .populate('highlight')
+                    .sort({'createdAt': 'desc'})
                     .exec(function(err, notifs) {
                         if (err) {
                             console.log('could not get notifs: ' + err);
+                            callback({error: ''});
                             return;
                         }
 
@@ -662,15 +664,25 @@ var DB = {
                             path: 'highlight.createdBy',
                             select: '-_id'
                         }], function(err, poppedNotifs) {
+                            if (err) { callback({error: ''}); }
                             // got notifs:
-                            console.log("got popped notifs!!!");
-                            callback({notifs: poppedNotifs});
+                            // now getting the last viewed tstamp:
+                            self.getNotifsLastViewed(user, groupRef, function(tstampObj) {
+                                if (tstampObj.error) {
+                                    callback({error: ''});
+                                    return;
+                                }
+
+                                // got tstamp succesffuly:
+                                console.log('getNotifs.lastViewed: ' + tstampObj.lastViewed);
+                                callback({notifs: poppedNotifs, lastViewed: tstampObj.lastViewed});
+                            });
                         }); 
 
                         // populate highlight createdBy:
-
-  
                     });
+
+
      },
 
      // clears notif count for this user:
@@ -685,7 +697,39 @@ var DB = {
 
                 console.log('cleared notifs for user: ' + user.facebook.name);
             });
-     }
+     },
+
+     setNotifsLastViewed: function(user, groupRef, callback) {
+        User.findOneAndUpdate({_id: user._id, 'groups.groupRef': groupRef}, 
+            {$set: {'groups.$.notifLastViewed': Date.now()} },
+            {},
+            function(err, updatedUser) {
+                if (err) {
+                    console.log('failed to set notifs viewed for user: ' + err);
+                    callback({error: 'poop'});
+                    return;
+                } 
+
+                console.log('set last viewed notifs for user+group: ' + Date.now());
+                callback({});                                
+            });
+     },
+
+     getNotifsLastViewed: function(user, groupRef, callback) {
+
+        User.findOne({_id: user._id}, {groups: {$elemMatch: {'groupRef': groupRef} }}, 
+            function(err, doc) {
+                if(err) {
+                    console.log('error getting last viewed: ' + user._id + ':' + groupRef + ':  ' + err);
+                    callback({error: err});
+                    return;
+                }
+
+                var lastViewed = doc.groups[0].notifLastViewed;
+                console.log('getLastViewed: ' + lastViewed);
+                callback({lastViewed: lastViewed});
+            });
+     },
 
 };
 
@@ -696,7 +740,8 @@ module.exports = DB;
 //         console.log('pooped in getting user!');
 //     } else {
 //         var groupRef = ObjectId("55a25931150ef26b44db57bb");
-//         var groupId = "55a25931150ef26b44db57bb";
+//         var groupId = "55a5efaf9c11ff0000739eba";
+
 //         var newGroupId = "55a25931150ef26b44db57yj"
 
 //         // //addGroupMembers: function(user, groupRef, members, callback)
@@ -704,6 +749,18 @@ module.exports = DB;
 //         //     console.log(obj)
 //         // });
 
+//         DB.setNotifsLastViewed(user, groupId, function(obj) {
+//             console.log('last viewed callbac: ' + Object.keys(obj));
+//             DB.getNotifsLastViewed(user, groupId, function(obj) {
+
+//             });
+//         });
+
+//         // DB.getNotifsLastViewed(user, groupId, function(obj) {
+
+//         // });
+
+//         //DB.getNotifs(user, groupId, function(obj) {});
 
 //         // var memberList = ['511989525640264', '853160004761049'];
 //         // var viggy = ['853160004761049']
@@ -769,9 +826,9 @@ module.exports = DB;
 
 //         //
 
-//         DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
-//             console.log('poop: ' + Object.keys(poop));
-//         });
+//         // DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
 
 
 //         //adding note:

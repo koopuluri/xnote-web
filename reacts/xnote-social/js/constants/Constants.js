@@ -3,6 +3,8 @@ var KeyMirror = require('react/lib/keyMirror');
 //Define action constants
 module.exports = KeyMirror({
 
+	NOTIFS_VIEWED: null,
+
 	ADD_NOTIF: null,
 
 	ADD_CHAT_SEGMENT: null,

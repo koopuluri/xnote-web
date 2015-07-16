@@ -185,6 +185,12 @@ module.exports = function(app, passport) {
 
     // =========================================================================
 
+    app.post('/_viewed_notifs', isLoggedIn, function(req, res) {
+        var group = req.body.groupId;
+        console.log('group viewed notifs: ' + group);
+        DB.setNotifsLastViewed(req.user, group, _dbCallback(res));
+    });
+
     app.get('/_notifs', isLoggedIn, function(req, res) {
         console.log('/notifs ');
         var groupRef = req.query.groupId;

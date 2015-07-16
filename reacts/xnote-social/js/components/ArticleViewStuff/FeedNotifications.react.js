@@ -1,5 +1,6 @@
 var mui = require('material-ui');
 var FeedNotificationsItem = require('./FeedNotificationsItem.react');
+var NotifStore = require('../../stores/NotificationStore');
 
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
@@ -9,13 +10,36 @@ var Card = mui.Card;
 var FontIcon = mui.FontIcon;
 var Colors = mui.Styles.Colors;
 
-// state
-// - message
+var GroupActions = require('../../actions/GroupActions');
+
+// props:
+// - groupId
 var FeedNotifications = React.createClass({
+
+  getInitialState: function() {
+      return {
+          notifs: NotifStore.getNotifs(),
+          count: NotifStore.getUnviewedCount()
+      }
+  },
+
+  _onChange: function() {
+      this.setState(this.getInitialState());
+  },
+
+  componentDidMount: function() {
+      NotifStore.addChangeListener(this._onChange);
+  },
+
+  _onNotifsOpened: function() {
+      console.log('notifsOpened: ' + this.props.groupId);
+      GroupActions.notifsViewed(this.props.groupId);
+  },
+
   render: function() {
 
-      var notifs = this.props.notifs;
-
+      var notifs = this.state.notifs;
+      var self = this;
       var feedNotifsList = notifs.map(function(post) {
           if (post.article) {
               var article = post.article;
@@ -60,7 +84,8 @@ var FeedNotifications = React.createClass({
                 notifications
         </FontIcon>
       if(notifs.length > 0) {
-          var feedLabel = '(' + notifs.length + ')'
+          var count = this.state.count;
+          var feedLabel = (count > 0) ? '(' + this.state.count + ')' : '';
           var feedButton = 
               <IconMenu 
                 style={{
@@ -69,7 +94,7 @@ var FeedNotifications = React.createClass({
                   cursor:"pointer"
                 }}
                 iconButtonElement={
-                  <span>
+                  <span onClick={self._onNotifsOpened}>
                     <FontIcon 
                         style={{
                           "display":"inline-block",
