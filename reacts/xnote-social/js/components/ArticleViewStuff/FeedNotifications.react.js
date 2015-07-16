@@ -50,7 +50,7 @@ var FeedNotifications = React.createClass({
       var feedButton =  
         <FontIcon
             style={{
-                color:Colors.green500,
+                color:Colors.grey500,
                 paddingTop:8,
                 paddingRight:5,
                 paddingLeft:5,
@@ -62,7 +62,11 @@ var FeedNotifications = React.createClass({
       if(notifs.length > 0) {
           var feedLabel = '(' + notifs.length + ')'
           var feedButton = 
-              <IconMenu 
+              <IconMenu
+                menuStyle={{
+                  marginTop:25,
+                  padding:0
+                }}
                 style={{
                   paddingRight:5,
                   paddingLeft:5,
@@ -80,12 +84,20 @@ var FeedNotifications = React.createClass({
                           notifications
                       </FontIcon>
                       <p style={{
+                          color:Colors.grey500,
                           "display":"inline-block",
-                           margin:0
+                          margin:0
                          }}>{feedLabel}</p>
                   </span>
-              }>
+              }> 
+                <Card 
+                  zDepth={0}
+                  style = {{
+                    maxHeight:400,
+                    overflowY:'scroll'
+                  }}>
                   {feedNotifsList}  
+                </Card>
               </IconMenu>
       }
       return (
