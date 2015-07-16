@@ -80,7 +80,6 @@ var ArticleView = React.createClass({
 		ContentStore.removeChangeListener(this._onArticleChange);
 		Annotator.clearAllHighlightsAndComponents();
 		Actions.unselectArticle();
-		console.log('ArticleView.unmount');
 	},
 
 	render: function() {

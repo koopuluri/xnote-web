@@ -64,8 +64,6 @@ var MainContainer = React.createClass({
 
         //receiving posts:
         socket.on('feedPost:' + groupId, function(post) {
-            console.log('socket.io feedPost received, adding to stores');
-            console.log(post);
             GroupActions.socketReceivePost(post);
         });
 
@@ -81,9 +79,6 @@ var MainContainer = React.createClass({
             } else {
                 // should not reach this!
             }
-
-            console.log('notif received');
-            console.log(notif);
             GroupActions.addNotif(notif);
         });
 
@@ -92,13 +87,11 @@ var MainContainer = React.createClass({
             var note = obj.note;
 
             if (note && highlightId) {
-                console.log('socket.io note received, adding to stores')
                 GroupActions.socketReceiveNote(obj.note, obj._id);
             }
         });
 
         socket.on('chat:' + groupId, function(chatObj) {
-            console.log('socket.io chat received');
             GroupActions.socketReceiveChat(chatObj.chat);
         });
     },
@@ -145,7 +138,7 @@ var MainContainer = React.createClass({
             return (
                 <div className="main-container">
                     <ContentView groupId={this.props.groupId}/>
-                    <AppToolbar />
+                    <AppToolbar groupId={this.props.groupId}/>
                     <GroupSidebar groupId={this.props.groupId}/>
                     <AddArticle />
                     <SnackbarComponent />

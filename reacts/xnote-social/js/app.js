@@ -13,9 +13,6 @@ injectTapEventPlugin();
 var groupId = $('.group-id-span').attr('id');
 var userId = $('.user-id-span').attr('id');
 
-console.log('got groupId: ' + groupId);
-console.log('got userId: ' + userId);
-
 // set the group associated with the groupId in the stores:
 Actions.fetchAndSetGroup(groupId);
 // Actions.fetchArticleListSegment(groupId, 0, 9);

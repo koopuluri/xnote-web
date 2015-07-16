@@ -26,7 +26,7 @@ groupSchema.post('save', function(doc) {
     for (var i = 0; i < doc.members.length; i++) {
         var userRef = doc.members[i];
         mongoose.models['User'].findOneAndUpdate({_id: userRef},
-          {$push: {'groups': {groupRef: doc, notifCount: 0} }},
+          {$push: {'groups': {groupRef: doc} }},
           {},
           function (error, savedUser) {
               if (error) {

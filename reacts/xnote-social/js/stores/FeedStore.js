@@ -18,8 +18,8 @@ var SEG_SIZE = 6;
 function addNote(highlightId, note) {
 		for(var i = 0; i < _feed.length; i++) {
 				if(_feed[i].type === 'HighlightFeedPost') {
-						if(_feed[i].highlight._id=== highlightId) {
-								_feed[i].highlight.notes.unshift(note);
+						if(_feed[i].highlight._id === highlightId) {
+								_feed[i].highlight.notes.push(note);
 						}
 				}
 		}
@@ -89,7 +89,6 @@ GroupDispatcher.register(function(payload) {
 				break;
 
 			case GroupConstants.ADD_NOTE:
-				console.log("add note from feedPost");
 				addNote(action.highlightId, action.note);
 				_lastAddedNoteId = action.note.noteId;
 				break;

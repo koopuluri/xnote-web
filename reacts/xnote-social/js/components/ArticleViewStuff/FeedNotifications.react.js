@@ -1,5 +1,6 @@
 var mui = require('material-ui');
 var FeedNotificationsItem = require('./FeedNotificationsItem.react');
+var NotifStore = require('../../stores/NotificationStore');
 
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
@@ -9,13 +10,35 @@ var Card = mui.Card;
 var FontIcon = mui.FontIcon;
 var Colors = mui.Styles.Colors;
 
-// state
-// - message
+var GroupActions = require('../../actions/GroupActions');
+
+// props:
+// - groupId
 var FeedNotifications = React.createClass({
+
+  getInitialState: function() {
+      return {
+          notifs: NotifStore.getNotifs(),
+          count: NotifStore.getUnviewedCount()
+      }
+  },
+
+  _onChange: function() {
+      this.setState(this.getInitialState());
+  },
+
+  componentDidMount: function() {
+      NotifStore.addChangeListener(this._onChange);
+  },
+
+  _onNotifsOpened: function() {
+      GroupActions.notifsViewed(this.props.groupId);
+  },
+
   render: function() {
 
-      var notifs = this.props.notifs;
-
+      var notifs = this.state.notifs;
+      var self = this;
       var feedNotifsList = notifs.map(function(post) {
           if (post.article) {
               var article = post.article;
@@ -46,6 +69,7 @@ var FeedNotifications = React.createClass({
                 post={post}/>
           );
       });
+
       var feedLabel = 'Notifs'
       var feedButton =  
         <FontIcon
@@ -60,7 +84,8 @@ var FeedNotifications = React.createClass({
                 notifications
         </FontIcon>
       if(notifs.length > 0) {
-          var feedLabel = '(' + notifs.length + ')'
+          var count = this.state.count;
+          var feedLabel = (count > 0) ? count : '';
           var feedButton = 
               <IconMenu
                 menuStyle={{
@@ -73,7 +98,7 @@ var FeedNotifications = React.createClass({
                   cursor:"pointer"
                 }}
                 iconButtonElement={
-                  <span>
+                  <span onClick={self._onNotifsOpened}>
                     <FontIcon 
                         style={{
                           "display":"inline-block",
@@ -84,7 +109,13 @@ var FeedNotifications = React.createClass({
                           notifications
                       </FontIcon>
                       <p style={{
-                          color:Colors.grey500,
+                          borderRadius:1000,
+                          paddingLeft:3,
+                          paddingRight:3,
+                          paddingTop:0,
+                          paddingBottom:0,
+                          backgroundColor:Colors.red500,
+                          color:Colors.white,
                           "display":"inline-block",
                           margin:0
                          }}>{feedLabel}</p>

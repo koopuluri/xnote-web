@@ -92,7 +92,7 @@ GroupDispatcher.register(function(payload) {
     			break;
 
       case Constants.CONTENT_ADD_ARTICLE:
-          _articleList.push(action.article);
+          _articleList.unshift(action.article);
           break;
 
       case Constants.SET_SELECTED_ARTICLE:

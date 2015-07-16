@@ -4,7 +4,7 @@ var FriendStore = require('../stores/FriendStore');
 var NotificationStore = require('../stores/NotificationStore');
 var GroupActions = require('../actions/GroupActions');
 var Loading = require('./ArticleViewStuff/Loading.react')
-var FeedNotification = require('./ArticleViewStuff/FeedNotifications.react');
+var FeedNotifications = require('./ArticleViewStuff/FeedNotifications.react');
   
 var mui = require('material-ui');
 var Dialog = mui.Dialog;
@@ -27,6 +27,7 @@ var FontIcon = mui.FontIcon;
 var GROUPS_PAGE = "GroupsPage";
 var LOGOUT = "Logout";
 var ADD_MEMBER = "Add Member"
+
 
 function getState() {
     return {
@@ -68,6 +69,8 @@ var friendListOnClickFunction = function(member, self) {
   }
 }
 
+// props:
+// - groupId
 var AppToolbar = React.createClass({
     getInitialState: function() {
       return getState();
@@ -211,7 +214,7 @@ var AppToolbar = React.createClass({
       if (me && me.facebook.name) {
           usernameElement = (
             <FlatButton 
-              primary={true} 
+              style={{color:Colors.grey500}}
               label={me.facebook.name}
               disabled={true} />
           );
@@ -269,7 +272,7 @@ var AppToolbar = React.createClass({
                           menu
                     </FontIcon>
                 }>
-                <FeedNotification notifs={this.state.notifs}/>
+                <FeedNotifications groupId={this.props.groupId}/>
                 {usernameElement}
             </AppBar>
 

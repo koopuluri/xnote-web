@@ -21,7 +21,7 @@ var userSchema = mongoose.Schema({
     },
     groups: [{
 	    groupRef: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
-	    notifCount: Number
+	    notifLastViewed: {type: Date, default: Date.now}
     }]
 });
 

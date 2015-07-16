@@ -103,7 +103,6 @@ var AddGroupComponent = React.createClass({
             for (var i = 0; i < friends.length; i++) {
                 var name = friends[i].name.toLowerCase();
                 if (name.includes(query)) {
-                    console.log(friends[i]);
                     queryList.push(friends[i]);
                 }   
             }

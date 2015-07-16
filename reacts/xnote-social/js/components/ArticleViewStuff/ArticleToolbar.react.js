@@ -18,7 +18,6 @@ var FontIcon = mui.FontIcon;
 function getState() {
     return {
         chatNotifs: NotificationStore.getChatNotifs(),
-        notifs: NotificationStore.getNotifs(),
         groupTitle: GroupStore.getGroupTitle(),
         currentUser: GroupStore.getCurrentUser(),
         chat: ChatStore.getChat()
@@ -108,8 +107,7 @@ var ArticleToolbar = React.createClass({
             <ChatNotifications
               chatNotifs={this.state.chatNotifs}
               chat={this.state.chat} />
-            <FeedNotifications 
-              notifs={this.state.notifs} />
+            <FeedNotifications groupId={this.props.groupId}/>
             {usernameElement}
           </AppBar>
         </div>
