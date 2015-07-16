@@ -12,7 +12,7 @@ injectTapEventPlugin();
 var groupId = $('.group-id-span').attr('id');
 
 // set the group associated with the groupId in the stores:
-if(groupId && !groupId === null) {
+if(groupId) {
 	Actions.fetchAndSetGroup(groupId);
 }
 
