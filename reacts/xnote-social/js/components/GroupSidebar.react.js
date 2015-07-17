@@ -52,21 +52,18 @@ var GroupSidebar = React.createClass({
                     className = 'discussion-view-tabs'
                     contentContainerStyle={{'height':'100%'}}>
                     <Tab
-                        className = 'chat-tab'
+                        label={feedLabel}
+                        style={contentStyle}
+                        route='feed'
+                        onActive={this._onActive}>
+                            <FeedContainer groupId={this.props.groupId}/>
+                    </Tab>
+                    <Tab
                         label= {chatLabel}
                         style = {contentStyle}
                         route = 'chat'
                         onActive = {this._onActive}>
                         <ChatContainer groupId={this.props.groupId}/>
-                    </Tab>
-                    
-                    <Tab
-                        className='123' 
-                        label={feedLabel}
-                        style={contentStyle}
-                        route='feed'
-                        onActive={this._onActive}>
-                            <FeedContainer className='asdf;lkj' groupId={this.props.groupId}/>
                     </Tab>
                 </Tabs>
             </div>
