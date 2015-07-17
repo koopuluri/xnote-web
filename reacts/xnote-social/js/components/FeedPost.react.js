@@ -133,12 +133,7 @@ var FeedPost = React.createClass({
 					var leftAvatar = <Avatar size={40}>{avatarCharacter}</Avatar>
 				}
 				var highlight = post.highlight;
-				var highlightClippedText = '';
-				if (highlight.clippedText.length > 143) {
-					highlightClippedText = '"' + highlight.clippedText.substring(0, 140) + '... "';
-				} else {
-					highlightClippedText = '"' + highlight.clippedText + '"';
-				}
+				var highlightClippedText = '"' + highlight.clippedText + '"';
 				var notes = highlight.notes.map(function(note) {
 					return (
 						<NoteComponent 
