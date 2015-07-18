@@ -144,7 +144,9 @@ module.exports = function(app, passport) {
                 { method: 'get', relative_url: 'me/friends' }
             ]
         }, function(obj) {
-            var friends = JSON.parse(obj[0].body).data;
+            if (obj && obj.length > 0) {
+                var friends = JSON.parse(obj[0].body).data;
+            }
             res.send({friends: friends});
         });
     });
@@ -162,6 +164,9 @@ module.exports = function(app, passport) {
 
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
+        console.log('req.user');
+        console.log(req.user);        
+
         console.log('going to group: ' + groupId);
         res.render('social.ejs', {
             groupId: groupId,

@@ -475,7 +475,7 @@ var DB = {
             for (var i = 0; i < usersToAdd.length; i++) {
                 var mem = usersToAdd[i];
                 User.findOneAndUpdate({_id: mem._id},
-                    {$addToSet: {groups: {groupRef: groupRef, notifCount: 0} }},
+                    {$addToSet: {groups: {groupRef: groupRef} }},
                     {},
                     function(err, savedMem) {
                         if(err) {
