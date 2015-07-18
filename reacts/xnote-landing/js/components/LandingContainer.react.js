@@ -124,7 +124,7 @@ var LandingContainer = React.createClass({
 
         return (
             <div>
-                <p> Hey! Welcome to Tatr! </p>
+                <p> Hey! Welcome to Xnote! </p>
                 <p> {groupMessage} </p>
                 <div style={{padding:10}}>
                     {groupCard}
