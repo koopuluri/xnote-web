@@ -1,6 +1,6 @@
 var React = require('react');
-var XnoteConstants = require('../../../constants/Constants');
-var PartialHighlight = require('../PartialHighlight.react');
+var XnoteConstants = require('../constants/Constants');
+var PartialHighlight = require('../components/PartialHighlight.react');
 
 
 

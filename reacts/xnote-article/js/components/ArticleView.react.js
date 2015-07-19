@@ -6,7 +6,7 @@ var AddNoteButton = require('./AddNoteButton.react');
 var ArticleHeader = require('./ArticleHeader.react');
 var Loading = require('./Loading.react');
 
-var ContentStore = require('../stores/ContentStore');
+var ArticleStore = require('../stores/ArticleStore');
 var GroupStore = require('../stores/GroupStore');
 
 var mui = require('material-ui');

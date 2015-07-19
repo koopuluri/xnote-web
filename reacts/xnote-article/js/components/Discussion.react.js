@@ -2,12 +2,9 @@ var React = require('react');
 var Actions = require('../actions/ArticleActions');
 
 var DiscussionStore = require('../stores/DiscussionStore');
-
-var NoteList = require('./NoteList.react');
-var AddNoteInput = require('./AddNoteInput.react');
 var NoteUtils = require('../utils/NoteUtils');
 
-var FeedPost = require('../FeedPost.react');
+var FeedPost = require('./FeedPost.react');
 
 var Loading = require('./Loading.react');
 

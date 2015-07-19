@@ -10,7 +10,7 @@ var Card = mui.Card;
 var FontIcon = mui.FontIcon;
 var Colors = mui.Styles.Colors;
 
-var NotifActions = require('../actions/NotifActions');
+var ArticleActions = require('../actions/ArticleActions');
 
 // props:
 // - groupId
@@ -32,7 +32,7 @@ var FeedNotifications = React.createClass({
   },
 
   _onNotifsOpened: function() {
-      NotificationActions.notifsViewed(this.props.groupId);
+      ArticleActions.notifsViewed(this.props.groupId);
   },
 
   render: function() {

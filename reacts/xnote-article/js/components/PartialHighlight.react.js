@@ -1,6 +1,6 @@
 var React = require('react');
-var Actions = require('../../actions/ArticleActions');
-var PartialHighlightStore = require('../../stores/PartialHighlightStore');
+var Actions = require('../actions/ArticleActions');
+var PartialHighlightStore = require('../stores/PartialHighlightStore');
 
 // colors:
 var SELECTED_NOTE_COLOR = "#FFFF7F";

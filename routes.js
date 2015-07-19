@@ -177,8 +177,16 @@ module.exports = function(app, passport) {
         console.log('this user is not in group!: ' + req.user._id + ':' + groupId);
 
         res.redirect('/');
+    });
 
-
+    app.get('/article/', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        var articleId = req.query.articleId;
+        res.render('article.ejs', {
+            groupId: groupId,
+            articleId: articleId
+        });
+        return;
     });
 
     // process the signup form
@@ -279,7 +287,7 @@ module.exports = function(app, passport) {
 
     // -------------------------------------------------------------------------
 
-    app.get('/_article', isLoggedIn, function(req, res) {
+    app.get('/_article', function(req, res) {
         var articleId = req.query.articleId;
         DB.getArticle(req.user, articleId, _dbCallback(res));
     });

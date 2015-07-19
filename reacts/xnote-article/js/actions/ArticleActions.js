@@ -28,10 +28,10 @@ var Actions = {
 
     _setUser: function(user) {
         Dispatcher.handleAction({
-            actionType: CONSTANTS.SET_USER,
+            actionType: Constants.SET_USER,
             user: user
         })
-    }
+    },
 
     fetchAndSetArticle: function(articleId) {
         this._setContentLoading(true);
@@ -58,13 +58,13 @@ var Actions = {
             }
 
             // got group:
-            self._setGroup(data.article);
+            self._setGroup(data.group);
         });
     },
 
-    fetchAndSetUser: function(userId) {
+    fetchAndSetUser: function() {
         var self = this;
-        API.getUser(userId, function(data) {
+        API.getUserInfo(function(data) {
             if(data.error) {
                 self.displaySnackMessage("Error could not fetch username");
                 return;
@@ -77,28 +77,28 @@ var Actions = {
     // ============================= HIGHLIGHT =================================
 
     _setDiscussionLoading: function(isLoading) {
-        GroupDispatcher.handleAction({
+        Dispatcher.handleAction({
             actionType: Constants.SET_DISCUSSION_LOADING,
             isLoading: isLoading
         });
     },
 
     setHighlight: function(highlight) {    
-        GroupDispatcher.handleAction({
+        Dispatcher.handleAction({
             actionType: Constants.SET_DISCUSSION_HIGHLIGHT,
             highlight: highlight
         });
     },
 
     setPartialHighlight: function(highlightId) {
-        GroupDispatcher.handleAction({
+        Dispatcher.handleAction({
             actionType: Constants.SET_SELECT_PARTIAL_HIGHLIGHT,
             highlightId: highlightId
         });
     },
 
     hoverHighlight: function(highlightId) {
-        GroupDispatcher.handleAction({
+        Dispatcher.handleAction({
             actionType: Constants.SET_HOVER_HIGHLIGHT,
             highlightId: highlightId
         });
@@ -109,7 +109,7 @@ var Actions = {
         this.setPartialHighlight(highlightId);
 
         // set the page url:
-        ArticleUtils.addHighlightToUrl(highlightId);
+        //ArticleUtils.addHighlightToUrl(highlightId);
 
         var self = this;
         API.getHighlight(highlightId, function(obj) {
@@ -125,7 +125,7 @@ var Actions = {
     },
 
     deleteNote: function(note, highlightId) {
-        GroupDispatcher.handleAction({
+        Dispatcher.handleAction({
             actionType: Constants.DISCUSSION_DELETE_NOTE,
             highlightId: highlightId,
             note: note
@@ -134,7 +134,7 @@ var Actions = {
     },
 
     addNote: function(highlightId, note) {
-        GroupDispatcher.handleAction({
+        Dispatcher.handleAction({
             actionType: Constants.DISCUSSION_ADD_NOTE,
             highlightId: highlightId,
             note: note
@@ -144,7 +144,7 @@ var Actions = {
 
         API.addNoteForHighlight(note, highlightId, function(obj) {
             if (obj.error) {
-                self..displaySnackMessage("Error could not add note");
+                self.displaySnackMessage("Error could not add note");
                 return;
             }
             // added successfuly:
@@ -178,6 +178,11 @@ var Actions = {
     socketReceiveNote: function() {
 
     },
+
+    //============================================================================
+    displaySnackMessage: function(message) {
+        
+    }
 };
 
 module.exports = Actions;

@@ -16,6 +16,7 @@ var groupId = $('.group-id-span').attr('id');
 // set the article associated with the articleId in the stores:
 Actions.fetchAndSetArticle(articleId);
 Actions.fetchAndSetGroup(groupId);
+Actions.fetchAndSetUser();
 
 //Render Flux Group App
 React.render(

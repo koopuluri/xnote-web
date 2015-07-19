@@ -82,14 +82,6 @@ Dispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
 
-		case Constants.RECEIVE_CHAT_NOTIFS:
-			loadChatNotifs(action.data);
-			break;
-
-		case Constants.RECEIVE_FEED_NOTIFS:
-			loadFeedNotifs(action.data);
-			break;
-
 		case Constants.SET_NOTIFS:
 			_lastViewed = new Date(action.lastViewed).getTime();
 			_notifs = action.notifs;

@@ -3,6 +3,7 @@ var ArticleActions = require('../actions/ArticleActions');
 var Constants = require('../constants/Constants');
 var GroupStore = require('../stores/GroupStore');
 var NoteComponent = require('./NoteComponent.react');
+var NoteUtils = require('../utils/NoteUtils');
 
 var mui = require('material-ui');
 var Card = mui.Card;
@@ -65,9 +66,9 @@ var FeedPost = React.createClass({
 		if(content !== '') {
 			var note = {
 				createdBy: this.state.currentUser,
-				createdAt: GroupUtils.getTimestamp(),
+				createdAt: NoteUtils.getTimestamp(),
 				content: content,
-				noteId: GroupUtils.generateUUID(),
+				noteId: NoteUtils.generateUUID(),
 				owner: this.state.currentUser.facebook
 			}
 			this.state.actions.addNote(highlightId, note);

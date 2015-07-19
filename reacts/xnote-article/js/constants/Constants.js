@@ -3,47 +3,19 @@ var KeyMirror = require('react/lib/keyMirror');
 //Define action constants
 module.exports = KeyMirror({
 
-	NOTIFS_VIEWED: null,
 
-	ADD_NOTIF: null,
 
-	ADD_CHAT_SEGMENT: null,
-	SET_CHAT_LOADING: null,
 
-	CLEAR_CHAT: null,
-	CLEAR_FEED: null,
-	CLEAR_ARTICLE_LIST: null,
-
-	ADD_MEMBER: null,
-	SET_FRIENDS: null,
-	SET_FRIENDS_LOADING: null,
-
-	INCREMENT_FEED_NOTIFS: null,
-	CLEAR_DISCUSSION: null,
-	RESET_SEGMENTS: null,
-
-	CONTENT_ADD_ARTICLE: null,
-	CONTENT_SET_PARSING: null,
-
-	RECEIVE_CHAT: null,
-	RECEIVE_FEED: null,
 	ADD_NOTE: null,
 	EDIT_NOTE: null,
 	DELETE_NOTE: null,
-	CHAT_MESSAGE: null,
-
-	RECEIVE_CHAT_NOTIFS: null,
-	RECEIVE_FEED_NOTIFS: null,
-	RESET_CHAT_NOTIFS: null,
-	RESET_FEED_NOTIFS: null,
 
 	SET_GROUP: null,
-	SET_GROUP_TITLE: null,
-	SET_FEED: null,
-	SET_ARTICLE_LIST: null,
 	SET_USER: null,
 
 	SET_CONTENT_LOADING: null,
+	SET_ARTICLE: null,
+
 	SET_FEED_LOADING: null,
 	SET_CHAT_LOADING: null,
 	ADD_ARTICLE_LIST_SEGMENT: null,
@@ -53,7 +25,13 @@ module.exports = KeyMirror({
 	SET_DISC_ERROR: null,
 	SET_DISC_LOADING: null,
 
-	SET_SELECTED_ARTICLE: null,
+	NOTIFS_VIEWED: null,
+	SET_NOTIFS: null,
+	ADD_NOTIF: null,
+
+	SET_HOVER_HIGHLIGHT: null,
+	SET_SELECT_PARTIAL_HIGHLIGHT: null,
+
 	SET_SELECTED_ARTICLE_ID: null,
 	SET_HIGHLIGHT: null,
 	SET_DISCUSSION_LOADING: null,
@@ -61,9 +39,6 @@ module.exports = KeyMirror({
 	ARTICLE_VIEW_ADD_HIGHLIGHT: null,
 	SET_DISCUSSION_LOADING: null,
 	SET_DISCUSSION_HIGHLIGHT: null,
-
-	SET_HOVER_HIGHLIGHT: null,
-	SET_SELECT_PARTIAL_HIGHLIGHT: null,
 
 	DISCUSSION_ADD_NOTE: null,
 	DISCUSSION_DELETE_NOTE: null,
@@ -75,11 +50,6 @@ module.exports = KeyMirror({
 
 	FEED_POST_ARTICLE: 'ArticleFeedPost',
 	FEED_POST_HIGHLIGHT: 'HighlightFeedPost',
-
-	RECEIVE_CHAT_NOTIFS: null,
-	RECEIVE_FEED_NOTIFS: null,
-	RESET_CHAT_NOTIFS: null,
-	RESET_FEED_NOTIFS: null,
 
 	SET_SNACKBAR_MESSAGE: null,
 });

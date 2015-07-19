@@ -1,12 +1,9 @@
 var React = require('react');
 var ArticleToolbar = require('./ArticleToolbar.react');
-var ContentStore = require('../stores/ContentStore');
+var ArticleStore = require('../stores/ArticleStore');
 var NotifStore = require('../stores/NotificationStore');
-var FeedStore = require('../stores/FeedStore');
 var GroupStore = require('../stores/GroupStore');
-var GroupUtils = require('../utils/GroupUtils');
 var ArticleActions = require('../actions/ArticleActions');
-var NotifActions = require('../actions/NotifActions');
 
 var ArticleView = require('./ArticleView.react');
 var Discussion = require('./Discussion.react');
@@ -27,19 +24,19 @@ var MainContainer = React.createClass({
     },
 
     _onRouteChange: function() {
-        var newRoute = window.location.hash.substr(1);
-        var newParams = GroupUtils.getUrlVars(newRoute);
-        var oldParams = GroupUtils.getUrlVars(this.state.route);
+        // var newRoute = window.location.hash.substr(1);
+        // var newParams = GroupUtils.getUrlVars(newRoute);
+        // var oldParams = GroupUtils.getUrlVars(this.state.route);
 
-        if(oldParams.articleId && newParams.articleId &&
-             oldParams.articleId !== newParams.articleId) {
-            ArticleActions.fetchAndSetArticle(newParams.articleId);
-            if(newParams.highlightId) {
-                ArticleActions.fetchAndSetHighlight(newParams.highlightId);
-            }
-        }
+        // if(oldParams.articleId && newParams.articleId &&
+        //      oldParams.articleId !== newParams.articleId) {
+        //     ArticleActions.fetchAndSetArticle(newParams.articleId);
+        //     if(newParams.highlightId) {
+        //         ArticleActions.fetchAndSetHighlight(newParams.highlightId);
+        //     }
+        // }
 
-        this.setState({route: newRoute});
+        // this.setState({route: newRoute});
     },
 
     componentDidMount: function() {
@@ -51,7 +48,7 @@ var MainContainer = React.createClass({
             self._onRouteChange();
         });
 
-        NotifActions.fetchAndSetNotifs(groupId);
+        ArticleActions.fetchAndSetNotifs(groupId);
     
         // setting the socket to receive posts and chat:
         var socket = io.connect();
@@ -118,25 +115,22 @@ var MainContainer = React.createClass({
 
     render: function() {
         // renderring the container
-        if(this.props.articleId) {
             return (
                 <div className="container">
                     <div className="article-container">
                         <div className="article-view col-md-8">
                             <ArticleView 
-                                articleId={this.props.articleId}
                                 highlightId={this.props.highlightId} />
                         </div>
                         <div className="note-view col-md-4">
                             <Discussion />,
                         </div>
                     </div>
-                    <ArticleToolbar groupName={this.props.groupName}/>
+                    <ArticleToolbar groupId={this.props.groupId}/>
                     <SnackbarComponent />
                 </div>
             );
-        }
-    },
+    }
 });
 
 module.exports = MainContainer;

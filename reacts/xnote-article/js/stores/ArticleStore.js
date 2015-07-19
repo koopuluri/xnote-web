@@ -1,4 +1,4 @@
-var GroupDispatcher = require('../dispatcher/Dispatcher');
+var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var _ = require('underscore');
@@ -63,7 +63,7 @@ Dispatcher.register(function(payload) {
           _isLoading = action.isLoading;
           break;
 
-      case Constants.SET_SELECTED_ARTICLE:
+      case Constants.SET_ARTICLE:
           _selectedArticle = action.article;
           break;
           

@@ -1,4 +1,4 @@
-var Dispatcher = require('../dispatcher/GroupDispatcher');
+var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var _ = require('underscore');
@@ -43,10 +43,12 @@ Dispatcher.register(function(payload) {
 	switch(action.actionType) {
 
 		case Constants.SET_GROUP:
+        console.log(action.group);
   			_group = action.group;
   			break;
 
     case Constants.SET_USER:
+        console.log(action.user);
         _user = action.user;
         break;
 

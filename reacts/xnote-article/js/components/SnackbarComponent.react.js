@@ -1,5 +1,5 @@
 var React = require('react');
-var GroupActions = require('../actions/GroupActions');
+var GroupActions = require('../actions/ArticleActions');
 var Constants = require('../constants/Constants');
 var SnackStore = require('../stores/SnackStore');
 

@@ -1,8 +1,8 @@
 var React = require('react');
 var NotificationStore = require('../stores/NotificationStore');
-var ArticleActions = require('../../actions/ArticleActions');
-var ChatNotifications = require('./ChatNotifications.react');
+var ArticleActions = require('../actions/ArticleActions');
 var FeedNotifications = require('./FeedNotifications.react');
+var GroupStore = require('../stores/GroupStore');
 var mui = require('material-ui');
 
 var AppBar = mui.AppBar;
@@ -42,9 +42,9 @@ var ArticleToolbar = React.createClass({
     },
 
     _onGroupChange: function() {
-        var newUser = GroupStore.getCurrentUser();
         this.setState({
-            currentUser: newUser
+            currentUser: GroupStore.getCurrentUser(),
+            groupTitle: GroupStore.getGroupTitle()
         });
     },
 
@@ -70,7 +70,7 @@ var ArticleToolbar = React.createClass({
       }
       return (
         <div>
-          <AppBar className="article-toolbar"
+          <AppBar
             title= {
               <p style={{
                 color: Colors.grey500,
