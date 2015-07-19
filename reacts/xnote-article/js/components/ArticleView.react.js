@@ -34,10 +34,21 @@ var ArticleView = React.createClass({
  		};
 	},
 
+
+	componentDidUpdate: function() {
+		Annotator.clearAllHighlightsAndComponents();
+		var article = this.state.article;
+		if (article && article.serialization) {
+			Annotator.deserialize(article.serialization);
+		}
+	},
+
 	componentDidMount: function() {
 		// adding listener:
 		ArticleStore.addChangeListener(this._onChange);
-		Actions.fetchAndSetHighlight(this.props.highlightId);		
+		Actions.fetchAndSetHighlight(this.props.highlightId);
+		Actions.setPartialHighlight(this.props.highlightId);
+
 	},
 
 	componentWillUnmount: function() {

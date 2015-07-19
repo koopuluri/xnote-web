@@ -119,7 +119,7 @@ var MainContainer = React.createClass({
                 <div className="container">
                     <div className="article-container">
                         <div className="article-view col-md-8">
-                            <ArticleView 
+                            <ArticleView
                                 highlightId={this.props.highlightId} />
                         </div>
                         <div className="note-view col-md-4">

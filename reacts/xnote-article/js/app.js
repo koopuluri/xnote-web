@@ -21,5 +21,5 @@ Actions.fetchAndSetUser();
 //Render Flux Group App
 React.render(
 	<MainContainer groupId={groupId}/>,
-	document.getElementById('article-container')
+	document.getElementById('main-container')
 );
