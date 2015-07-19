@@ -1,0 +1,27 @@
+  {
+    "name": "xnote-article",
+    "version": "0.0.1",
+    "description": "xnote Article",
+    "main": "js/app.js",
+    "dependencies": {
+      "flux": "^2.0.0",
+      "react": "^0.13.0",
+      "underscore": "^1.7.0",
+      "material-ui": "0.10.0",
+      "mongoose": "*"
+    },
+    "scripts": {
+      "start": "watchify -o ../../static/static/js/article.js -v -d .",
+      "build": "browserify . | uglifyjs -cm > ../../static/static/js/article.js"
+    },
+
+    "author": "Xnote Labs",
+
+    "browserify": {
+      "transform": [
+        "reactify",
+        "envify"
+      ]
+    }
+
+}

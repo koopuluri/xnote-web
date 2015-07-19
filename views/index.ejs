@@ -4,20 +4,47 @@
     <title>Xnote Home</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-    <style>
-        body { padding-top:80px; }
-    </style>
+    <link rel="stylesheet" href="/static/css/index.css" type="text/css"/>
 </head>
 <body>
 <div class="container">
 
-    <span id="<%= group %>" class="group-id-span"></span>
+    <div class="container xnote-container">
+        <div>
+            <div class="row centered">
+                <div class="col-md-12">
+                    <div class="logo-container">
+                        <img class="logo" src="/static/xnote_logo.png"></img>
+                        <div class="logo-name">NOTE</div>
+                        <div class="logo-beta">BETA</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row centered">
+                <div class="col-md-12">
+                    <p class="title">Annotate. Together.</p>
+                </div>
+            </div>
+        </div>
 
-    <div class="jumbotron text-center">
-        <div id="landing-container">
-        
+        <div class="welcome-message-container">
+            <div class="jumbotron centered">
+                <div id="landing-container">
+            </div>
+        </div>
+
+
+        <footer class="footer">
+          <div class="container">
+               <ul class="nav navbar-nav">
+                <li><a href="https://docs.google.com/document/d/1NOMsFQqvBTysQNmSmZJM2ZN5NQoiDkHFeEg9nFYpUgo/edit?usp=sharing">Terms</a></li>
+                <li><a href="https://docs.google.com/document/d/1xlPff9xHhS0aszBvYRvWTCtU6wY7SOrsh_hH7GzddRs/edit?usp=sharing">Privacy</a></li>
+              </ul>
+          </div>
+        </footer>
     </div>
 
+    <span id="<%= group %>" class="group-id-span"></span>
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/landing.js"></script>

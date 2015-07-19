@@ -333,7 +333,6 @@ var DB = {
        // - feedPost: (sub-populate the article / highlight ref within each feedPost)
        // - articles: (title, url; sub-populate(createdBy));
        getGroup: function(user, groupRef, callback) {
-            console.log('getGroup: ' + groupRef);
             Group.findOne({_id: groupRef})
                .select('createdBy members groupId title description')
                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
@@ -345,8 +344,6 @@ var DB = {
                         callback({error: 'poop'});
                         return;
                     }
-                    console.log('GETGROUP');
-                    console.log(doc);
                     callback({group: doc});
                });
        },

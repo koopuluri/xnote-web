@@ -1,22 +1,16 @@
 var React = require('react');
-var GroupSidebar = require('./GroupSidebar.react');
-var AppToolbar = require('./AppToolbar.react');
+
 var ArticleToolbar = require('./ArticleViewStuff/ArticleToolbar.react');
 var SnackbarComponent = require('./SnackbarComponent.react');
 
-var ContentView = require('./ContentView.react');
 var ContentStore = require('../stores/ContentStore');
 var NotifStore = require('../stores/NotificationStore');
-var FeedStore = require('../stores/FeedStore');
 var GroupStore = require('../stores/GroupStore');
-var AddArticle = require('./AddArticle.react');
-var GroupUtils = require('../utils/GroupUtils');
 
-var GroupActions = require('../actions/GroupActions');
 var ArticleActions = require('../actions/ArticleActions');
 
-var ArticleView = require('../components/ArticleViewStuff/ArticleView.react');
-var Discussion = require('../components/ArticleViewStuff/Discussion.react');
+var ArticleView = require('./ArticleView.react');
+var Discussion = require('./Discussion.react');
 
 var mui = require('material-ui');
 var ThemeManager = new mui.Styles.ThemeManager();
@@ -37,12 +31,8 @@ var MainContainer = React.createClass({
         var newParams = GroupUtils.getUrlVars(newRoute);
         var oldParams = GroupUtils.getUrlVars(this.state.route);
 
-        if(oldParams.articleId && newParams.articleId &&
-             oldParams.articleId !== newParams.articleId) {
-            ArticleActions.fetchAndSetArticle(newParams.articleId);
-            if(newParams.highlightId) {
-                ArticleActions.fetchAndSetHighlight(newParams.highlightId);
-            }
+        if(newParams.highlightId) {
+            ArticleActions.fetchAndSetHighlight(newParams.highlightId);
         }
 
         this.setState({route: newRoute});
@@ -50,22 +40,15 @@ var MainContainer = React.createClass({
 
     componentDidMount: function() {
         var self = this;
-        var groupId = this.props.groupId;
+        var highlightId = this.props.highlightId;
         var userId = this.props.userId;
 
         window.addEventListener('hashchange', function() {
             self._onRouteChange();
         });
-
-        GroupActions.fetchAndSetNotifs(groupId);
     
         // setting the socket to receive posts and chat:
         var socket = io.connect();
-
-        //receiving posts:
-        socket.on('feedPost:' + groupId, function(post) {
-            GroupActions.socketReceivePost(post);
-        });
 
         socket.on('notification:' + groupId + userId, function(obj) {
             var notif = obj.notif;
@@ -79,7 +62,7 @@ var MainContainer = React.createClass({
             } else {
                 // should not reach this!
             }
-            GroupActions.addNotif(notif);
+            Actions.addNotif(notif);
         });
 
         socket.on('note:' + groupId, function(obj) {
@@ -87,12 +70,8 @@ var MainContainer = React.createClass({
             var note = obj.note;
 
             if (note && highlightId) {
-                GroupActions.socketReceiveNote(obj.note, obj._id);
+                Actions.socketReceiveNote(obj.note, obj._id);
             }
-        });
-
-        socket.on('chat:' + groupId, function(chatObj) {
-            GroupActions.socketReceiveChat(chatObj.chat);
         });
     },
 
@@ -133,30 +112,17 @@ var MainContainer = React.createClass({
 
     render: function() {
         // renderring the container
-        var params = GroupUtils.getUrlVars(this.state.route);
-        if (!params || !params.articleId) {
-            return (
-                <div className="main-container">
-                    <ContentView groupId={this.props.groupId}/>
-                    <AppToolbar groupId={this.props.groupId}/>
-                    <GroupSidebar groupId={this.props.groupId}/>
-                    <AddArticle />
-                    <SnackbarComponent />
-                </div>
-            );
-        }  else {
-            return (
-                <div className="container">
-                    <div className="article-container">
-                        <div className="article-view col-md-8">
-                            <ArticleView 
-                                articleId={params.articleId}
-                                highlightId={params.highlightId} />
-                        </div>
-                        <div className="note-view col-md-4">
-                            <Discussion />,
-                        </div>
+        return (
+            <div className="container">
+                <div className="article-container">
+                    <div className="article-view col-md-8">
+                        <ArticleView 
+                            highlightId={params.highlightId} />
                     </div>
+                    <div className="note-view col-md-4">
+                        <Discussion />,
+                    </div>
+                </div>
                     <ArticleToolbar groupId={this.props.groupId}/>
                     <SnackbarComponent />
                 </div>
