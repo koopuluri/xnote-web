@@ -24,6 +24,7 @@ var Actions = {
 		self._setLoading(true);
 		API.getGroup(groupId, function(result) {
 			if (result.error) {
+				self._setLoading(false);
 				// !?!?
 			} else {
 				// set the group:

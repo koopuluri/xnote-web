@@ -369,6 +369,44 @@ var DB = {
         });
      },
 
+
+     getFeedSegmentAcrossGroups: function(user, start, count, callback) {
+        var groupIds = [];
+        for (var i = 0; i < user.groups.length; i++) {
+            groupIds.push(user.groups[i].groupRef);
+        }
+
+        console.log('feedSegAcrosGroups: ' + groupIds + '?' + groupIds.length);
+
+        FeedPost.find({group: {$in: groupIds} })
+                .sort({'lastModifiedTimestamp': 'desc'})
+                .skip(start).limit(count)
+                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
+                .populate('highlight', '-createdBy')
+                .populate('highlight.notes', '-createdBy')
+                .populate('article', '-createdBy')
+                .exec(function(err, results) {
+                    if(err) {
+                        console.log('getFeedSegment error: ' + err);
+                        callback({error: err});
+                        return;
+                    }
+
+                    Article.populate(results, {path: 'highlight.article', select: 'title _id'},
+                        function(err, poppedFeedPosts) {
+                            if(!err) {
+                                callback({feedPosts: poppedFeedPosts});
+                                return;
+                            }
+
+                            console.log('error populating feedPosts article: ' + err);
+                            callback({error: 'feedPost pooped'});
+                        });
+
+                    
+                });
+     },
+
      getFeedSegment: function(user, groupRef, start, count, callback) {
         FeedPost.find({group: groupRef})
                 .sort({'lastModifiedTimestamp': 'desc'})
@@ -384,7 +422,18 @@ var DB = {
                         return;
                     }
 
-                    callback({feedPosts: results});
+                    Article.populate(results, {path: 'highlight.article', select: 'title _id'},
+                        function(err, poppedFeedPosts) {
+                            if(!err) {
+                                callback({feedPosts: poppedFeedPosts});
+                                return;
+                            }
+
+                            console.log('error populating feedPosts article: ' + err);
+                            callback({error: 'feedPost pooped'});
+                        });
+
+                    
                 });
      },
 

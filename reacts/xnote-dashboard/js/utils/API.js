@@ -1,9 +1,27 @@
 module.exports = {
 
+    getFeedSegment: function(start, count, callback) {
+        $.get('/_get_feed_segment_across_groups', {
+            start: start,
+            count: count
+        }, function(data, status) {
+            callback(data);
+        });
+    },
+
     // getting all the groups that this user belongs to:
     getGroups: function(callback) {
         $.get('/_groups', {}, function(data, status) {
             callback(data.groups);
+        });
+    },
+    
+    addNoteForHighlight: function(note, highlightId, callback) {
+        $.post('/_add_note', {
+                note: note,
+                highlightId: highlightId
+        }, function(obj) {
+                callback(obj);
         });
     },
 

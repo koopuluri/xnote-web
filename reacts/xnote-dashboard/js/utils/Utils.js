@@ -15,9 +15,18 @@ var Utils = {
 	},
 
 	getTimestamp: function() {
+		_secondsToDate =  function(seconds) {
+			if (!seconds) {
+				return '';
+			}
+
+			var d = new Date(seconds*1000); // The 0 there is the key, which sets the date to the epoch
+			return '' + d;
+		};
+
 		var d = new Date();
 		var t = d.getTime() / 1000;
-		return this._secondsToDate(t);
+		return _secondsToDate(t);
 	},
 
 	// used for new note / article creation: (http://stackoverflow.com/a/8809472)
@@ -25,14 +34,6 @@ var Utils = {
 		return mongoose.Types.ObjectId().toString();
 	},
 
-	_secondsToDate: function(seconds) {
-		if (!seconds) {
-			return '';
-		}
-
-		var d = new Date(seconds*1000); // The 0 there is the key, which sets the date to the epoch
-		return '' + d;
-	},
 
 	timeSince: function(date) {
 		if (typeof date !== 'object') {

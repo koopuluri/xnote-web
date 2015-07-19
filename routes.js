@@ -144,10 +144,10 @@ module.exports = function(app, passport) {
                 { method: 'get', relative_url: 'me/friends' }
             ]
         }, function(obj) {
-            if (obj && obj.length > 0) {
+            if(obj && obj.length > 0) {
                 var friends = JSON.parse(obj[0].body).data;
+                res.send({friends: friends});
             }
-            res.send({friends: friends});
         });
     });
 
@@ -159,19 +159,23 @@ module.exports = function(app, passport) {
         res.render('index.ejs', {
             group: group,
         });
-
     });
 
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.id;
-        console.log('req.user');
-        console.log(req.user);        
-
-        console.log('going to group: ' + groupId);
-        res.render('social.ejs', {
-            groupId: groupId,
-            userId: req.user._id
-        });
+        for (var i = 0; i < req.user.groups.length; i++) {
+            var group = req.user.groups[i];
+            console.log(group.groupRef + 'vs.' + groupId);
+            if (group.groupRef == groupId) {
+                res.render('social.ejs', {
+                    groupId: groupId,
+                    userId: req.user._id
+                });
+                return;
+            }
+        }
+        console.log('this user is not in group!: ' + req.user._id + ':' + groupId);
+        res.redirect('/');
     });
 
     // process the signup form
@@ -209,6 +213,12 @@ module.exports = function(app, passport) {
                                 id: req.user.facebook.id,
                                 picture: req.user.facebook.picture}
                             }});
+    });
+
+    app.get('/_get_feed_segment_across_groups', isLoggedIn, function(req, res) {
+        var start = req.query.start;
+        var count = req.query.count;
+        DB.getFeedSegmentAcrossGroups(req.user, start, count, _dbCallback(res));
     });
 
     app.get('/_get_feed_segment', isLoggedIn, function(req, res) {

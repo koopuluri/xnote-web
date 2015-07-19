@@ -8,8 +8,10 @@ var React = require('react');
 var MultiLineInput = React.createClass({
     render: function() {
         return (
-            <div className = 'multiline-input-textarea-container'>
+            <div className = 'multiline-input-textarea-container' 
+                 style={{width: '95%', margin: 'auto', marginTop: '10px'}}>
                 <textarea 
+                  style={{border: 'solid 1px #d3d3d3'}}
                   placeholder={this.props.startingContent}
                   rows="1" cols={this.props.width}
                   className={this.props.textareaClassName}></textarea>

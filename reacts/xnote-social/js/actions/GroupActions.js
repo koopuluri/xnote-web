@@ -149,11 +149,20 @@ var GroupActions = {
 	},
 
 	fetchFeedSegment: function(groupId, start, count) {
-		this._setFeedLoading(true);
+		var _setFeedLoading = function(isLoading) {
+			GroupDispatcher.handleAction({
+					actionType: Constants.SET_FEED_LOADING,
+					isLoading: isLoading
+			});
+		};
+
+		
+		_setFeedLoading(true);
 		var self = this;
 		API.getFeedSegment(groupId, start, count, function(obj) {
 				if (!obj.error) {
-					self._setFeedLoading(false);
+					_setFeedLoading(false);
+					console.log(obj.feedPosts[0]);
 					GroupDispatcher.handleAction({
 							actionType: Constants.ADD_FEED_SEGMENT,
 							feedPosts: obj.feedPosts

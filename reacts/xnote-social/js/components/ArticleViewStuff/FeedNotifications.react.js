@@ -121,14 +121,13 @@ var FeedNotifications = React.createClass({
                          }}>{feedLabel}</p>
                   </span>
               }> 
-                <Card 
-                  zDepth={0}
+                <div 
                   style = {{
                     maxHeight:400,
                     overflowY:'scroll'
                   }}>
                   {feedNotifsList}  
-                </Card>
+                </div>
               </IconMenu>
       }
       return (
