@@ -225,30 +225,34 @@ var AppToolbar = React.createClass({
               disabled={true} />
           );
       }
-      
+      var addMemberComponent = 
+        <div>
+            <p> To add members to your group. Share the following link. </p>
+            <p> {window.location.href} </p>
+        </div>
       //Stores the members that the user has selected to be added
       //in chips. 
-      var addListComponent = this.state.addList.map(function(addListItem) {
-        return (
-          <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
-          <ListItem 
-            style={{
-                backgroundColor:Colors.green200,
-                paddingRight:5,
-                paddingBottom:2,
-                paddingLeft:5,
-                paddingTop:2}}
+      // var addListComponent = this.state.addList.map(function(addListItem) {
+      //   return (
+      //     <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
+      //     <ListItem 
+      //       style={{
+      //           backgroundColor:Colors.green200,
+      //           paddingRight:5,
+      //           paddingBottom:2,
+      //           paddingLeft:5,
+      //           paddingTop:2}}
 
-            primaryText = {<p style={{paddingRight:15}}> {addListItem.facebook.name} </p>}
-            rightIconButton = {
-                <FontIcon 
-                  onClick={onDeleteFromAddList(addListItem, self)}>
-                   x 
-                </FontIcon>}
-            disabled = {true} />
-          </ToolbarGroup>
-        );
-      });
+      //       primaryText = {<p style={{paddingRight:15}}> {addListItem.facebook.name} </p>}
+      //       rightIconButton = {
+      //           <FontIcon 
+      //             onClick={onDeleteFromAddList(addListItem, self)}>
+      //              x 
+      //           </FontIcon>}
+      //       disabled = {true} />
+      //     </ToolbarGroup>
+      //   );
+      // });
 
       return (
           <div>
@@ -295,17 +299,7 @@ var AppToolbar = React.createClass({
                 actions={addMemberActions}
                 modal={true}>
                 <div style={{border:5}}>
-                  {addListComponent}
-                  <ToolbarGroup style = {{height:36}}>
-                    <TextField
-                      style={{padding: 0}}
-                      hintText ="> Enter friend name"
-                      ref = 'addMemberQuery'
-                      onChange = {this._onQueryChange}/>
-                  </ToolbarGroup>
-                </div>
-                <div style={{'clear':'both'}}>
-                  {memberDialogInternals}
+                  {addMemberComponent}
                 </div>
             </Dialog>
           </div>

@@ -226,18 +226,9 @@ var AddGroupComponent = React.createClass({
             ];
             var dialogComponent =
                 <div>
-                    <div style={{border:5}}>
-                        {addListComponent}
-                        <ToolbarGroup style = {{height:36}}>
-                        <TextField
-                            style={{padding: 0}}
-                            hintText ="Enter friend name"
-                            ref = 'addMemberQuery'
-                            onChange = {this._onQueryChange}/>
-                        </ToolbarGroup>
-                    </div>
-                    <div style={{'clear':'both'}}>
-                        <List> {queryList} </List>
+                    <div>
+                        <p> To add members to your group. Share the following link. </p>
+                        <p> {window.location.href} </p>
                     </div>
                 </div>
         }

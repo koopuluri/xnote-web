@@ -53,7 +53,7 @@ var Actions = {
         var self = this;
         API.getGroup(groupId, function(data) {
             if (data.error) {
-                self.Actions.displaySnackMessage("Error could not fetch group name");
+                self.displaySnackMessage("Error could not fetch group name");
                 return;
             }
 
