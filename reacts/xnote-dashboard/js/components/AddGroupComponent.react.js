@@ -227,8 +227,7 @@ var AddGroupComponent = React.createClass({
             var dialogComponent =
                 <div>
                     <div>
-                        <p> To add members to your group. Share the following link. </p>
-                        <p> {window.location.href} </p>
+                        <p> To add members to your group. Send them the URL to the group once you enter. </p>
                     </div>
                 </div>
         }
