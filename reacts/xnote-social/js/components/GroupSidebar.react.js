@@ -54,17 +54,8 @@ var GroupSidebar = React.createClass({
                     tabItemContainerStyle = {{backgroundColor : Colors.grey150}}
                     className = 'discussion-view-tabs'
                     contentContainerStyle={{'height':'100%'}}>
+
                     <Tab
-                        className = 'chat-tab'
-                        label= {chatLabel}
-                        style = {contentStyle}
-                        route = 'chat'
-                        onActive = {this._onActive}>
-                        <ChatContainer groupId={this.props.groupId}/>
-                    </Tab>
-                    
-                    <Tab
-                        className='123' 
                         label={feedLabel}
                         style={contentStyle}
                         route='feed'
@@ -83,6 +74,16 @@ var GroupSidebar = React.createClass({
                                 generateUUID={GroupUtils.generateUUID}
                                 getCurrentTimestamp={GroupUtils.getTimestamp}/>
                     </Tab>
+                    
+                    <Tab
+                        label= {chatLabel}
+                        style = {contentStyle}
+                        route = 'chat'
+                        onActive = {this._onActive}>
+                        <ChatContainer groupId={this.props.groupId}/>
+                    </Tab>
+
+
                 </Tabs>
             </div>
         );

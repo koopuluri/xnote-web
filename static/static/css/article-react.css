@@ -173,7 +173,7 @@ input, textarea {
     max-width: 100%;
 }
 
-.article-content figure {
+.article-content on {
     display: block;
     margin: auto;
     padding-top: 40px;
@@ -201,16 +201,13 @@ input, textarea {
 }
 
 .article-view {
-    height: calc(100% - 50px);
-}
-
-.article-view {
-  top: 39px;
-  position: fixed;
-  overflow: scroll;
-  height: 100%;
-  right: 0;
-  background-color: #fff;
+    height: calc(100% - 35px);
+    top: 40px;
+    position: fixed;
+    overflow: scroll;
+    height: 100%;
+    right: 0;
+    background-color: #f6f6f6;
 }
 
 .col-md-8 {
@@ -219,6 +216,7 @@ input, textarea {
 
 .container {
     padding: 0px;
+    width:100%;
 }
 
 .note-view {

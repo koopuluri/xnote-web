@@ -24,7 +24,16 @@ var HIGHLIGHT = 'HighlightFeedPost';
 
 var getFeedPostOnClick = function(post) {
 	return function() {
-		console.log('click!');
+		var articleId = '';
+		var highlightId = '';
+		if (post.article) {
+			articleId = post.article._id;
+		} else if (post.highlight) {
+			articleId = post.highlight.article._id;
+			highlightId = post.highlight._id;
+		}
+
+		window.location = '/article?articleId=' + articleId + '&highlightId=' + highlightId;
   	}
 }
 

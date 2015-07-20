@@ -24,7 +24,7 @@ var ToolbarGroup = mui.ToolbarGroup;
 var IconButton = mui.IconButton;
 var FontIcon = mui.FontIcon;
 
-var GROUPS_PAGE = "GroupsPage";
+var DASHBOARD = "Dashboard";
 var LOGOUT = "Logout";
 var ADD_MEMBER = "Add Member"
 
@@ -99,11 +99,19 @@ var AppToolbar = React.createClass({
     //Checks which menu item in the left nav has been clicked
     _onLeftNavChange: function(e, selectedIndex, menuItem) {
         switch (menuItem.payload) {
-        case ADD_MEMBER:
-          this.refs.addMemberDialog.show();
-          GroupActions.fetchAndSetFriends();
-          break;
-      }
+          case ADD_MEMBER:
+            this.refs.addMemberDialog.show();
+            GroupActions.fetchAndSetFriends();
+            break;
+
+          case DASHBOARD:
+            window.location.href = '/dashboard';
+            break;
+
+          case LOGOUT:
+            window.location.href = '/logout';
+            break;
+        } 
     },
 
     //Changes the query list based on the query the user has entered
@@ -156,14 +164,12 @@ var AppToolbar = React.createClass({
           text: 'Add Member'
         },
         {
-          type: MenuItem.Types.LINK,
-          payload: '/dashboard',
+          payload: DASHBOARD,
           text: 'Back to Groups',
         },
         {
-            payload: '/logout',
-            text: 'Logout',
-            type: MenuItem.Types.LINK,
+          payload: LOGOUT,
+          text: 'Logout',
         }
       );
 

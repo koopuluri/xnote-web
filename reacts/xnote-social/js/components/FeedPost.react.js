@@ -21,13 +21,21 @@ var MultiLineInput = require('./MultiLineInput.react.js')
 var ARTICLE = 'ArticleFeedPost';
 var HIGHLIGHT = 'HighlightFeedPost';
 
-
 var getFeedPostOnClick = function(post) {
 	return function() {
-		console.log('click!');
+		var articleId = '';
+		var highlightId = '';
+		var groupId = post.group;
+		if (post.article) {
+			articleId = post.article._id;
+		} else if (post.highlight) {
+			articleId = post.highlight.article._id;
+			highlightId = post.highlight._id;
+		}
+
+		window.location = '/article?groupId=' + groupId + '&articleId=' + articleId + '&highlightId=' + highlightId;
   	}
 }
-
 // props:
 // - post
 // - isLink
@@ -129,16 +137,8 @@ var FeedPost = React.createClass({
 				}
 
 				var highlight = post.highlight;
-				var highlightClippedText = '';
 
-				if (highlight.clippedText.length > 143) {
-					highlightClippedText = '"' + highlight.clippedText.substring(0, 140) + '... "';
-				} else {
-					highlightClippedText = '"' + highlight.clippedText + '"';
-				}
-
-				var articleTitle = post.highlight.article.title;
-
+				var highlightClippedText = '"' + highlight.clippedText + '"';
 				var notes = highlight.notes.map(function(note) {
 					return (
 						<NoteComponent 
@@ -151,6 +151,7 @@ var FeedPost = React.createClass({
 
 				var noteList = null;
 				var noteLength = highlight.notes.length;
+				var articleTitle = highlight.article.title;
 				if (noteLength > 0) {
 					noteList =
 						<div className = "post-comments">

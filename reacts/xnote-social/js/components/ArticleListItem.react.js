@@ -19,7 +19,10 @@ var ArticleListItem = React.createClass({
 
     _onClick: function() {
         GroupActions.clearArticleList();
-        window.location.hash = '#articleId=' + this.props.article._id;
+        window.location = '/article?groupId=' + 
+            this.props.article.group + 
+            '&articleId=' + 
+            this.props.article._id;
     },
 
     render: function() {

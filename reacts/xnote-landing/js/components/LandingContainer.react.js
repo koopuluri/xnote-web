@@ -100,49 +100,51 @@ var LandingContainer = React.createClass({
                 );
             })
             var groupCard = 
-                <Card zDepth={1} style={{
-                        width:450,
-                        'text-align':'center',
-                        'margin':'auto'}}>
-                    <ListItem 
-                        primaryText = {group.title}
-                        secondaryText = {group.description}
-                        secondaryTextLines = {2}
-                        disabled={true} 
-                        style={{paddingBottom: 0}}/>
-                    <Toolbar style={{
-                        backgroundColor:"#fff",
-                        width:500,
-                        'text-align':'center',
-                        'margin':'auto'}}>
-                        {members}
-                    </Toolbar>
-                    <div></div>
-                </Card>
+                <div style={{padding:10}}>
+                    <Card zDepth={1} style={{
+                            width:450,
+                            'text-align':'center',
+                            'margin':'auto'}}>
+                        <ListItem 
+                            primaryText = {group.title}
+                            secondaryText = {group.description}
+                            secondaryTextLines = {2}
+                            disabled={true} 
+                            style={{paddingBottom: 0}}/>
+                        <Toolbar style={{
+                            backgroundColor:"#fff",
+                            width:500,
+                            'text-align':'center',
+                            'margin':'auto'}}>
+                                {members}
+                        </Toolbar>
+                        <div></div>
+                    </Card>
+                </div>
         }
 
 
         return (
             <div>
-                <p> Hey! Welcome to Tatr! </p>
+                <p> Welcome to Xnote! </p>
                 <p> {groupMessage} </p>
-                <div style={{padding:10}}>
-                    {groupCard}
-                </div>
+                {groupCard}
                 <p> To get started log in with Facebook.</p>
-                <RaisedButton 
-                    linkButton={true}
-                    href='/auth/facebook/'
-                    style={{lineHeight:1}}>
-                    <p style={
-                        {
-                            color:"#fff",
-                            paddingLeft:10,
-                            paddingRight:10,
-                            paddingTop: 2
-                        }
-                    }>Facebook</p>
-                </RaisedButton>
+                <div style={{paddingTop:10}}>
+                    <RaisedButton 
+                        linkButton={true}
+                        href='/auth/facebook/'
+                        style={{lineHeight:1}}>
+                        <p style={
+                            {
+                                color:"#fff",
+                                paddingLeft:10,
+                                paddingRight:10,
+                                paddingTop: 3
+                            }
+                        }>Facebook</p>
+                    </RaisedButton>
+                </div>
             </div>
         );
     },

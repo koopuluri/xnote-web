@@ -68,10 +68,17 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
+        var groupId = req.query.groupId;
+        var articleId = req.query.articleId;
+
+        req.session.groupId = groupId;
+        req.session.articleId = articleId;
+
         res.render('index.ejs', {
             group: null,
         }); // load the index.ejs file
     });
+
 
     // =====================================
     // FACEBOOK ROUTES =====================
@@ -90,36 +97,45 @@ module.exports = function(app, passport) {
 
             // If we have previously stored a redirectUrl, use that, 
             // otherwise, use the default.
-            var group = req.session.group;
-            if(group) {
-                redirectUrl = '/group?id=' + group;
-                req.session.group = null;
+            var groupId = req.session.groupId;
+            var articleId = req.session.articleId;
+            console.log('auth: ' + groupId + '::' + articleId);
+
+            if(groupId && !articleId) {
+                redirectUrl = '/group?groupId=' + groupId;
+                req.session.groupId = null;
+            } else if (groupId && articleId) {
+                redirectUrl = '/article?groupId=' + groupId + '&articleId=' + articleId;
+                req.session.groupId = null;
+                req.session.articleId = null;
             }
 
             req.logIn(user, function(err){
                 if (err) { return next(err); }
+
                 // if this user is not part of the group to redirect to (if group exists)
                 // then add this user to that group:
-                if (group) {
-                    DB.addGroupMembers(user, group, [user.facebook.id], function(obj) {
+                // note: this is only for when the user tries to get into a group alone, not article!
+                if (groupId && !articleId) {
+                    console.log('adding user to group! groupId: ' + groupId);
+                    DB.addGroupMembers(user, groupId, [user.facebook.id], function(obj) {
                         if(!obj.error) {
-                            console.log('error adding new user to group after login: ' + group);
+                            console.log('error adding new user to group after login: ' + groupId);
                             res.redirect('/');
                         }
 
                         // no issues:
                         res.redirect(redirectUrl);
+                        return;
                     });
                 } else {
+                    console.log('redirecting to: ' + redirectUrl);
                     res.redirect(redirectUrl);
+                    return;
                 }
             });
-
-            if (!group) {
-                res.redirect(redirectUrl);
-            }
         }) (req, res, next);
-    })
+    });
 
 
     // handle the callback after facebook has authenticated the user
@@ -153,16 +169,15 @@ module.exports = function(app, passport) {
 
     // user not logged in if they hit this page:
     app.get('/referral', function(req, res) {
-        var group = req.query.group;
-        console.log('setting session for referral redirect: ' + group);
-        req.session.group = group;
+        var groupId = req.query.groupId;
+        req.session.groupId = groupId;
         res.render('index.ejs', {
-            group: group,
+            group: groupId,
         });
     });
 
     app.get('/group/', isLoggedIn, function(req, res) {
-        var groupId = req.query.id;
+        var groupId = req.query.groupId;
         for (var i = 0; i < req.user.groups.length; i++) {
             var group = req.user.groups[i];
             console.log(group.groupRef + 'vs.' + groupId);
@@ -176,6 +191,18 @@ module.exports = function(app, passport) {
         }
         console.log('this user is not in group!: ' + req.user._id + ':' + groupId);
         res.redirect('/');
+    });
+
+    app.get('/article/', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        var articleId = req.query.articleId;
+        console.log('/article: ' + groupId + '::' + articleId);
+        res.render('article.ejs', {
+            groupId: groupId,
+            articleId: articleId
+        });
+
+        return;
     });
 
     // process the signup form
@@ -282,7 +309,7 @@ module.exports = function(app, passport) {
 
     // -------------------------------------------------------------------------
 
-    app.get('/_article', isLoggedIn, function(req, res) {
+    app.get('/_article', function(req, res) {
         var articleId = req.query.articleId;
         DB.getArticle(req.user, articleId, _dbCallback(res));
     });
@@ -348,17 +375,43 @@ function isLoggedIn(req, res, next) {
         return next();
     }
 
-    var groupId = req.query.id;
-    if(groupId) {
+    var groupId = req.query.groupId;
+    var articleId = req.query.articleId;
+    console.log('isLoggedIn: ' + groupId + '::' + articleId);
+    if(groupId && !articleId) {
         // this means that this is a share link, that when logged in through will 
         // add the member to the group and open the group page.
-        req.group = groupId;
-        res.redirect('/referral?group=' + groupId);
-    } else {
+        req.groupId = groupId;
+        res.redirect('/referral?groupId=' + groupId);
+        return;
+    } else if (groupId && articleId) {
         // no ids at all, vanilla landing page.
-        res.redirect('/');
-    }
+        req.groupId = groupId;
+        req.articleId = articleId;
+        res.redirect('/?groupId=' + groupId + '&articleId=' + articleId);
+    } 
+    res.redirect('/');
+    return;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

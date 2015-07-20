@@ -16,7 +16,7 @@ var Colors = mui.Styles.Colors;
 // - group
 var GroupListItem = React.createClass({
     _onClick: function() {
-        window.location = '/group?id=' + this.props.group.groupRef._id;
+        window.location = '/group?groupId=' + this.props.group.groupRef._id;
     },
 
     render: function() {

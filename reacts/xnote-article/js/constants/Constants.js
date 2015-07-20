@@ -1,0 +1,55 @@
+var KeyMirror = require('react/lib/keyMirror');
+
+//Define action constants
+module.exports = KeyMirror({
+
+
+
+
+	ADD_NOTE: null,
+	EDIT_NOTE: null,
+	DELETE_NOTE: null,
+
+	SET_GROUP: null,
+	SET_USER: null,
+
+	SET_CONTENT_LOADING: null,
+	SET_ARTICLE: null,
+
+	SET_FEED_LOADING: null,
+	SET_CHAT_LOADING: null,
+	ADD_ARTICLE_LIST_SEGMENT: null,
+	ADD_FEED_SEGMENT: null,
+
+	SET_DISC: null,
+	SET_DISC_ERROR: null,
+	SET_DISC_LOADING: null,
+
+	NOTIFS_VIEWED: null,
+	SET_NOTIFS: null,
+	ADD_NOTIF: null,
+
+	SET_HOVER_HIGHLIGHT: null,
+	SET_SELECT_PARTIAL_HIGHLIGHT: null,
+
+	SET_SELECTED_ARTICLE_ID: null,
+	SET_HIGHLIGHT: null,
+	SET_DISCUSSION_LOADING: null,
+	ARTICLE_VIEW_ADD_NOTE: null,
+	ARTICLE_VIEW_ADD_HIGHLIGHT: null,
+	SET_DISCUSSION_LOADING: null,
+	SET_DISCUSSION_HIGHLIGHT: null,
+
+	DISCUSSION_ADD_NOTE: null,
+	DISCUSSION_DELETE_NOTE: null,
+
+	BASE_HIGHLIGHT_CLASS: "xnote-note",
+
+	SOCKET_RECEIVE_NOTE: null,
+	SOCKET_RECEIVE_POST: null,
+
+	FEED_POST_ARTICLE: 'ArticleFeedPost',
+	FEED_POST_HIGHLIGHT: 'HighlightFeedPost',
+
+	SET_SNACKBAR_MESSAGE: null,
+});
