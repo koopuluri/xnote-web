@@ -66,9 +66,9 @@ module.exports = function(passport) {
                     return done(null, false);
                 }
 
-                if (!profile.emails || profile.emails.length < 1) {
-                    console.log('no emails found, returning, cannot login: ' + profile.name.givenName);
-                    return done('no email');
+                var email = '';
+                if (profile.emails && profile.emails.length > 0) {
+                    email = profile.emails[0];
                 }
 
                 console.log('new user will be created');
@@ -79,7 +79,7 @@ module.exports = function(passport) {
                 newUser.facebook.id    = profile.id; // set the users facebook id
                 newUser.facebook.token = token; // we will save the token that facebook provides to the user
                 newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
-                newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                newUser.facebook.email = email;
                 newUser.facebook.picture = 'http://graph.facebook.com/' + profile.id + '/picture';
 
                 // save our user to the database
