@@ -57,6 +57,54 @@ var Actions = {
         })
     },
 
+    // ========================== FEED ===========================================
+
+    fetchFeedSegment: function(groupId, start, count) {
+        var _setFeedLoading = function(isLoading) {
+            Dispatcher.handleAction({
+                    actionType: Constants.SET_FEED_LOADING,
+                    isLoading: isLoading
+            });
+        }; 
+
+        _setFeedLoading(true);
+        var self = this;
+        console.log('fetch feed segment!');
+        API.getFeedSegment(start, count, function(obj) {
+                if (!obj.error) {
+                    _setFeedLoading(false);
+                    Dispatcher.handleAction({
+                            actionType: Constants.ADD_FEED_SEGMENT,
+                            feedPosts: obj.feedPosts
+                    });
+                }
+        });
+    },
+
+    clearFeed: function() {
+        Dispatcher.handleAction({
+            actionType: Constants.CLEAR_FEED,
+            feedPosts: obj.feedPosts
+        });
+    },
+
+    addNote: function(highlightId, note) {
+        console.log('addNote: ' + highlightId + 'noteId:' + note.noteId);
+        Dispatcher.handleAction({
+            actionType: Constants.ADD_NOTE,
+            note: note,
+            highlightId: highlightId
+        });
+
+        API.addNoteForHighlight(note, highlightId, function() {
+            // do nothing..
+        });
+    },  
+
+    removeNote: function(note, highlightId) {
+        console.log('remove note');
+    },
+
     // adding a group:
     // - add to store.
     // - add to the db.
@@ -73,6 +121,5 @@ var Actions = {
         });
     },
 }
-
 
 module.exports = Actions;

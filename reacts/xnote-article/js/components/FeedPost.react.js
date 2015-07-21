@@ -194,7 +194,7 @@ var FeedPost = React.createClass({
 									{noteList}
 								</div>
 								<MultiLineInput
-									width = "51"
+									width = "45"
 									textareaClassName = {"feed-post-text-area" + highlight._id}
 
 		  							startingContent="Post Note"

@@ -4,6 +4,7 @@ var mui = require('material-ui');
 var CircularProgress = mui.CircularProgress;
 var Colors = mui.Styles.Colors;
 var ThemeManager = new mui.Styles.ThemeManager();
+
 // props:
 // -marginTop (optional)
 // -marginLeft (optional, but if marginTop is provided, this must be too; equality ftw).

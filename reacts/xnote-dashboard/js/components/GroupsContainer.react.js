@@ -2,8 +2,11 @@ var React = require('react');
 var Store = require('../stores/DashStore');
 var Actions = require('../actions/Actions');
 
-var Group = require('./Group.react');
+var GroupListItem = require('./GroupListItem.react');
 var AddGroupComponent = require('./AddGroupComponent.react');
+var mui = require('material-ui');
+var Card = mui.Card;
+var List = mui.List;
 
 var Groups = React.createClass({
 
@@ -26,17 +29,30 @@ var Groups = React.createClass({
 
     render: function() {
         var groups = this.state.groups.map(function(group) {
-            return (
-                <Group group={group} />
-            );
+            if(group.groupRef) {
+                return (
+                    <GroupListItem group={group} />
+                );
+            }
         });
 
         return (
-            <div className="groups-container">
-                <AddGroupComponent/>
-                <div className="groups-div">
-                    {groups}
-                </div>
+            <div className="groups-container" 
+                style={{
+                    height: 'calc(100% - 40px)',
+                    marginTop: '40px',
+                    width: '40%',
+                    position: 'fixed',
+                    left: 0,
+                }}>
+                    <AddGroupComponent/>
+
+                    <Card style={{height: '100%', overflow: 'scroll'}} zDepth = {1} >
+                        <List>
+                            {groups}
+                        </List>
+                    </Card>
+
             </div>
         );
     }

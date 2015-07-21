@@ -93,7 +93,7 @@ var Discussion = React.createClass({
                   createdBy: this.state.highlight.createdBy,
               }
 
-              comp = <FeedPost post={post} actions="Article" isLink = {false}/>
+              comp = <FeedPost post={post} actions="Article" isLink={false}/>
           } else {
               var messageStyle = {marginTop: '30%', marginLeft: '5%'};
               comp = <div className="message" style={messageStyle}>

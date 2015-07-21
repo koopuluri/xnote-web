@@ -1,5 +1,4 @@
 var Dispatcher = require('../dispatcher/Dispatcher');
-var ArticleUtils = require('../utils/ArticleUtils');
 var Constants = require('../constants/Constants');
 var API = require('../utils/API');
 
@@ -109,7 +108,6 @@ var Actions = {
         this.setPartialHighlight(highlightId);
 
         // set the page url:
-        //ArticleUtils.addHighlightToUrl(highlightId);
 
         var self = this;
         API.getHighlight(highlightId, function(obj) {

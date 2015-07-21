@@ -46,8 +46,8 @@ AppDispatcher.register(function(payload) {
 	switch(action.actionType) {
 
 		case Constants.SET_GROUPS:
-			 _groups = action.groups;
-			 break;
+        _groups = action.groups;
+        break;
 
     case Constants.SET_LOADING:
        _isLoading = action.isLoading;
@@ -58,6 +58,7 @@ AppDispatcher.register(function(payload) {
         break;
 
     case Constants.SET_USER_INFO:
+        console.log('set user info received!');
         _user = action.userInfo;
         break;
 

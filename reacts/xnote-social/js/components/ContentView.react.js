@@ -33,7 +33,6 @@ var ContentView = React.createClass({
     _onScroll: function() {
         var node = this.getDOMNode();
         if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
-
             // load more items if not reached limit:
             if (ContentStore.isLazy()) {
                 GroupActions.fetchArticleListSegment(this.props.groupId, this.state.index, ContentStore.SEG_SIZE);

@@ -1,9 +1,11 @@
 var React = require('react');
 var GroupActions = require('../actions/GroupActions');
 var NotificationStore = require('../stores/NotificationStore');
-
+var GroupStore = require('../stores/GroupStore');
+var GroupUtils = require('../utils/GroupUtils');
 var FeedContainer = require('./FeedContainer.react');
 var ChatContainer = require('./ChatContainer.react');
+var FeedStore = require('../stores/FeedStore');
 
 var mui = require('material-ui');
 var Tabs = mui.Tabs;
@@ -13,6 +15,7 @@ var Colors = mui.Styles.Colors;
 function getNotifsState() {
     return {
         chatNotifs: NotificationStore.getChatNotifs(),
+        currentUser: GroupStore.getCurrentUser()
     }
 }
 
@@ -51,13 +54,27 @@ var GroupSidebar = React.createClass({
                     tabItemContainerStyle = {{backgroundColor : Colors.grey150}}
                     className = 'discussion-view-tabs'
                     contentContainerStyle={{'height':'100%'}}>
+
                     <Tab
                         label={feedLabel}
                         style={contentStyle}
                         route='feed'
                         onActive={this._onActive}>
-                            <FeedContainer groupId={this.props.groupId}/>
+                        
+                            <FeedContainer
+                                mui={mui}
+                                segSize={5}
+                                FeedStore={FeedStore} 
+                                groupId={this.props.groupId}
+                                currentUser={this.state.currentUser}
+                                clearFeed={GroupActions.clearFeed}
+                                fetchFeedSegment={GroupActions.fetchFeedSegment}
+                                addNote={GroupActions.addNote}
+                                removeNote={GroupActions.removeNote}
+                                generateUUID={GroupUtils.generateUUID}
+                                getCurrentTimestamp={GroupUtils.getTimestamp}/>
                     </Tab>
+                    
                     <Tab
                         label= {chatLabel}
                         style = {contentStyle}
@@ -65,6 +82,8 @@ var GroupSidebar = React.createClass({
                         onActive = {this._onActive}>
                         <ChatContainer groupId={this.props.groupId}/>
                     </Tab>
+
+
                 </Tabs>
             </div>
         );

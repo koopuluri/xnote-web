@@ -1,7 +1,5 @@
 var React = require('react');
-var FeedStore = require('../stores/FeedStore');
 var FeedPost = require('./FeedPost.react.js');
-var GroupActions = require('../actions/GroupActions');
 var Loading = require('./ArticleViewStuff/Loading.react');
 var mui = require('material-ui');
 var List = mui.List;
@@ -9,44 +7,59 @@ var ListItem = mui.ListItem;
 var ListDivider = mui.ListDivider;
 var Colors = mui.Styles.Colors;
 
+// props: if (actions passed in, it will use that actions, otherwise it will use GroupActions).
+// props:
+
+// - fetchFeedSegment(groupId, start, end)
+// - clearFeed()
+// - Store
+// - addNote(note, highlightId)
+// - removeNote(note, highlightId)
+
+// - generateUUID()
+// - getCurrentTimestamp()
+// - currentUser
+// - segSize
+
 var FeedContainer = React.createClass({
 
 		//get initial state from stores
 		getInitialState: function() {
 			return {
-				feed: FeedStore.getFeed(),
-				index: FeedStore.getIndex(),
-				isLoading: FeedStore.getLoading()
+				feed: this.props.FeedStore.getFeed(),
+				index: this.props.FeedStore.getIndex(),
+				isLoading: this.props.FeedStore.getLoading()
 			}
 		},
 
 		_onChange: function() {
+			console.log('FeedContainer.onChange!');
 			this.setState(this.getInitialState());
 		},
 
 		componentDidMount: function() {
-			FeedStore.addChangeListener(this._onChange);
-			GroupActions.fetchFeedSegment(this.props.groupId, 0, FeedStore.SEG_SIZE);
+			this.props.FeedStore.addChangeListener(this._onChange);
+			this.props.fetchFeedSegment(this.props.groupId, 0, this.props.FeedStore.SEG_SIZE);
 		},
 
 		componentWillUnmount: function() {
-			FeedStore.removeChangeListener(this._onChange);
-			GroupActions.clearFeed();
+			this.props.FeedStore.removeChangeListener(this._onChange);
+			this.props.clearFeed();
 		},
 
 		_onScroll: function() {
 			var node = this.getDOMNode();
        		if (node.scrollTop + node.clientHeight >= node.scrollHeight) {
-
 	            // load more items if limit not reached:
-	            if (FeedStore.isLazy()) {
-		            GroupActions.fetchFeedSegment(this.props.groupId, this.state.index, FeedStore.SEG_SIZE);
+	            if (this.props.FeedStore.isLazy()) {
+		            this.props.fetchFeedSegment(this.props.groupId, this.state.index, this.props.FeedStore.SEG_SIZE);
 		        }
 	        }
 		},
 
 		render: function() {
 			var feed = this.state.feed;
+			var self = this;
 			if(this.state.isLoading) {
 				return(
 					<div>
@@ -68,7 +81,15 @@ var FeedContainer = React.createClass({
 					return (
 						<div>
 							<ListItem disabled={true}>
-								<FeedPost post={post} isLink={true} />
+								<FeedPost 
+									post={post} 
+									currentUser={self.props.currentUser}
+									addNote={self.props.addNote}
+									removeNote={self.props.removeNote}
+									isLink={true}
+									generateUUID={self.props.generateUUID}
+									getCurrentTimestamp={self.props.getCurrentTimestamp} />
+									
 							</ListItem>
 						</div>
 					)
