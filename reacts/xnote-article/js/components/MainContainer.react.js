@@ -15,21 +15,9 @@ var Colors = mui.Styles.Colors;
 //Using material UI themes
 //http://material-ui.com/#/customization/themes
 
+// props:
+// - currentUser 
 var MainContainer = React.createClass({
-
-    getInitialState: function() {
-        return {
-            currentUser: GroupStore.getCurrentUser()
-        }
-    },
-
-    _onGroupChange: function() {
-        this.setState(this.getInitialState());
-    },
-
-    componentDidMount: function() {
-        GroupStore.addChangeListener(this._onGroupChange);
-    },
 
     childContextTypes : {
         muiTheme: React.PropTypes.object
@@ -74,10 +62,10 @@ var MainContainer = React.createClass({
                         <div className="article-view col-md-8">
                             <ArticleView
                                 highlightId={this.props.highlightId}
-                                currentUser={this.state.currentUser} />
+                                currentUser={this.props.currentUser} />
                         </div>
                         <div className="note-view col-md-4">
-                            <Discussion currentUser={this.state.currentUser}/>,
+                            <Discussion currentUser={this.props.currentUser}/>,
                         </div>
                     </div>
                     <ArticleToolbar groupId={this.props.groupId}/>

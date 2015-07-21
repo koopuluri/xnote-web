@@ -46,17 +46,14 @@ var Discussion = React.createClass({
 
     _addNoteFormOnSave: function(noteContent) {
         // logic to save this.state.text here
-        var currentUser = GroupStore.getCurrentUser();
-        if (!currentUser) {
-            window.location.reload();
-        } else {
-            var newNote = {
-                noteId: NoteUtils.generateUUID(),
-                createdBy: GroupStore.getCurrentUser(),
-                content: noteContent,
-                createdAt: Math.floor(Date.now() / 1000)
-            }
+
+        var newNote = {
+            noteId: NoteUtils.generateUUID(),
+            createdBy: this.props.currentUser,
+            content: noteContent,
+            createdAt: Math.floor(Date.now() / 1000)
         }
+
         Actions.addNote(this.state.highlight._id, newNote);
     },
 
@@ -72,7 +69,6 @@ var Discussion = React.createClass({
           }
 
           if (this.state.highlight) {
-
               var post = {
                   type: 'HighlightFeedPost',
                   highlight: this.state.highlight,

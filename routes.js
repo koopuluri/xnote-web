@@ -200,6 +200,7 @@ module.exports = function(app, passport) {
         var articleId = req.query.articleId;
         console.log('/article: ' + groupId + '::' + articleId);
         res.render('article.ejs', {
+            user: req.user.facebook,
             groupId: groupId,
             articleId: articleId
         });

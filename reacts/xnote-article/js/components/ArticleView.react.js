@@ -20,6 +20,8 @@ var NO_ARTICLE_MESSAGE = 'Article not found. You may not have the'
 
 var HACK_NUM = 0;
 
+// props:
+// - currentUser
 var ArticleView = React.createClass({
 
 	getInitialState: function() {
@@ -29,7 +31,6 @@ var ArticleView = React.createClass({
 				selection: null,
 				selectionCoordinates: [],
 				owner: '',
-				currentUser: GroupStore.getCurrentUser(),
 				isError: null,
  		};
 	},
@@ -177,7 +178,7 @@ var ArticleView = React.createClass({
 					clippedText: this.state.selection.toHtml(),
 					createdAt: new Date() / 1000,
 					selection: Annotator.getSelectionInfo(this.state.selection),
-					createdBy: this.state.currentUser,
+					createdBy: this.props.currentUser,
 					notes: [],
 					article: this.state.article
 			}

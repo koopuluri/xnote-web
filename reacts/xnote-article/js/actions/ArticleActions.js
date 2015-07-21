@@ -164,7 +164,6 @@ var Actions = {
 
         // checking if highlight.article is reference or the actual object:
         if (article !== null && typeof article === 'object') {
-            console.log('converting highlight.article to reference before passing');
             // need to make it a ref:
             highlight.article = article._id;
         }
