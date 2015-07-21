@@ -159,12 +159,15 @@ var GroupActions = {
 		
 		_setFeedLoading(true);
 		var self = this;
+		console.log('fetchFeedSegment: ' + start + '::' + count);
 		API.getFeedSegment(groupId, start, count, function(obj) {
 				if (!obj.error) {
 					_setFeedLoading(false);
+					var feedPosts = obj.feedPosts;
+					console.log('feedPosts: ' + feedPosts.length);
 					GroupDispatcher.handleAction({
 							actionType: Constants.ADD_FEED_SEGMENT,
-							feedPosts: obj.feedPosts
+							feedPosts: feedPosts
 					});
 				}
 		});

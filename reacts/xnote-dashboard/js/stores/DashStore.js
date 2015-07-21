@@ -62,7 +62,7 @@ AppDispatcher.register(function(payload) {
         break;
 
     case Constants.ADD_GROUP:
-        _groups.push(action.group);
+        _groups.unshift(action.group);
         break;
 
 	}

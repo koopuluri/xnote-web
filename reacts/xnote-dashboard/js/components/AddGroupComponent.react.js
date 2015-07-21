@@ -129,11 +129,13 @@ var AddGroupComponent = React.createClass({
         }
         newList.push(this.state.currentUser.facebook.id);
         var id = Utils.generateUUID();
+        console.log('groupId: ' + id);
         var group = {
             groupRef: {
                 title: this.state.groupName,
                 description: this.state.groupDescription,
-                _id: id
+                _id: id,
+                members: 1
             },
             createdBy: this.state.currentUser,
             _id: id,

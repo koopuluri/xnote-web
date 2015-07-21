@@ -40,14 +40,11 @@ module.exports = function(passport) {
     function(req, token, refreshToken, profile, done) {
         // asynchronous
         process.nextTick(function() {
-
+            return done(null, false);
             // find the user in the database based on their facebook id
             User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
-                //console.log('User.findOne area: ' + Object.keys(user));
-
                 if (user) {
                     if(!user.facebook.picture) {
-
                         User.findOneAndUpdate({_id: user._id}, 
                             {'facebook.picture': 'http://graph.facebook.com/' + user.facebook.id + '/picture?type=large'},
                             {},
@@ -67,7 +64,12 @@ module.exports = function(passport) {
 
                 if (err) {
                     console.log('error in finding user: ' + err);
-                    return done(err);
+                    return done(null, false);
+                }
+
+                if (profile.emails.length < 1) {
+                    console.log('no emails found, returning, cannot login: ' + profile.name.givenName);
+                    return done('no email');
                 }
 
                 console.log('new user will be created');

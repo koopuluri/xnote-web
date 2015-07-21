@@ -10,6 +10,7 @@ var Actions = require('./actions/LandingActions');
 injectTapEventPlugin();
 
 var groupId = $('.group-id-span').attr('id');
+var error = $('.error-span').attr('id');
 
 // set the group associated with the groupId in the stores:
 if(groupId) {
@@ -17,6 +18,6 @@ if(groupId) {
 }
 
 React.render(
-	<LandingContainer />,
+	<LandingContainer error={error}/>,
 	document.getElementById('landing-container')
 );

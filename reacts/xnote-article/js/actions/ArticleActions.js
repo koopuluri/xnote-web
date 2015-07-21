@@ -159,6 +159,16 @@ var Actions = {
         this.setHighlight(highlight);
         this.setPartialHighlight(highlight._id);
         var self = this;
+
+        var article = highlight.article;
+
+        // checking if highlight.article is reference or the actual object:
+        if (article !== null && typeof article === 'object') {
+            console.log('converting highlight.article to reference before passing');
+            // need to make it a ref:
+            highlight.article = article._id;
+        }
+
         API.addHighlightForArticle(highlight, newSerialization, function(obj) {
             if (obj.error) {
                 self.displaySnackMessage("Error could not add highlight");

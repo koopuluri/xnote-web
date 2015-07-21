@@ -64,6 +64,14 @@ module.exports = function(app, passport) {
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
+
+    app.get('/loginerror', function(req, res) {
+        res.render('index.ejs', {
+            error: 'could not login',
+            group: ''
+        });
+    });
+
     app.get('/', function(req, res) {
         var groupId = req.query.groupId;
         var articleId = req.query.articleId;
@@ -73,7 +81,7 @@ module.exports = function(app, passport) {
 
         res.render('index.ejs', {
             group: groupId,
-            article: articleId
+            error: ''
         });
     });
 
@@ -84,20 +92,22 @@ module.exports = function(app, passport) {
     // route for facebook authentication and login
     app.get('/auth/facebook',
         passport.authenticate('facebook', {
-            scope : ['email', 'user_friends'] }));
+            scope : ['email'] }));
     
 
     app.get('/auth/facebook/callback', function(req, res, next) {
         passport.authenticate('facebook', function(err, user, info) {
             var redirectUrl = '/dashboard';
             if(err) { return next(err); }
-            if (!user) { return res.redirect('/'); }
+
+            if (!user) { 
+                return res.redirect('/loginerror'); 
+            }
 
             // If we have previously stored a redirectUrl, use that, 
             // otherwise, use the default.
             var groupId = req.session.groupId;
             var articleId = req.session.articleId;
-            console.log('auth: ' + groupId + '::' + articleId);
 
             if(groupId && !articleId) {
                 redirectUrl = '/group?groupId=' + groupId;

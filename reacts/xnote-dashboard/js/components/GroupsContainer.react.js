@@ -17,6 +17,7 @@ var Groups = React.createClass({
     },
 
     _onChange: function() {
+        console.log('_onChange called in GroupsContainer!');
         this.setState({groups: Store.getGroups()});
     },
 
