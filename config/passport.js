@@ -66,7 +66,7 @@ module.exports = function(passport) {
                     return done(null, false);
                 }
 
-                if (profile.emails.length < 1) {
+                if (!profile.emails || profile.emails.length < 1) {
                     console.log('no emails found, returning, cannot login: ' + profile.name.givenName);
                     return done('no email');
                 }
