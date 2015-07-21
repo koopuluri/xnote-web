@@ -119,6 +119,7 @@ var Actions = {
                 return;
             }
             // got highlight:
+            window.location.hash = highlightId;
             self._setDiscussionLoading(false);
             self.setHighlight(obj.highlight);
         });

@@ -18,9 +18,7 @@ var Groups = React.createClass({
 
     _onChange: function() {
         this.setState({groups: Store.getGroups()});
-
     },
-
 
     componentDidMount: function() {
         Store.addChangeListener(this._onChange);
@@ -29,9 +27,13 @@ var Groups = React.createClass({
 
     render: function() {
         var groups = this.state.groups.map(function(group) {
-            return (
-                <GroupListItem group={group} />
-            );
+            if (group.groupRef) {
+                return (
+                    <GroupListItem group={group} />
+                );
+            } else {
+                // do nothing. TODO: figure out why!!!?!?!
+            }
         });
 
         return (

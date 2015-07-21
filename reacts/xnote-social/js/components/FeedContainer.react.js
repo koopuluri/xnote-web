@@ -33,7 +33,6 @@ var FeedContainer = React.createClass({
 		},
 
 		_onChange: function() {
-			console.log('FeedContainer.onChange!');
 			this.setState(this.getInitialState());
 		},
 

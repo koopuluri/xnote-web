@@ -33,7 +33,7 @@ var getFeedPostOnClick = function(post) {
 			highlightId = post.highlight._id;
 		}
 
-		window.location = '/article?articleId=' + articleId + '&highlightId=' + highlightId;
+		window.location = '/article?groupId=' + post.group + '&articleId=' + articleId + '#' + highlightId;
   	}
 }
 

@@ -69,7 +69,6 @@ var Actions = {
 
         _setFeedLoading(true);
         var self = this;
-        console.log('fetch feed segment!');
         API.getFeedSegment(start, count, function(obj) {
                 if (!obj.error) {
                     _setFeedLoading(false);
@@ -89,7 +88,6 @@ var Actions = {
     },
 
     addNote: function(highlightId, note) {
-        console.log('addNote: ' + highlightId + 'noteId:' + note.noteId);
         Dispatcher.handleAction({
             actionType: Constants.ADD_NOTE,
             note: note,
@@ -102,7 +100,6 @@ var Actions = {
     },  
 
     removeNote: function(note, highlightId) {
-        console.log('remove note');
     },
 
     // adding a group:

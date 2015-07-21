@@ -495,7 +495,7 @@ var DB = {
 
      // ! need to check when adding user to group if user is already in group! 
      addGroupMembers: function(user, groupRef, members, callback) {
-        console.log('ADD GROUP MEMBERS');
+        console.log('ADD GROUP MEMBERS: ' + groupRef + 'mems: ' + members.length);
         // getting all users with facebook.id $in [members] that are not already in groupRef group:
         User.find({'facebook.id': {$in: members}, 'groups.groupRef': {$ne: groupRef}}, function(err, usersToAdd) {
             if (err) {
@@ -509,7 +509,7 @@ var DB = {
                 {$pushAll: {members: usersToAdd}},
                 {},
                 function(err, updatedGroup) {
-                    if (err) {
+                    if (err || !updatedGroup) {
                         console.log('error saving group when updating members; ' + err);
                         callback({error: 'some group fetching error'});
                     } else {

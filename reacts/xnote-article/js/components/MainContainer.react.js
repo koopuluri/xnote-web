@@ -19,63 +19,16 @@ var MainContainer = React.createClass({
 
     getInitialState: function() {
         return {
-            route: window.location.hash.substr(1)
+            currentUser: GroupStore.getCurrentUser()
         }
     },
 
-    _onRouteChange: function() {
-        // var newRoute = window.location.hash.substr(1);
-        // var newParams = GroupUtils.getUrlVars(newRoute);
-        // var oldParams = GroupUtils.getUrlVars(this.state.route);
-
-        // if(oldParams.articleId && newParams.articleId &&
-        //      oldParams.articleId !== newParams.articleId) {
-        //     ArticleActions.fetchAndSetArticle(newParams.articleId);
-        //     if(newParams.highlightId) {
-        //         ArticleActions.fetchAndSetHighlight(newParams.highlightId);
-        //     }
-        // }
-
-        // this.setState({route: newRoute});
+    _onGroupChange: function() {
+        this.setState(this.getInitialState());
     },
 
     componentDidMount: function() {
-        var self = this;
-        var groupId = this.props.groupId;
-        var userId = this.props.userId;
-
-        window.addEventListener('hashchange', function() {
-            self._onRouteChange();
-        });
-
-        ArticleActions.fetchAndSetNotifs(groupId);
-    
-        // setting the socket to receive posts and chat:
-        var socket = io.connect();
-
-        socket.on('notification:' + groupId + userId, function(obj) {
-            var notif = obj.notif;
-            var createdUser = obj.user;
-            if (notif.article) {
-                notif.article = obj.article;
-                notif.article.createdBy = createdUser;
-            } else if (notif.highlight) {
-                notif.highlight = obj.highlight;
-                notif.highlight.createdBy = createdUser;
-            } else {
-                // should not reach this!
-            }
-            NotifActions.addNotif(notif);
-        });
-
-        socket.on('note:' + groupId, function(obj) {
-            var highlightId = obj.highlightId;
-            var note = obj.note;
-
-            if (note && highlightId) {
-                NotifActions.socketReceiveNote(obj.note, obj._id);
-            }
-        });
+        GroupStore.addChangeListener(this._onGroupChange);
     },
 
     childContextTypes : {
@@ -120,10 +73,11 @@ var MainContainer = React.createClass({
                     <div className="article-container">
                         <div className="article-view col-md-8">
                             <ArticleView
-                                highlightId={this.props.highlightId} />
+                                highlightId={this.props.highlightId}
+                                currentUser={this.state.currentUser} />
                         </div>
                         <div className="note-view col-md-4">
-                            <Discussion />,
+                            <Discussion currentUser={this.state.currentUser}/>,
                         </div>
                     </div>
                     <ArticleToolbar groupId={this.props.groupId}/>

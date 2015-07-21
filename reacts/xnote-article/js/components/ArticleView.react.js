@@ -34,21 +34,29 @@ var ArticleView = React.createClass({
  		};
 	},
 
-
 	componentDidUpdate: function() {
-		Annotator.clearAllHighlightsAndComponents();
-		var article = this.state.article;
-		if (article && article.serialization) {
-			Annotator.deserialize(article.serialization);
+		if (HACK_NUM === 0  && this.state.article) {
+				Annotator.clearAllHighlightsAndComponents();
+				var article = this.state.article;
+				if (article && article.serialization) {
+						Annotator.deserialize(article.serialization);
+				}
+				HACK_NUM++;
 		}
 	},
 
 	componentDidMount: function() {
 		// adding listener:
 		ArticleStore.addChangeListener(this._onChange);
-		Actions.fetchAndSetHighlight(this.props.highlightId);
-		Actions.setPartialHighlight(this.props.highlightId);
+		if (this.props.articleId) {
+			Actions.fetchAndSetArticle(this.props.articleId);
+		}
+		if (this.props.highlightId) {
+			Actions.fetchAndSetHighlight(this.props.highlightId);
+			Actions.setPartialHighlight(this.props.highlightId);
+		}
 
+		
 	},
 
 	componentWillUnmount: function() {
@@ -161,16 +169,17 @@ var ArticleView = React.createClass({
 
 	// want to display form
 	_onAddNoteButtonClicked: function() {
+			var newHighId = NoteUtils.generateUUID();
 			// adding a highlight:
 			newHighlight = {
-					_id: NoteUtils.generateUUID(),
+					_id: newHighId,
 					group: GroupStore.getGroupId(),
 					clippedText: this.state.selection.toHtml(),
 					createdAt: new Date() / 1000,
 					selection: Annotator.getSelectionInfo(this.state.selection),
 					createdBy: this.state.currentUser,
 					notes: [],
-					article: this.state.article._id
+					article: this.state.article
 			}
 
 			Annotator.addHighlight(newHighlight);

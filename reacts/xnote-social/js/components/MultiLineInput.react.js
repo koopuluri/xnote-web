@@ -11,7 +11,7 @@ var MultiLineInput = React.createClass({
             <div className = 'multiline-input-textarea-container' 
                  style={{width: '95%', margin: 'auto', marginTop: '10px'}}>
                 <textarea 
-                  style={{border: 'solid 1px #d3d3d3'}}
+                  style={{border: 'solid 1px #d3d3d3', width: '100%'}}
                   placeholder={this.props.startingContent}
                   rows="1" cols={this.props.width}
                   className={this.props.textareaClassName}></textarea>

@@ -55,7 +55,6 @@ var ArticleToolbar = React.createClass({
     },
 
     _onBackButtonPressed: function(e, selectedIndex, menuItem) {
-        console.log('redirect: ' + '/group?groupId=' + this.state.groupId);
         window.location = '/group?groupId=' + this.state.groupId;  
     },
 

@@ -6,7 +6,6 @@ var  _dbCallback = function(res) {
     }
 };
 
-
 var _callbackNoteAdd = function(user, res, io) {
     return function(dbOutput) {
         if (!dbOutput.error) {
@@ -24,7 +23,6 @@ var _callbackNoteAdd = function(user, res, io) {
         res.send(dbOutput);
     };
 };
-
 
 var _callbackPostAdd = function(user, res, io) {
     return function(dbOutput) {
@@ -57,7 +55,6 @@ var _callbackPostAdd = function(user, res, io) {
     };
 };
 
-
 var _callbackChatAdd = function(res, io) {
 
 };
@@ -75,8 +72,9 @@ module.exports = function(app, passport) {
         req.session.articleId = articleId;
 
         res.render('index.ejs', {
-            group: null,
-        }); // load the index.ejs file
+            group: groupId,
+            article: articleId
+        });
     });
 
 
@@ -106,6 +104,7 @@ module.exports = function(app, passport) {
                 req.session.groupId = null;
             } else if (groupId && articleId) {
                 redirectUrl = '/article?groupId=' + groupId + '&articleId=' + articleId;
+
                 req.session.groupId = null;
                 req.session.articleId = null;
             }
@@ -167,14 +166,6 @@ module.exports = function(app, passport) {
         });
     });
 
-    // user not logged in if they hit this page:
-    app.get('/referral', function(req, res) {
-        var groupId = req.query.groupId;
-        req.session.groupId = groupId;
-        res.render('index.ejs', {
-            group: groupId,
-        });
-    });
 
     app.get('/group/', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
@@ -193,6 +184,7 @@ module.exports = function(app, passport) {
         res.redirect('/');
     });
 
+
     app.get('/article/', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
         var articleId = req.query.articleId;
@@ -201,9 +193,8 @@ module.exports = function(app, passport) {
             groupId: groupId,
             articleId: articleId
         });
-
-        return;
     });
+
 
     // process the signup form
     // app.post('/signup', do all our passport stuff here);
@@ -377,19 +368,21 @@ function isLoggedIn(req, res, next) {
 
     var groupId = req.query.groupId;
     var articleId = req.query.articleId;
+
     console.log('isLoggedIn: ' + groupId + '::' + articleId);
     if(groupId && !articleId) {
         // this means that this is a share link, that when logged in through will 
         // add the member to the group and open the group page.
-        req.groupId = groupId;
-        res.redirect('/referral?groupId=' + groupId);
+        res.redirect('/?groupId=' + groupId);
         return;
     } else if (groupId && articleId) {
         // no ids at all, vanilla landing page.
-        req.groupId = groupId;
-        req.articleId = articleId;
-        res.redirect('/?groupId=' + groupId + '&articleId=' + articleId);
+        res.redirect('/?groupId=' + 
+            groupId + 
+            '&articleId=' + articleId);
+        return;
     } 
+    
     res.redirect('/');
     return;
 }

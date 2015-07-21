@@ -58,12 +58,10 @@ AppDispatcher.register(function(payload) {
         break;
 
     case Constants.SET_USER_INFO:
-        console.log('set user info received!');
         _user = action.userInfo;
         break;
 
     case Constants.ADD_GROUP:
-
         _groups.push(action.group);
         break;
 

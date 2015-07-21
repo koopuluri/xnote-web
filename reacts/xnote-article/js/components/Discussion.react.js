@@ -11,8 +11,6 @@ var Loading = require('./Loading.react');
 var NO_NOTES_MESSAGE_WITH_USER = 'Use the form to start a discussion.';
 var NO_DISC_SELECTED_MESSAGE = 'Select a highlight to see its notes or start a discussion by highlighting a part of the content to your right.';
 
-// var socket = io();
-
 // props:
 // - currentUser
 var Discussion = React.createClass({
@@ -46,7 +44,6 @@ var Discussion = React.createClass({
         // if this note has already been added, do nothing.
     },
 
-
     _addNoteFormOnSave: function(noteContent) {
         // logic to save this.state.text here
         var currentUser = GroupStore.getCurrentUser();
@@ -62,7 +59,6 @@ var Discussion = React.createClass({
         }
         Actions.addNote(this.state.highlight._id, newNote);
     },
-
 
     render: function() {
           var comp;
@@ -83,7 +79,15 @@ var Discussion = React.createClass({
                   createdBy: this.state.highlight.createdBy,
               }
 
-              comp = <FeedPost post={post} actions="Article" isLink = {false}/>
+              comp = <FeedPost 
+                  post={post} 
+                  isLink={false}
+                  addNote={Actions.addNote}
+                  removeNote={Actions.removeNote}
+                  currentUser={this.props.currentUser}
+                  getCurrentTimestamp={NoteUtils.getTstamp}
+                  generateUUID={NoteUtils.generateUUID}/>
+
           } else {
               var messageStyle = {marginTop: '30%', marginLeft: '5%'};
               comp = <div className="message" style={messageStyle}>

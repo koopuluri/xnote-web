@@ -162,7 +162,6 @@ var GroupActions = {
 		API.getFeedSegment(groupId, start, count, function(obj) {
 				if (!obj.error) {
 					_setFeedLoading(false);
-					console.log(obj.feedPosts[0]);
 					GroupDispatcher.handleAction({
 							actionType: Constants.ADD_FEED_SEGMENT,
 							feedPosts: obj.feedPosts
