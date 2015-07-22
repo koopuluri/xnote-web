@@ -10,6 +10,7 @@ var NotifStore = require('../stores/NotificationStore');
 var FeedStore = require('../stores/FeedStore');
 var GroupStore = require('../stores/GroupStore');
 var AddArticle = require('./AddArticle.react');
+var ChatWindow = require('./ChatWindow.react');
 var GroupUtils = require('../utils/GroupUtils');
 
 var GroupActions = require('../actions/GroupActions');
@@ -93,10 +94,6 @@ var MainContainer = React.createClass({
                 GroupActions.socketReceiveNote(note, highlightId);
             }
         });
-
-        socket.on('chat:' + groupId, function(chatObj) {
-            GroupActions.socketReceiveChat(chatObj.chat);
-        });
     },
 
     childContextTypes : {
@@ -135,36 +132,16 @@ var MainContainer = React.createClass({
     },
 
     render: function() {
-        // renderring the container
-        var params = GroupUtils.getUrlVars(this.state.route);
-        if (!params || !params.articleId) {
-            return (
-                <div className="main-container">
-                    <ContentView groupId={this.props.groupId}/>
-                    <AppToolbar groupId={this.props.groupId}/>
-                    <GroupSidebar groupId={this.props.groupId}/>
-                    <AddArticle />
-                    <SnackbarComponent />
-                </div>
-            );
-        }  else {
-            return (
-                <div className="container">
-                    <div className="article-container">
-                        <div className="article-view col-md-8">
-                            <ArticleView 
-                                articleId={params.articleId}
-                                highlightId={params.highlightId} />
-                        </div>
-                        <div className="note-view col-md-4">
-                            <Discussion />,
-                        </div>
-                    </div>
-                    <ArticleToolbar groupId={this.props.groupId}/>
-                    <SnackbarComponent />
-                </div>
-            );
-        }
+        return (
+            <div className="main-container">
+                <ContentView groupId={this.props.groupId}/>
+                <AppToolbar groupId={this.props.groupId}/>
+                <GroupSidebar groupId={this.props.groupId}/>
+                <AddArticle />
+                <SnackbarComponent />
+                <ChatWindow groupId={this.props.groupId}/>
+            </div>
+        );
     },
 });
 

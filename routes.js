@@ -224,6 +224,16 @@ module.exports = function(app, passport) {
 
     // =========================================================================
 
+    app.post('/_clear_chat_notifs', isLoggedIn, function(req, res) {
+        var groupId = req.body.groupId;
+        DB.clearChatNotifs(req.user, groupId, _dbCallback(res));  
+    });
+
+    app.get('/_get_chat_notif_count', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        DB.getChatNotifCount(req.user, groupId, _dbCallback(res));
+    });
+
     app.post('/_viewed_notifs', isLoggedIn, function(req, res) {
         var group = req.body.groupId;
         console.log('group viewed notifs: ' + group);

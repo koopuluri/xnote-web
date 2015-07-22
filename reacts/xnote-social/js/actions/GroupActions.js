@@ -23,6 +23,8 @@ var GroupActions = {
 		API.getNotifs(group, function(obj) {
 			if(!obj.error) {
 				var notifs = obj.notifs;
+				console.log('NOTIFS RECEIVED');
+				console.log(notifs);
 				var lastViewed = obj.lastViewed;
 				GroupDispatcher.handleAction({
 					actionType: Constants.SET_NOTIFS,
@@ -63,17 +65,7 @@ var GroupActions = {
 		});
 	},
 
-	_setChat: function(chat) {
-		GroupDispatcher.handleAction({
-			actionType: Constants.RECEIVE_CHAT,
-			data: chat
-		});
-	},
 
-	fetchAndSetChat: function(groupId) {
-		var chat = JSON.parse(localStorage.getItem('chat'));
-		this._setChat(chat);
-	},
 
 	fetchAndSetGroup: function(groupId) {
 		var self = this;
@@ -111,12 +103,7 @@ var GroupActions = {
 		});
 	},
 
-	_setChatLoading: function(isLoading) {
-		GroupDispatcher.handleAction({
-				actionType: Constants.SET_CHAT_LOADING,
-				isLoading: isLoading
-		});
-	},
+
 
 	// fetches the articleList seg.
 	// adds to the contentStore.
@@ -129,20 +116,6 @@ var GroupActions = {
 					GroupDispatcher.handleAction({
 							actionType: Constants.ADD_ARTICLE_LIST_SEGMENT,
 							articles: obj.articles
-					});
-				}
-		});
-	},
-
-	fetchChatSegment: function(groupId, start, count) {
-		this._setChatLoading(true);
-		var self = this;
-		API.getChatSegment(groupId, start, count, function(obj) {
-				if (!obj.error) {
-					self._setChatLoading(false);
-					GroupDispatcher.handleAction({
-							actionType: Constants.ADD_CHAT_SEGMENT,
-							chats: obj.chats
 					});
 				}
 		});
@@ -173,21 +146,6 @@ var GroupActions = {
 		});
 	},
 
-
-	fetch: function(groupId, start, count) {
-		this._setChatLoading(true);
-		var self = this;
-		API.getChatSegment(groupId, start, count, function(obj) {
-				if (!obj.error) {
-					self._setChatLoading(false);
-					GroupDispatcher.handleAction({
-							actionType: Constants.ADD_CHAT_SEGMENT,
-							chats: obj.chats
-					});
-				}
-		});
-	},
-
 	clearFeed: function() {
 		GroupDispatcher.handleAction({
 			actionType: Constants.CLEAR_FEED,
@@ -200,11 +158,6 @@ var GroupActions = {
 		});
 	},
 
-	clearChat: function() {
-		GroupDispatcher.handleAction({
-			actionType: Constants.CLEAR_CHAT
-		});
-	},
 
 	// =========================================================================
 
@@ -279,11 +232,6 @@ var GroupActions = {
 		});
 	},
 
-	resetChatNotifs: function() {
-		GroupDispatcher.handleAction({
-			actionType: Constants.RESET_CHAT_NOTIFS
-		});
-	},
 
 	resetFeedNotifs: function() {
 		GroupDispatcher.handleAction({
@@ -312,9 +260,6 @@ var GroupActions = {
 		});
 	},
 
-	socketReceiveChat: function(chat) {
-		this.addToChat(chat);
-	},
 
 	displaySnackMessage: function(message) {
 		GroupDispatcher.handleAction({
@@ -367,24 +312,6 @@ var GroupActions = {
     },
 
     //=================================== CHAT =======================================================
-
-	addToChat: function(chat) {
-		GroupDispatcher.handleAction({
-			actionType: Constants.CHAT_MESSAGE,
-			chat: chat
-		});
-	},
-
-	postChat: function(chat, groupId) {
-		this.addToChat(chat);
-		var self = this;
-		// cloud persistence:
-		API.postChat(chat, groupId, function(obj) {
-			if (obj.error) {
-				self.displaySnackMessage("Error posting chat");
-			}
-		});
-	}
 }
 
 module.exports = GroupActions;

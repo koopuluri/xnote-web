@@ -181,7 +181,6 @@ var FeedPost = React.createClass({
 							} 
 							rightIconButton = {rightIconButton} />
 
-
 						<CardText style={{padding: 0}}>
         						<div 
 	    							className="highlight-clipped-text" 

@@ -3,9 +3,6 @@ var KeyMirror = require('react/lib/keyMirror');
 //Define action constants
 module.exports = KeyMirror({
 
-
-
-
 	ADD_NOTE: null,
 	EDIT_NOTE: null,
 	DELETE_NOTE: null,
@@ -37,8 +34,14 @@ module.exports = KeyMirror({
 	SET_DISCUSSION_LOADING: null,
 	ARTICLE_VIEW_ADD_NOTE: null,
 	ARTICLE_VIEW_ADD_HIGHLIGHT: null,
+	CLEAR_CHAT: null,
 	SET_DISCUSSION_LOADING: null,
 	SET_DISCUSSION_HIGHLIGHT: null,
+
+	CHAT_MESSAGE: null,
+	ADD_CHAT_SEGMENT: null,
+	SET_CHAT_LOADING: null,
+	CLEAR_CHAT: null,
 
 	DISCUSSION_ADD_NOTE: null,
 	DISCUSSION_DELETE_NOTE: null,

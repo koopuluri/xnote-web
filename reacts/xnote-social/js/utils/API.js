@@ -1,5 +1,7 @@
 module.exports = {
 
+
+
 		notifsViewed: function(groupId, callback) {
 			$.post('/_viewed_notifs', {
 				groupId: groupId 
@@ -120,10 +122,25 @@ module.exports = {
 			$.post('/_add_chat', {chat: chat, groupId: groupId}, function(data, status) {
 				callback(data);
 			});
+		},
+
+		fetchChatNotifCount: function(groupId, callback) {
+			$.get('/_get_chat_notif_count', 
+				{groupId: groupId},
+				function(data, status) {
+					callback(data);
+				});
+		},
+
+		clearChatNotifs: function(groupId, callback) {
+			$.post('/_clear_chat_notifs', 
+				{groupId: groupId}, 
+				function(data, status) {
+					callback(data);
+				});
 		}
+
 };
-
-
 
 
 

@@ -23,10 +23,9 @@ var FontIcon = mui.FontIcon;
 
 function getState() {
     return ({
-        friends: DashStore.getFriends(),
-        queryList: [],
-        addList: [],
-        friendsLoading : false,
+        // friends: DashStore.getFriends(),
+        // queryList: [],
+        // addList: [],
         groupName : '',
         currentUser: DashStore.getCurrentUser(),
         groupDescription: ''
@@ -94,27 +93,27 @@ var AddGroupComponent = React.createClass({
         DashStore.removeChangeListener(this._onChange);
     },
 
-    _onQueryChange: function() {
-        var query = this.refs.addMemberQuery.getValue();
-        if(query != '') {
-            query = query.toLowerCase();
-            var friends = this.state.friends;
-            var queryList = [];
-            for (var i = 0; i < friends.length; i++) {
-                var name = friends[i].name.toLowerCase();
-                if (name.includes(query)) {
-                    queryList.push(friends[i]);
-                }   
-            }
-            this.setState({
-                queryList: queryList
-            });
-        } else {
-            this.setState({
-                queryList: []
-            });
-        }
-    },
+    // _onQueryChange: function() {
+    //     var query = this.refs.addMemberQuery.getValue();
+    //     if(query != '') {
+    //         query = query.toLowerCase();
+    //         var friends = this.state.friends;
+    //         var queryList = [];
+    //         for (var i = 0; i < friends.length; i++) {
+    //             var name = friends[i].name.toLowerCase();
+    //             if (name.includes(query)) {
+    //                 queryList.push(friends[i]);
+    //             }   
+    //         }
+    //         this.setState({
+    //             queryList: queryList
+    //         });
+    //     } else {
+    //         this.setState({
+    //             queryList: []
+    //         });
+    //     }
+    // },
 
     _onDialogDimiss: function() {
         this.setState({
@@ -124,9 +123,9 @@ var AddGroupComponent = React.createClass({
 
     _onGroupAdd: function() {
         var newList = [];
-        for (var i = 0; i < this.state.addList.length; i++) {
-            newList.push(this.state.addList[i].id);
-        }
+        // for (var i = 0; i < this.state.addList.length; i++) {
+        //     newList.push(this.state.addList[i].id);
+        // }
         newList.push(this.state.currentUser.facebook.id);
         var id = Utils.generateUUID();
         console.log('groupId: ' + id);
@@ -144,15 +143,15 @@ var AddGroupComponent = React.createClass({
             createdAt: Utils.getTimestamp()
         };
         Actions.addGroup(group, newList);
-        this.setState({
-            addList : []
-        })
+        // this.setState({
+        //     addList : []
+        // })
         this.refs.addGroupDialog.dismiss();
     },
 
     _onChange: function() {
         this.setState({
-            friends: DashStore.getFriends(),
+            // friends: DashStore.getFriends(),
             currentUser: DashStore.getCurrentUser()
         });
     },
@@ -180,66 +179,56 @@ var AddGroupComponent = React.createClass({
                         multiLine={true} />              
                 </div>
         } else {
-            var counter = 0;
-            var queryList = this.state.queryList.map(function(queryListItem) {
-                counter ++;
-                var found = false;
-                for(var i = 0; i < self.state.addList.length; i++) {
-                    if (self.state.addList[i].id == queryListItem.id) {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found && counter <= 5) {
-                    return (
-                        <div>
-                            <ListItem
-                                onTouchTap = {friendListOnClickFunction(queryListItem, self)}>
-                                    {queryListItem.name}
-                            </ListItem>
-                        </div>
-                    );
-                }
-            });
-            var addListComponent = this.state.addList.map(function(addListItem) {
-                return (
-                    <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
-                        <ListItem 
-                            style={{
-                                backgroundColor:Colors.green200,
-                                paddingRight:5,
-                                paddingBottom:2,  
-                                paddingLeft:5,
-                                paddingTop:2}}
-                            primaryText = {<p style={{paddingRight:15}}> {addListItem.name} </p>}
-                            rightIconButton = {
-                                <FontIcon 
-                                    onClick={onDeleteFromAddList(addListItem, self)}>
-                                        x 
-                                </FontIcon>}
-                            disabled = {true} />
-                    </ToolbarGroup>
-                );
-            });
+            // var counter = 0;
+            // var queryList = this.state.queryList.map(function(queryListItem) {
+            //     counter ++;
+            //     var found = false;
+            //     for(var i = 0; i < self.state.addList.length; i++) {
+            //         if (self.state.addList[i].id == queryListItem.id) {
+            //             found = true;
+            //             break;
+            //         }
+            //     }
+            //     if(!found && counter <= 5) {
+            //         return (
+            //             <div>
+            //                 <ListItem
+            //                     onTouchTap = {friendListOnClickFunction(queryListItem, self)}>
+            //                         {queryListItem.name}
+            //                 </ListItem>
+            //             </div>
+            //         );
+            //     }
+            // });
+            // var addListComponent = this.state.addList.map(function(addListItem) {
+            //     return (
+            //         <ToolbarGroup style = {{height:36, paddingRight:5, paddingTop:15}} float="left">
+            //             <ListItem 
+            //                 style={{
+            //                     backgroundColor:Colors.green200,
+            //                     paddingRight:5,
+            //                     paddingBottom:2,  
+            //                     paddingLeft:5,
+            //                     paddingTop:2}}
+            //                 primaryText = {<p style={{paddingRight:15}}> {addListItem.name} </p>}
+            //                 rightIconButton = {
+            //                     <FontIcon 
+            //                         onClick={onDeleteFromAddList(addListItem, self)}>
+            //                             x 
+            //                     </FontIcon>}
+            //                 disabled = {true} />
+            //         </ToolbarGroup>
+            //     );
+            // });
             var dialogTitle = "Add members to " + self.state.groupName
             var dialogActions = [
                 { text: 'Cancel', primary: true},
-                { text: 'Add', primary: true, onTouchTap: self._onGroupAdd}
+                { text: 'Done', primary: true, onTouchTap: self._onGroupAdd}
             ];
             var dialogComponent =
                 <div>
-                    <div style={{border:5}}>
-                        {addListComponent}
-                        <ToolbarGroup style = {{height:36}}>
-                        <TextField
-                            style={{padding: 0}}
-                            hintText ="Enter friend name"
-                            ref = 'addMemberQuery'
-                            onChange = {this._onQueryChange}/>
-                        </ToolbarGroup>
-                    </div>
-                    <div style={{'clear':'both'}}>
-                        <List> {queryList} </List>
+                    <div>
+                        <p> To add members to your group. Send them the URL to the group once you enter. </p>
                     </div>
                 </div>
         }

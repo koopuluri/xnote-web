@@ -56,11 +56,37 @@ module.exports = {
 			});
 		},
 
-		getUserInfo: function(callback) {
-			$.get('/_user_info', {}, function(data, status) {
+		getChatSegment: function(groupId, start, count, callback) {
+			$.get('/_get_chat_segment', {
+					groupId: groupId,
+					start: start,
+					count: count
+			}, function(data, status) {
+					callback(data);
+			});
+		},
+		
+		postChat: function(chat, groupId, callback) {
+			$.post('/_add_chat', {chat: chat, groupId: groupId}, function(data, status) {
 				callback(data);
 			});
 		},
+
+		fetchChatNotifCount: function(groupId, callback) {
+			$.get('/_get_chat_notif_count', 
+				{groupId: groupId},
+				function(data, status) {
+					callback(data);
+				});
+		},
+
+		clearChatNotifs: function(groupId, callback) {
+			$.post('/_clear_chat_notifs', 
+				{groupId: groupId}, 
+				function(data, status) {
+					callback(data);
+				});
+		}
 };
 
 

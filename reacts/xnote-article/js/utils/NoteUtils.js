@@ -6,9 +6,10 @@ var mongoose = require('mongoose');
 // utils object to deal with note stuffs:
 var NoteUtils = {
 
-		getTstamp: function() {
+		getTimestamp: function() {
 			var d = new Date();
-			return d.getTime() / 1000;
+			var t = d.getTime() / 1000;
+			return this._secondsToDate(t);
 		},
 
 		// used for new note / article creation: (http://stackoverflow.com/a/8809472)
