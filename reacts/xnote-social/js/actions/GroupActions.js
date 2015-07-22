@@ -173,21 +173,6 @@ var GroupActions = {
 		});
 	},
 
-
-	fetch: function(groupId, start, count) {
-		this._setChatLoading(true);
-		var self = this;
-		API.getChatSegment(groupId, start, count, function(obj) {
-				if (!obj.error) {
-					self._setChatLoading(false);
-					GroupDispatcher.handleAction({
-							actionType: Constants.ADD_CHAT_SEGMENT,
-							chats: obj.chats
-					});
-				}
-		});
-	},
-
 	clearFeed: function() {
 		GroupDispatcher.handleAction({
 			actionType: Constants.CLEAR_FEED,

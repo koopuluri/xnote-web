@@ -42,27 +42,6 @@
   color : #f6f6f6;
 }
 
-/*.chat-container {
-  height : 100%;
-}*/
-
-.tab-container-container {
-  height: calc(100% - 78px);
-}
-
-.chat-messages {
-  height : 350px;
-  overflow-y: scroll;
-  bottom :0px;
-  background-color: #f6f6f6;
-}
-
-.chat-form {
-  padding-right : 20px;
-  width:100%;
-  bottom: 0px;
-}
-
 textarea {
   width: 100%;
   border-left : 0px;
@@ -74,6 +53,9 @@ textarea {
 *:focus {
     outline: 0;
 }
+
+
+/* ===============  CHAT SPECIFIC STUFF =================== */
 
 .no-articles-message, .no-chat-message, .no-feed-message {
   position: relative;
@@ -99,5 +81,18 @@ textarea {
   -webkit-transform: scaleX(-1); 
   transform: scaleX(-1);         
   filter: FlipH;
+}
+
+.chat-messages {
+  height : 350px;
+  overflow-y: scroll;
+  bottom :0px;
+  background-color: #f6f6f6;
+}
+
+.chat-form {
+  padding-right : 20px;
+  width:100%;
+  bottom: 0px;
 }
 

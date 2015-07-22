@@ -1,10 +1,12 @@
 var React = require('react');
-var ArticleToolbar = require('./ArticleToolbar.react');
+var ChatActions = require('../actions/ChatActions');
 var ArticleStore = require('../stores/ArticleStore');
 var NotifStore = require('../stores/NotificationStore');
 var GroupStore = require('../stores/GroupStore');
 var ArticleActions = require('../actions/ArticleActions');
+var ChatWindow = require('./ChatWindow.react')
 
+var ArticleToolbar = require('./ArticleToolbar.react');
 var ArticleView = require('./ArticleView.react');
 var Discussion = require('./Discussion.react');
 var SnackbarComponent = require('./SnackbarComponent.react');
@@ -29,6 +31,10 @@ var MainContainer = React.createClass({
 
     componentDidMount: function() {
         GroupStore.addChangeListener(this._onGroupChange);
+        var socket = io.connect();
+        socket.on('chat:' + this.props.groupId, function(chatObj) {
+            ChatActions.socketReceiveChat(chatObj.chat);
+        });
     },
 
     childContextTypes : {
@@ -82,6 +88,7 @@ var MainContainer = React.createClass({
                     </div>
                     <ArticleToolbar groupId={this.props.groupId}/>
                     <SnackbarComponent />
+                    <ChatWindow groupId={this.props.groupId}/>
                 </div>
             );
     }

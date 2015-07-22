@@ -66,14 +66,16 @@ var ChatPost = React.createClass({
 							className={messageTextClassName} 
 							style = {
 							{	
-								display: "inline-block",
-								fontSize : 15,
-								fontColor: Colors.grey500,
-								paddingTop : 10,
-								paddingBottom : 5,
-								paddingLeft : 10,
-								paddingRight : 10,
-								textAlign : textAlign
+								display:"inline-block",
+								fontSize:15,
+								fontColor:Colors.grey500,
+								paddingTop:10,
+								paddingBottom:5,
+								paddingLeft:10,
+								paddingRight:10,
+								textAlign:textAlign,
+								maxWidth:350,
+								wordWrap:"break-word"
 							}
 						}> {message.content} </div>
 					</Paper>

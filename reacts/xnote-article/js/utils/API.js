@@ -61,6 +61,22 @@ module.exports = {
 				callback(data);
 			});
 		},
+
+		getChatSegment: function(groupId, start, count, callback) {
+			$.get('/_get_chat_segment', {
+					groupId: groupId,
+					start: start,
+					count: count
+			}, function(data, status) {
+					callback(data);
+			});
+		},
+		
+		postChat: function(chat, groupId, callback) {
+			$.post('/_add_chat', {chat: chat, groupId: groupId}, function(data, status) {
+				callback(data);
+			});
+		}
 };
 
 

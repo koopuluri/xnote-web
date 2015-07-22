@@ -1,6 +1,5 @@
 var React = require('react');
 var ChatContainer = require('./ChatContainer.react');
-var MultiLineInput = require('./MultiLineInput.react')
 
 var mui = require('material-ui');
 var Paper = mui.Paper;
@@ -78,12 +77,12 @@ var ChatWindow = React.createClass({
 			    			{
 		    					padding:0,
 		    					maxHeight:500,
-		    					width:500,
+		    					width:450,
 		    				}
 		    			}>
 	    				<ListItem 
 	    					onTouchTap={this.toggleState}
-		    				style={{width:500, padding:0, backgroundColor:Colors.grey800}} >
+		    				style={{width:450, padding:0, backgroundColor:Colors.grey800}} >
     						<FontIcon 
 	    						className="material-icons"
     							style={
