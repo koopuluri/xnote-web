@@ -99,6 +99,7 @@ GroupDispatcher.register(function(payload) {
 			break;
 
 		case Constants.SET_NOTIFS:
+			console.log('SET_NOTIFS!!');
 			_lastViewed = new Date(action.lastViewed).getTime();
 			_notifs = action.notifs;
 			_count = getCount(_notifs, _lastViewed);

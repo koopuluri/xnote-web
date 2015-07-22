@@ -1,11 +1,11 @@
 var React = require('react');
 var ChatStore = require('../stores/ChatStore');
 var ChatPost = require('./ChatPost.react.js');
-var ChatActions = require('../actions/ChatActions');
-var Utils = require('../utils/NoteUtils');
-var GroupStore = require('../stores/GroupStore');
-var Loading = require('./Loading.react')
 
+var ChatActions = require('../actions/ChatActions');
+var GroupUtils = require('../utils/GroupUtils');
+var GroupStore = require('../stores/GroupStore');
+var Loading = require('./ArticleViewStuff/Loading.react')
 
 var ChatScrollContainer = require('./ChatScrollContainer.react');
 var MultiLineInput = require('./MultiLineInput.react')
@@ -25,13 +25,13 @@ var Colors = mui.Styles.Colors;
 function getChatState() {
 	return {
 		messages: ChatStore.getChat(),
-		currentUser : GroupStore.getCurrentUser(),
 		isLoading : ChatStore.getLoading(),
 	}
 }
 
 // props:
 // - groupId
+// - currentUser
 var ChatContainer = React.createClass({
 
 	//get initial state from stores
@@ -45,17 +45,19 @@ var ChatContainer = React.createClass({
 
 	componentDidMount: function() {
 		ChatStore.addChangeListener(this._onChange);
-		GroupStore.addChangeListener(this._onChange);
-		ChatActions.fetchChatSegment(this.props.groupId, 0, ChatStore.SEG_SIZE);
+	},
+
+	componentWillUnmount: function() {
+		ChatStore.removeChangeListener(this._onChange);
 	},
 
 	_chat: function(content) {
 		if (content != '' ) {
 			var message = {
-				createdBy: this.state.currentUser,
-				createdAt: Utils.getTimestamp(),
+				createdBy: this.props.currentUser,
+				createdAt: GroupUtils.getTimestamp(),
 				content: content,
-				chatId: Utils.generateUUID(),
+				chatId: GroupUtils.generateUUID(),
 			}
 			ChatActions.postChat(message, this.props.groupId);
 		}
@@ -71,7 +73,7 @@ var ChatContainer = React.createClass({
 		} else {
 			return (
 				<div className = 'chat-container'>
-					<ChatScrollContainer currentUser={this.state.currentUser} messages={this.state.messages}/>
+					<ChatScrollContainer currentUser={this.props.currentUser} messages={this.state.messages}/>
 					<div className = 'chat-form' style={{paddingLeft : 10}}>
 						<MultiLineInput
 							width="59"

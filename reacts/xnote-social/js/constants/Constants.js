@@ -6,10 +6,14 @@ module.exports = KeyMirror({
 	NOTIFS_VIEWED: null,
 
 	ADD_NOTIF: null,
+	SET_NOTIFS: null,
+	SET_CHAT_NOTIF_COUNT: null,
 
 	ADD_CHAT_SEGMENT: null,
 	SET_CHAT_LOADING: null,
 
+	INCREMENT_CHAT_NOTIF_COUNT: null,
+	
 	CLEAR_CHAT: null,
 	CLEAR_FEED: null,
 	CLEAR_ARTICLE_LIST: null,

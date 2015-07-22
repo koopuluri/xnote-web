@@ -17,23 +17,38 @@ var Colors = mui.Styles.Colors;
 //Using material UI themes
 //http://material-ui.com/#/customization/themes
 
+// props:
+// - currentUser 
 var MainContainer = React.createClass({
 
-    getInitialState: function() {
-        return {
-            currentUser: GroupStore.getCurrentUser()
-        }
-    },
-
-    _onGroupChange: function() {
-        this.setState(this.getInitialState());
-    },
-
     componentDidMount: function() {
-        GroupStore.addChangeListener(this._onGroupChange);
-        var socket = io.connect();
-        socket.on('chat:' + this.props.groupId, function(chatObj) {
-            ChatActions.socketReceiveChat(chatObj.chat);
+        var groupId = this.props.groupId;
+        var userId = this.props.currentUser._id;
+        ArticleActions.fetchAndSetNotifs(groupId);
+
+        socket = io.connect();
+        socket.on('notification:' + groupId + userId, function(obj) {
+            var notif = obj.notif;
+            var createdUser = obj.user;
+            if (notif.article) {
+                notif.article = obj.article;
+                notif.article.createdBy = createdUser;
+            } else if (notif.highlight) {
+                notif.highlight = obj.highlight;
+                notif.highlight.createdBy = createdUser;
+            } else {
+                // should not reach this!
+            }
+            ArticleActions.addNotif(notif);
+        });
+
+        socket.on('note:' + groupId, function(obj) {
+            var highlightId = obj.highlightId;
+            var note = obj.note;
+
+            if (note && highlightId) {
+                ArticleActions.socketReceiveNote(note, highlightId);
+            }
         });
     },
 
@@ -80,10 +95,10 @@ var MainContainer = React.createClass({
                         <div className="article-view col-md-8">
                             <ArticleView
                                 highlightId={this.props.highlightId}
-                                currentUser={this.state.currentUser} />
+                                currentUser={this.props.currentUser} />
                         </div>
                         <div className="note-view col-md-4">
-                            <Discussion currentUser={this.state.currentUser}/>,
+                            <Discussion currentUser={this.props.currentUser}/>,
                         </div>
                     </div>
                     <ArticleToolbar groupId={this.props.groupId}/>

@@ -1,11 +1,11 @@
 var React = require('react');
 var ChatStore = require('../stores/ChatStore');
 var ChatPost = require('./ChatPost.react.js');
-var GroupActions = require('../actions/GroupActions');
+
+var ChatActions = require('../actions/ChatActions');
 var GroupUtils = require('../utils/GroupUtils');
 var GroupStore = require('../stores/GroupStore');
 var Loading = require('./ArticleViewStuff/Loading.react')
-
 
 var ChatScrollContainer = require('./ChatScrollContainer.react');
 var MultiLineInput = require('./MultiLineInput.react')
@@ -43,16 +43,18 @@ var ChatContainer = React.createClass({
 		this.setState(getChatState());
 	},
 
+	_onGroupChange: function() {
+		this.setState({currentUser: GroupStore.getCurrentUser()})
+	},
+
 	componentDidMount: function() {
 		ChatStore.addChangeListener(this._onChange);
-		GroupStore.addChangeListener(this._onChange);
-		GroupActions.fetchChatSegment(this.props.groupId, 0, ChatStore.SEG_SIZE);
+		GroupStore.addChangeListener(this._onGroupChange);
 	},
 
 	componentWillUnmount: function() {
 		ChatStore.removeChangeListener(this._onChange);
-		GroupStore.removeChangeListener(this._onChange);
-		GroupActions.clearChat();
+		GroupStore.removeChangeListener(this._onGroupChange);
 	},
 
 	_chat: function(content) {
@@ -63,7 +65,7 @@ var ChatContainer = React.createClass({
 				content: content,
 				chatId: GroupUtils.generateUUID(),
 			}
-			GroupActions.postChat(message, this.props.groupId);
+			ChatActions.postChat(message, this.props.groupId);
 		}
 	},
 

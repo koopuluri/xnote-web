@@ -69,9 +69,12 @@ var MainContainer = React.createClass({
         });
 
         socket.on('notification:' + groupId + userId, function(obj) {
+            console.log('notif received');
+            console.log(obj);
             var notif = obj.notif;
             var createdUser = obj.user;
             if (notif.article) {
+                console.log(obj.notif.article)
                 notif.article = obj.article;
                 notif.article.createdBy = createdUser;
             } else if (notif.highlight) {
@@ -89,13 +92,8 @@ var MainContainer = React.createClass({
             var note = obj.note;
 
             if (note && highlightId) {
-                GroupActions.socketReceiveNote(obj.note, obj._id);
+                GroupActions.socketReceiveNote(note, highlightId);
             }
-        });
-
-        socket.on('chat:' + groupId, function(chatObj) {
-            React.findDOMNode(self.refs.chatNotificationSound).play();
-            GroupActions.socketReceiveChat(chatObj.chat);
         });
     },
 
@@ -145,8 +143,6 @@ var MainContainer = React.createClass({
                 <ChatWindow groupId={this.props.groupId}/>
                 <audio ref="feedNotificationSound"
                     src = '/static/FeedNotification.wav'/>
-                <audio ref="chatNotificationSound"
-                    src = '/static/ChatNotification.mp3'/>
             </div>
         );
     },

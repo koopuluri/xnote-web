@@ -198,8 +198,10 @@ module.exports = function(app, passport) {
     app.get('/article/', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
         var articleId = req.query.articleId;
+
         console.log('/article: ' + groupId + '::' + articleId);
         res.render('article.ejs', {
+            user: {facebook: req.user.facebook, _id: req.user._id},
             groupId: groupId,
             articleId: articleId
         });
@@ -221,6 +223,16 @@ module.exports = function(app, passport) {
     });
 
     // =========================================================================
+
+    app.post('/_clear_chat_notifs', isLoggedIn, function(req, res) {
+        var groupId = req.body.groupId;
+        DB.clearChatNotifs(req.user, groupId, _dbCallback(res));  
+    });
+
+    app.get('/_get_chat_notif_count', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        DB.getChatNotifCount(req.user, groupId, _dbCallback(res));
+    });
 
     app.post('/_viewed_notifs', isLoggedIn, function(req, res) {
         var group = req.body.groupId;

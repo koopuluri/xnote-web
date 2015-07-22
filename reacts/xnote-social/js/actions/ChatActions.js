@@ -1,5 +1,6 @@
-var GroupDispatcher = require('../dispatcher/Dispatcher');
+var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var Constants = require('../constants/Constants');
+var GroupUtils = require('../utils/GroupUtils');
 var API = require('../utils/API');
 
 var ChatActions = {

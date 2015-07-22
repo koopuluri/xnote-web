@@ -1,4 +1,4 @@
-var Dispatcher = require('../dispatcher/Dispatcher');
+var GroupDispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var _ = require('underscore');
@@ -78,9 +78,25 @@ var NotificationStore = _.extend({}, EventEmitter.prototype, {
 	}
 });
 
-Dispatcher.register(function(payload) {
+GroupDispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
+
+		case Constants.RECEIVE_CHAT_NOTIFS:
+			loadChatNotifs(action.data);
+			break;
+
+		case Constants.RECEIVE_FEED_NOTIFS:
+			loadFeedNotifs(action.data);
+			break;
+
+		case Constants.RESET_CHAT_NOTIFS:
+			resetChatNotifs();
+			break;
+
+		case Constants.RESET_FEED_NOTIFS:
+			resetFeedNotifs();
+			break;
 
 		case Constants.SET_NOTIFS:
 			_lastViewed = new Date(action.lastViewed).getTime();

@@ -7,6 +7,8 @@ var _chat = [];
 var _isLoading = false;
 var _isLazy = true;
 
+var _notifCount = 0;
+
 var _index = 0;
 var _lastAddedChatId = null;
 
@@ -23,12 +25,20 @@ var ChatStore = _.extend({}, EventEmitter.prototype, {
 		return _chat;
 	},
 
+	getLastAddedChatId: function() {
+		return _lastAddedChatId;
+	},
+
 	isLazy: function() {
 		return _isLazy;
 	},
 
 	getLoading: function() {
 		return _isLoading;
+	},
+
+	getNotifCount: function() {
+		return _notifCount;
 	},
 
 	//emit change event
@@ -74,7 +84,6 @@ GroupDispatcher.register(function(payload) {
 			if(chats.length < SEG_SIZE) {
 				_isLazy = false;
 			}
-
 			break;
 
 		case Constants.SET_CHAT_LOADING:
@@ -84,6 +93,18 @@ GroupDispatcher.register(function(payload) {
 		case Constants.CLEAR_CHAT:
 			_index = 0;
 			_chat = [];
+			break;
+
+		case Constants.INCREMENT_CHAT_NOTIF_COUNT: 
+			_notifCount++;
+			break;
+
+		case Constants.SET_CHAT_NOTIF_COUNT: 
+			_notifCount = action.count;
+			break;
+
+		case Constants.RESET_CHAT_NOTIFS:
+			_notifCount = 0;
 			break;
 
 		default:
