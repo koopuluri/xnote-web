@@ -20,15 +20,20 @@ var Colors = mui.Styles.Colors;
 var ScrollContainer = React.createClass({
 
 	componentWillUpdate: function() {
-		var node = this.getDOMNode();
+		var node = React.findDOMNode(this.refs.chatMessages);
 		this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
 	},
 
 	componentDidUpdate: function() {
 		if (this.shouldScrollBottom) {
-			var node = this.getDOMNode();
+			var node = React.findDOMNode(this.refs.chatMessages);
 			node.scrollTop = node.scrollHeight;
 		}
+	},
+
+	componentDidMount: function() {
+		var node = React.findDOMNode(this.refs.chatMessages);
+		node.scrollTop = node.scrollHeight;
 	},
 
 	render: function() {
@@ -36,7 +41,8 @@ var ScrollContainer = React.createClass({
 		var self = this;
 		if (messages.length == 0) {
 			var chatPosts =
-				<div className='chat-messages'>
+				<div className='chat-messages'
+					ref='chatMessages'>
 					<div className = "no-chat-message"
 						style={{backgroundColor: Colors.grey150}}>
         				<p>  You have no chat messages. </p>
@@ -58,7 +64,8 @@ var ScrollContainer = React.createClass({
 				</List>
 		}
 		return (
-			<div className ='chat-messages'>
+			<div className ='chat-messages'
+				ref = 'chatMessages'>
    				{chatPosts}
 			</div>
 		);

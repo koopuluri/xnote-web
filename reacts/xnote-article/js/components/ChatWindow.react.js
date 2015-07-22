@@ -19,8 +19,16 @@ var CHAT_CLOSED = "ChatClosed";
 
 var ChatWindow = React.createClass({
 
-	componentDidMount: function() {
+	getInitialState: function() {
+		return (
+			{ 
+				mode: CHAT_CLOSED,
+				chatNotifs: ChatStore.getNotifCount()
+			}
+		);
+	},
 
+	componentDidMount: function() {
 		var groupId = this.props.groupId;
 		socket = io();
 		// fetch and set the chat segment:
@@ -32,21 +40,24 @@ var ChatWindow = React.createClass({
 			if (self.state.mode === CHAT_OPEN) {
 				// no need to increment count!
 				// in fact send message to server saying I've seen up to latest in chat.
-				console.log('clearing chat notifs!');
 				ChatActions.clearChatNotifs(groupId);
 			}  else {
 				// increment count:
-				console.log('chat notif count increment!');
 				ChatActions.incrementChatNotifCount();
+			}
+			var _lastAddedChatId = ChatStore.getLastAddedChatId();
+			if (! (_lastAddedChatId && _lastAddedChatId == chatObj.chat.chatId) ) {
+				React.findDOMNode(self.refs.chatNotificationSound).play();
 			}
 			ChatActions.socketReceiveChat(chatObj.chat);     	
         });
+        ChatStore.addChangeListener(this._onChange); 
 	},
 
-	getInitialState: function() {
-		return (
-			{ mode: CHAT_CLOSED }
-		);
+	_onChange: function() {
+		this.setState({
+			chatNotifs: ChatStore.getNotifCount()
+		})
 	},
 
 	toggleState: function() {
@@ -59,6 +70,7 @@ var ChatWindow = React.createClass({
 				mode : CHAT_CLOSED
 			});
 		} else if(this.state.mode === CHAT_CLOSED) {
+			ChatActions.clearChatNotifs(this.props.groupId);
 			return ({
 				mode: CHAT_OPEN
 			});
@@ -66,8 +78,27 @@ var ChatWindow = React.createClass({
 	},
 
 	render: function() {
-		console.log('CHAT WINDOW RENDER!' )
 		if (this.state.mode === CHAT_CLOSED) {
+			var notifCount = '';
+			if(this.state.chatNotifs > 0) {
+				var notifCount = 
+					<p style=
+				 		{
+				 			{
+			  					borderRadius:1000,
+			  					paddingLeft:3,
+			  					paddingRight:3,
+			  					paddingTop:3,
+			  					paddingBottom:3,
+			  					backgroundColor:Colors.red500,
+			  					color:Colors.white,
+			  					"display":"inline-block",
+			  					margin:0
+			 				}
+			 			}>
+			 			{this.state.chatNotifs}
+			 		</p>
+			}
 		    return (
 		    	<div className = "chat-window"
 		    		 style={{padding:0}}>
@@ -94,24 +125,11 @@ var ChatWindow = React.createClass({
 			    					}>
 			    						message
 		    					</FontIcon>
-		    					<p style=
-		    				 		{
-		    				 			{
-                          					borderRadius:1000,
-                          					paddingLeft:3,
-                          					paddingRight:3,
-                          					paddingTop:3,
-                          					paddingBottom:3,
-                          					backgroundColor:Colors.red500,
-                          					color:Colors.white,
-                          					"display":"inline-block",
-                          					margin:0
-                         				}
-                         			}>
-                         			1
-                         	</p>
+		    					{notifCount}
 		    			</ListItem>
 		    		</Paper>
+		    		<audio ref="chatNotificationSound"
+	                    src = '/static/ChatNotification.mp3'/>
 		    	</div>
 		    );
 		} else {
@@ -140,30 +158,16 @@ var ChatWindow = React.createClass({
 			   						}>
 			    						message
 		    				</FontIcon>
-		    				<p style=
-		    				 		{
-		    				 			{
-                          					borderRadius:1000,
-                          					paddingLeft:3,
-                          					paddingRight:3,
-                          					paddingTop:3,
-                          					paddingBottom:3,
-                          					backgroundColor:Colors.red500,
-                          					color:Colors.white,
-                          					"display":"inline-block",
-                          					margin:0
-                         				}
-                         			}>
-                         			1
-                         	</p>
 		    			</ListItem>
 		    			<ChatContainer
 		    				currentUser={this.props.currentUser}
 		    				style={{backgroundColor: Colors.grey150}}
 		    				groupId={this.props.groupId}/>
 		    		</Paper>
-
-				</div>);
+		    		<audio ref="chatNotificationSound"
+	                    src = '/static/ChatNotification.mp3'/>
+				</div>
+			);
 		}
 	}
 });

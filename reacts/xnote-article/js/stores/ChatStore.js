@@ -25,6 +25,10 @@ var ChatStore = _.extend({}, EventEmitter.prototype, {
 		return _chat;
 	},
 
+	getLastAddedChatId: function() {
+		return _lastAddedChatId;
+	},
+
 	isLazy: function() {
 		return _isLazy;
 	},
