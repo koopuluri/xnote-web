@@ -63,6 +63,22 @@ var ChatWindow = React.createClass({
 			    					}>
 			    						message
 		    					</FontIcon>
+		    					<p style=
+		    				 		{
+		    				 			{
+                          					borderRadius:1000,
+                          					paddingLeft:3,
+                          					paddingRight:3,
+                          					paddingTop:3,
+                          					paddingBottom:3,
+                          					backgroundColor:Colors.red500,
+                          					color:Colors.white,
+                          					"display":"inline-block",
+                          					margin:0
+                         				}
+                         			}>
+                         			1
+                         		</p>
 		    			</ListItem>
 		    		</Paper>
 		    	</div>
@@ -93,6 +109,22 @@ var ChatWindow = React.createClass({
 			   						}>
 			    						message
 		    				</FontIcon>
+		    				<p style=
+		    				 		{
+		    				 			{
+                          					borderRadius:1000,
+                          					paddingLeft:3,
+                          					paddingRight:3,
+                          					paddingTop:3,
+                          					paddingBottom:3,
+                          					backgroundColor:Colors.red500,
+                          					color:Colors.white,
+                          					"display":"inline-block",
+                          					margin:0
+                         				}
+                         			}>
+                         			1
+                         	</p>
 		    			</ListItem>
 		    			<ChatContainer
 		    				style={{backgroundColor: Colors.grey150}}

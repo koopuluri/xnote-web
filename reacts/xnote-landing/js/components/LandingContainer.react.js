@@ -1,4 +1,5 @@
 var React = require('react');
+
 var LandingStore = require('../stores/LandingStore');
 var Actions = require('../actions/LandingActions');
 
@@ -47,7 +48,7 @@ var LandingContainer = React.createClass({
     componentDidMount: function() {
         LandingStore.addChangeListener(this._onChange);
     },
-    
+
     render: function() {
         var groupMessage ='';
         var groupCard ='';
@@ -129,7 +130,6 @@ var LandingContainer = React.createClass({
                     </Card>
                 </div>
         }
-
 
         return (
             <div>

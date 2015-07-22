@@ -80,6 +80,7 @@ var MainContainer = React.createClass({
             } else {
                 // should not reach this!
             }
+            React.findDOMNode(self.refs.feedNotificationSound).play();
             GroupActions.addNotif(notif);
         });
 
@@ -93,6 +94,7 @@ var MainContainer = React.createClass({
         });
 
         socket.on('chat:' + groupId, function(chatObj) {
+            React.findDOMNode(self.refs.chatNotificationSound).play();
             GroupActions.socketReceiveChat(chatObj.chat);
         });
     },
@@ -133,37 +135,20 @@ var MainContainer = React.createClass({
     },
 
     render: function() {
-        // renderring the container
-        var params = GroupUtils.getUrlVars(this.state.route);
-        if (!params || !params.articleId) {
-            return (
-                <div className="main-container">
-                    <ContentView groupId={this.props.groupId}/>
-                    <AppToolbar groupId={this.props.groupId}/>
-                    <GroupSidebar groupId={this.props.groupId}/>
-                    <AddArticle />
-                    <SnackbarComponent />
-                    <ChatWindow groupId={this.props.groupId}/>
-                </div>
-            );
-        }  else {
-            return (
-                <div className="container">
-                    <div className="article-container">
-                        <div className="article-view col-md-8">
-                            <ArticleView 
-                                articleId={params.articleId}
-                                highlightId={params.highlightId} />
-                        </div>
-                        <div className="note-view col-md-4">
-                            <Discussion />,
-                        </div>
-                    </div>
-                    <ArticleToolbar groupId={this.props.groupId}/>
-                    <SnackbarComponent />
-                </div>
-            );
-        }
+        return (
+            <div className="main-container">
+                <ContentView groupId={this.props.groupId}/>
+                <AppToolbar groupId={this.props.groupId}/>
+                <GroupSidebar groupId={this.props.groupId}/>
+                <AddArticle />
+                <SnackbarComponent />
+                <ChatWindow groupId={this.props.groupId}/>
+                <audio ref="feedNotificationSound"
+                    src = '/static/FeedNotification.wav'/>
+                <audio ref="chatNotificationSound"
+                    src = '/static/ChatNotification.mp3'/>
+            </div>
+        );
     },
 });
 

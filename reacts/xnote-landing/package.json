@@ -6,7 +6,9 @@
     "flux": "^2.0.0",
     "react": "^0.13.0",
     "underscore": "^1.7.0",
-    "material-ui": "0.10.0"
+    "material-ui": "0.10.0",
+    "soundmanager2": "~2.97.20150601-a",
+    "react-sound": "~0.1.1"
   },
   "devDependencies": {
     "browserify": "~6.2.0",
