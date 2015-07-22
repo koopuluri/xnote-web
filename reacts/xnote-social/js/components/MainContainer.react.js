@@ -68,9 +68,12 @@ var MainContainer = React.createClass({
         });
 
         socket.on('notification:' + groupId + userId, function(obj) {
+            console.log('notif received');
+            console.log(obj);
             var notif = obj.notif;
             var createdUser = obj.user;
             if (notif.article) {
+                console.log(obj.notif.article)
                 notif.article = obj.article;
                 notif.article.createdBy = createdUser;
             } else if (notif.highlight) {
@@ -87,7 +90,7 @@ var MainContainer = React.createClass({
             var note = obj.note;
 
             if (note && highlightId) {
-                GroupActions.socketReceiveNote(obj.note, obj._id);
+                GroupActions.socketReceiveNote(note, highlightId);
             }
         });
 

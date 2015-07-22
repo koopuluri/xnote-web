@@ -13,7 +13,7 @@ var mongoose = require('mongoose');
 
 var notifSchema = mongoose.Schema({
 	createdAt: {type: Date, default: Date.now},
-
+	
     group: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     

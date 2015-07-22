@@ -17,8 +17,6 @@ var highlightId = window.location.hash.slice(1);
 var user = $('.user-span').attr('id');
 
 var user = JSON.parse(user);
-var currentUser = {};
-currentUser.facebook = user;
 
 // set the article associated with the articleId in the stores:
 Actions.fetchAndSetArticle(articleId);
@@ -30,6 +28,6 @@ if (highlightId) {
 
 //Render Flux Group App
 React.render(
-	<MainContainer groupId={groupId} currentUser={currentUser}/>,
+	<MainContainer groupId={groupId} currentUser={user}/>,
 	document.getElementById('main-container')
 );

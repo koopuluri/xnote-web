@@ -294,7 +294,8 @@ var DB = {
                 // notifs:
                 self.addNotifsForNoteAdd(user, savedHighlight, function(notif) {
                     // socket.io'ing the notif:
-                    console.log('emitting notification: ' + notif.user);
+                    console.log('emitting notif for note add!');
+                    console.log(notif);
                     io.emit('notification:' + savedHighlight.group + notif.user,
                          {notif: notif, highlight: savedHighlight, user: {facebook: user.facebook} });
                 });
@@ -649,12 +650,14 @@ var DB = {
         var notes = savedHighlight.notes;
         console.log('addNotifsForNoteAdd notes.length: ' + notes.length);
 
+        var completedUserSet = Object.create(null);
         for(var i = 0; i < notes.length; i++) {
             var note = notes[i];
             var user = note.createdBy;
-            console.log('addNotifsForNoteAdd noteCreator: ' + noteCreator._id);
-            console.log('addNotifsForNoteAdd user: ' + user);
-            if (!user.equals(noteCreator._id)) {
+            if (!user.equals(noteCreator._id) && 
+                  (! (user._id in completedUserSet)) ) {
+
+                completedUserSet[user._id] = true;
                 // now have to check if this user already has this highlight as a notification:
                 // if it does, then just update it so: (forNote = true).
                 // otherwise, create a notif for this highlight for this user:
@@ -666,14 +669,17 @@ var DB = {
                     forNote: true
                 });
 
-                console.log('about to add a notification for the user :' + user);
+                console.log('savedHighlight');
+                console.log(savedHighlight);
+
                 // so finding one and updating if existing otherwise inserting.
                 Notification.findOneAndUpdate({user: user, group: savedHighlight.group},
                     {$set: {
                         group: savedHighlight.group,
                         highlight: savedHighlight._id,
                         user: user,
-                        forNote: true }
+                        forNote: true,
+                        createdAt: Date.now()}
                     },
                     {upsert: true}, 
                     function(err, updatedNotif) {
@@ -681,12 +687,42 @@ var DB = {
                             console.log('finding and updating highlight notif for note add error: ' + err);
                         } else {
                             console.log('added notification for note add for highlight: ' + savedHighlight._id);
+                            console.log(updatedNotif);
                             //console.log('updatedNotif.highlight: ' + updatedNotif.highlight);
                             callback(updatedNotif);
                         }
                     });
             }
         }
+
+        // now also checking the owner of the highlight:
+        // note that highlight.createdBy is the id iself, not user obj.
+        if (!savedHighlight.createdBy.equals(noteCreator._id) && 
+                  (! (savedHighlight.createdBy in completedUserSet)) ) {
+          var user = savedHighlight.createdBy;
+
+          // so finding one and updating if existing otherwise inserting.
+          Notification.findOneAndUpdate({user: user, group: savedHighlight.group},
+              {$set: {
+                  group: savedHighlight.group,
+                  highlight: savedHighlight._id,
+                  user: user,
+                  forNote: true,
+                  createdAt: Date.now()}
+              },
+              {upsert: true}, 
+              function(err, updatedNotif) {
+                  if (err) {
+                      console.log('finding and updating highlight notif for note add error: ' + err);
+                  } else {
+                      console.log('added notification for note add for highlight for the owner of the highlight!: ' + savedHighlight._id);
+                      console.log(updatedNotif);
+                      //console.log('updatedNotif.highlight: ' + updatedNotif.highlight);
+                      callback(updatedNotif);
+                  }
+              });
+        }
+
      },
 
      getNotifs: function(user, groupRef, callback) {
@@ -777,6 +813,52 @@ var DB = {
             });
      },
 
+     clearChatNotifs: function(user, groupRef, callback) {
+        User.findOneAndUpdate({_id: user._id, 'groups.groupRef': groupRef}, 
+            {$set: {'groups.$.chatNotifCount': 0} },
+            {},
+            function(err, updatedUser) {
+                if (err) {
+                    console.log('failed to increment chat notifs viewed for user: ' + err);
+                    callback({error: 'poop'});
+                    return;
+                } 
+
+                console.log('incremented chat notifs for user+group: ' + Date.now());
+                callback({});                                
+            });
+     },
+
+     incrementChatNotifCount: function(user, groupRef, callback) {
+        User.findOneAndUpdate({_id: user._id, 'groups.groupRef': groupRef}, 
+            {$inc: {'groups.$.chatNotifCount': 1} },
+            {},
+            function(err, updatedUser) {
+                if (err) {
+                    console.log('failed to increment chat notifs viewed for user: ' + err);
+                    callback({error: 'poop'});
+                    return;
+                } 
+
+                console.log('incremented chat notifs for user+group: ' + Date.now());
+                callback({});                                
+            });
+     },
+
+     getChatNotifCount: function(user, groupRef, callback) {
+        User.findOne({_id: user._id}, {groups: {$elemMatch: {'groupRef': groupRef} }}, 
+            function(err, doc) {
+                if(err) {
+                    console.log('error getting last viewed: ' + user._id + ':' + groupRef + ':  ' + err);
+                    callback({error: err});
+                    return;
+                }
+
+                var count = doc.groups[0].chatNotifCount;
+                console.log('chat notif count: ' + count);
+                callback({count: count});
+            });
+     }
 };
 
 module.exports = DB;

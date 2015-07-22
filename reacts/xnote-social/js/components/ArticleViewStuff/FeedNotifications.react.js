@@ -36,7 +36,6 @@ var FeedNotifications = React.createClass({
   },
 
   render: function() {
-
       var notifs = this.state.notifs;
       var self = this;
       var feedNotifsList = notifs.map(function(post) {
@@ -47,10 +46,11 @@ var FeedNotifications = React.createClass({
           } else if(post.highlight) {
               highlight = post.highlight;
               var feedOwner = highlight.createdBy.facebook.name;
-              if(post.notes && post.notes.length > 0) {
-                  feedOwner = highlight.notes[-1].owner;
+              if(highlight.notes && highlight.notes.length > 0) {
+                  var lastNote = highlight.notes[highlight.notes.length - 1];
+                  feedOwner = lastNote.owner.name;
                   feedText = 'Added a note ';
-                  feedText = feedText + '"' + highlight.notes[noteLength - 1].content + '" for the highlight ';
+                  feedText = feedText + '"' + lastNote.content + '" for the highlight ';
                   feedText = feedText + '"' + highlight.clippedText + '"';
               } else {
                   feedText = 'Added a highlight "' + highlight.clippedText + '"';

@@ -177,16 +177,46 @@ var Actions = {
 
     // ============================= NOTIF STUFF =================================
 
-    fetchAndSetNotifs: function() {
-
+    fetchAndSetNotifs: function(group) {
+        var self = this;
+        API.getNotifs(group, function(obj) {
+            if(!obj.error) {
+                var notifs = obj.notifs;
+                var lastViewed = obj.lastViewed;
+                Dispatcher.handleAction({
+                    actionType: Constants.SET_NOTIFS,
+                    notifs: notifs,
+                    lastViewed: lastViewed
+                });
+            } else {
+                self.displaySnackMessage("Error: Could not get notifications");
+            }
+        });
     },
 
-    addNotif: function() {
-
+    addNotif: function(notif) {
+        Dispatcher.handleAction({
+            actionType: Constants.ADD_NOTIF,
+            notif: notif
+        });
     },
 
-    socketReceiveNote: function() {
+    notifsViewed: function(groupId) {
+        Dispatcher.handleAction({
+            actionType: Constants.NOTIFS_VIEWED,
+        });
 
+        API.notifsViewed(groupId, function(obj) {
+            // do nothing.
+        });
+    },
+
+    socketReceiveNote: function(note, highlightId, postNotifCount) {
+        Dispatcher.handleAction({
+            actionType: Constants.SOCKET_RECEIVE_NOTE,
+            note: note,
+            highlightId: highlightId,
+        });
     },
 
     //============================================================================

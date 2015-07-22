@@ -198,9 +198,10 @@ module.exports = function(app, passport) {
     app.get('/article/', isLoggedIn, function(req, res) {
         var groupId = req.query.groupId;
         var articleId = req.query.articleId;
+
         console.log('/article: ' + groupId + '::' + articleId);
         res.render('article.ejs', {
-            user: req.user.facebook,
+            user: {facebook: req.user.facebook, _id: req.user._id},
             groupId: groupId,
             articleId: articleId
         });

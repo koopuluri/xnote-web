@@ -19,6 +19,38 @@ var Colors = mui.Styles.Colors;
 // - currentUser 
 var MainContainer = React.createClass({
 
+    componentDidMount: function() {
+        var groupId = this.props.groupId;
+        var userId = this.props.currentUser._id;
+        ArticleActions.fetchAndSetNotifs(groupId);
+
+        socket = io.connect();
+        socket.on('notification:' + groupId + userId, function(obj) {
+            var notif = obj.notif;
+            var createdUser = obj.user;
+            if (notif.article) {
+                notif.article = obj.article;
+                notif.article.createdBy = createdUser;
+            } else if (notif.highlight) {
+                notif.highlight = obj.highlight;
+                notif.highlight.createdBy = createdUser;
+            } else {
+                // should not reach this!
+            }
+            ArticleActions.addNotif(notif);
+        });
+
+
+        socket.on('note:' + groupId, function(obj) {
+            var highlightId = obj.highlightId;
+            var note = obj.note;
+
+            if (note && highlightId) {
+                ArticleActions.socketReceiveNote(note, highlightId);
+            }
+        });
+    },
+
     childContextTypes : {
         muiTheme: React.PropTypes.object
     },

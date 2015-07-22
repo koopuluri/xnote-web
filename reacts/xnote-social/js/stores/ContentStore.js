@@ -111,7 +111,7 @@ GroupDispatcher.register(function(payload) {
               _index += articles.length;
           }
 
-          if (articles.length < SEG_SIZE) {
+          if (!articles || articles.length < SEG_SIZE) {
               // need to stop lazy loading, reached limit:
               _isLazy = false;
           }
