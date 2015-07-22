@@ -42,18 +42,19 @@
   color : #f6f6f6;
 }
 
-.chat-container {
+/*.chat-container {
   height : 100%;
-}
+}*/
 
 .tab-container-container {
   height: calc(100% - 78px);
 }
 
 .chat-messages {
-  height : calc(100% - 45px);
+  height : 350px;
   overflow-y: scroll;
   bottom :0px;
+  background-color: #f6f6f6;
 }
 
 .chat-form {
@@ -81,3 +82,22 @@ textarea {
   -webkit-transform: translateY(-50%);
   text-align: center;
 }
+
+.chat-window {
+  position: fixed;
+  bottom: 0px;
+  right: 100px;
+}
+
+.chat-spinner {
+  height:400px;
+}
+
+.user-messages, .user-messages-text {
+  -moz-transform: scaleX(-1);    
+  -o-transform: scaleX(-1);      
+  -webkit-transform: scaleX(-1); 
+  transform: scaleX(-1);         
+  filter: FlipH;
+}
+

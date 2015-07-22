@@ -10,6 +10,7 @@ var NotifStore = require('../stores/NotificationStore');
 var FeedStore = require('../stores/FeedStore');
 var GroupStore = require('../stores/GroupStore');
 var AddArticle = require('./AddArticle.react');
+var ChatWindow = require('./ChatWindow.react');
 var GroupUtils = require('../utils/GroupUtils');
 
 var GroupActions = require('../actions/GroupActions');
@@ -142,6 +143,7 @@ var MainContainer = React.createClass({
                     <GroupSidebar groupId={this.props.groupId}/>
                     <AddArticle />
                     <SnackbarComponent />
+                    <ChatWindow groupId={this.props.groupId}/>
                 </div>
             );
         }  else {

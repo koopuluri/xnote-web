@@ -28,13 +28,19 @@ var GroupUtils = {
 	},	
 
 	getTimestamp: function() {
+		var _secondsToDate = function(seconds) {
+			if (!seconds) {
+				return '';
+			}
+
+			var d = new Date(seconds*1000); // The 0 there is the key, which sets the date to the epoch
+			return '' + d;
+		};
+
 		var d = new Date();
-		var seconds = d.getTime();
-		if (!seconds) {
-			return '';
-		}
-		var date = new Date(seconds);
-		return '' + date;
+		var t = d.getTime() / 1000;
+		return _secondsToDate(t);
+
 	},
 
 	// used for new note / article creation: (http://stackoverflow.com/a/8809472)

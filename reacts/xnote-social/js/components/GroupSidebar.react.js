@@ -74,15 +74,6 @@ var GroupSidebar = React.createClass({
                                 generateUUID={GroupUtils.generateUUID}
                                 getCurrentTimestamp={GroupUtils.getTimestamp}/>
                     </Tab>
-                    
-                    <Tab
-                        label= {chatLabel}
-                        style = {contentStyle}
-                        route = 'chat'
-                        onActive = {this._onActive}>
-                        <ChatContainer groupId={this.props.groupId}/>
-                    </Tab>
-
 
                 </Tabs>
             </div>

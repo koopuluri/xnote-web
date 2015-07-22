@@ -32,7 +32,6 @@ function getChatState() {
 
 // props:
 // - groupId
-// - currentUser
 var ChatContainer = React.createClass({
 
 	//get initial state from stores
@@ -70,7 +69,11 @@ var ChatContainer = React.createClass({
 
 	render: function() {
 		if (this.state.isLoading) {
-		    return (<Loading marginLeft = {40}/>);
+		    return (
+		    	<div className='chat-spinner'>
+		    		<Loading marginLeft = {40}/>
+		    	</div>
+		    );
 		} else {
 			return (
 				<div className = 'chat-container'>

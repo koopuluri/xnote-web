@@ -116,9 +116,7 @@ var Actions = {
         });
     },
 
-    deleteNote: function(note, highlightId) {
-        console.log('delete Note: ' + highlightId);
-        console.log(note);
+    removeNote: function(note, highlightId) {
         GroupDispatcher.handleAction({
             actionType: Constants.DISCUSSION_DELETE_NOTE,
             highlightId: highlightId,
@@ -127,7 +125,7 @@ var Actions = {
 
     },
 
-    addNote: function(highlightId, note) {
+    addNote: function(note, highlightId) {
         GroupDispatcher.handleAction({
             actionType: Constants.DISCUSSION_ADD_NOTE,
             highlightId: highlightId,

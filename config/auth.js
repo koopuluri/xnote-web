@@ -10,9 +10,9 @@
 
 // for testing;
 module.exports = {
-	'facebookAuth': {
-		'clientID': '1598123567106411',
-		'clientSecret': '3a53103c20019511924fa0d411a25944',
-		'callbackURL': '/auth/facebook/callback'
-	}
+    'facebookAuth' : {
+        'clientID'      : '1599664560285645',
+        'clientSecret'  : 'd92e033cd411da2db3f12573d41c2b09',
+        'callbackURL'   : '/auth/facebook/callback'
+    }
 }

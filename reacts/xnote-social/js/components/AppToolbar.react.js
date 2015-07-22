@@ -34,40 +34,40 @@ function getState() {
         groupTitle: GroupStore.getGroupTitle(),
         groupId: GroupStore.getGroupId(),
         members: GroupStore.getGroupMembers(),
-        friends: FriendStore.getFriends(),
-        queryList: [],
-        friendsLoading: FriendStore.getLoading(),
+        // friends: FriendStore.getFriends(),
+        // queryList: [],
+        // friendsLoading: FriendStore.getLoading(),
         currentUser: GroupStore.getCurrentUser(),
-        addList: [],
+        // addList: [],
         notifs: NotificationStore.getNotifs()
     }
 }
 
-var onDeleteFromAddList = function(addListItem, self) {
-  return function() {
-    var newList = self.state.addList;
-    for (var i = 0; i < newList.length; i++) {
-      if(newList[i].id === addListItem.id) {
-        newList.splice(i, 1);
-      }
-    }
-    self.setState({
-      addList: newList
-    })
-  }
-}
+// var onDeleteFromAddList = function(addListItem, self) {
+//   return function() {
+//     var newList = self.state.addList;
+//     for (var i = 0; i < newList.length; i++) {
+//       if(newList[i].id === addListItem.id) {
+//         newList.splice(i, 1);
+//       }
+//     }
+//     self.setState({
+//       addList: newList
+//     })
+//   }
+// }
 
-var friendListOnClickFunction = function(member, self) {
-  return function() {
-    var newList = self.state.addList;
-    newList.push(member);
-    self.setState({
-        addList : newList
-    });
-    self.refs.addMemberQuery.clearValue();
-    self.refs.addMemberQuery.focus();
-  }
-}
+// var friendListOnClickFunction = function(member, self) {
+//   return function() {
+//     var newList = self.state.addList;
+//     newList.push(member);
+//     self.setState({
+//         addList : newList
+//     });
+//     self.refs.addMemberQuery.clearValue();
+//     self.refs.addMemberQuery.focus();
+//   }
+// }
 
 // props:
 // - groupId
@@ -78,13 +78,13 @@ var AppToolbar = React.createClass({
 
     componentDidMount: function() {
       GroupStore.addChangeListener(this._onChange);
-      FriendStore.addChangeListener(this._onChange);
+      // FriendStore.addChangeListener(this._onChange);
       NotificationStore.addChangeListener(this._onChange);
     },
 
     componentWillUnmount: function() {
       GroupStore.removeChangeListener(this._onChange);
-      FriendStore.removeChangeListener(this._onChange);
+      // FriendStore.removeChangeListener(this._onChange);
       NotificationStore.removeChangeListener(this._onChange);
     },
 
@@ -115,31 +115,31 @@ var AppToolbar = React.createClass({
     },
 
     //Changes the query list based on the query the user has entered
-    _onQueryChange: function() {
-      var query = this.refs.addMemberQuery.getValue();
-      if(query != '') {
-        query = query.toLowerCase();
-        var friends = this.state.friends;
-        var queryList = [];
-        for (var i = 0; i < friends.length; i++) {
-            var name = friends[i].name.toLowerCase();
-            if (name.includes(query)) {
-                queryList.push(friends[i]);
-            }
-        }
-        this.setState({
-            queryList: queryList
-        });
-      } else {
-        this.setState({
-            queryList: []
-        })
-      }
-    },
+    // _onQueryChange: function() {
+    //   var query = this.refs.addMemberQuery.getValue();
+    //   if(query != '') {
+    //     query = query.toLowerCase();
+    //     var friends = this.state.friends;
+    //     var queryList = [];
+    //     for (var i = 0; i < friends.length; i++) {
+    //         var name = friends[i].name.toLowerCase();
+    //         if (name.includes(query)) {
+    //             queryList.push(friends[i]);
+    //         }
+    //     }
+    //     this.setState({
+    //         queryList: queryList
+    //     });
+    //   } else {
+    //     this.setState({
+    //         queryList: []
+    //     })
+    //   }
+    // },
 
     _onAddMembers: function() {
       this.refs.addMemberDialog.dismiss();
-      GroupActions.addMembers(this.state.groupId, this.state.addList);
+      // GroupActions.addMembers(this.state.groupId, this.state.addList);
     },
 
     render: function() {
@@ -176,43 +176,43 @@ var AppToolbar = React.createClass({
       var self = this;
       var addMemberActions = [
         { text: 'Cancel', primary: true },
-        { text: 'Add', primary: true, onTouchTap: this._onAddMembers}
+        { text: 'Done', primary: true, onTouchTap: this._onAddMembers}
       ];
 
       //Querylist holds the list of users that match with the query
       //entered. It stores a max of 5 items and checks are made
       //so the members of add list are excluded
-      var counter = 0;
-      var queryList = this.state.queryList.map(function(queryListItem) {
-        counter ++;
-        var found = false;
-        for(var i = 0; i < self.state.addList.length; i++) {
-          if (self.state.addList[i].facebook.id == queryListItem.id) {
-            found = true;
-            break;
-          }
-        }
+      // var counter = 0;
+      // var queryList = this.state.queryList.map(function(queryListItem) {
+      //   counter ++;
+      //   var found = false;
+      //   for(var i = 0; i < self.state.addList.length; i++) {
+      //     if (self.state.addList[i].facebook.id == queryListItem.id) {
+      //       found = true;
+      //       break;
+      //     }
+      //   }
 
-        if(!found && counter <= 5) {
-          return (
-            <div>
-              <ListItem
-                onTouchTap = {friendListOnClickFunction({facebook: {name: queryListItem.name, id: queryListItem.id}}, self)}>
-                {queryListItem.name}
-              </ListItem>
-            </div>
-          );
-        }
-      });
+      //   if(!found && counter <= 5) {
+      //     return (
+      //       <div>
+      //         <ListItem
+      //           onTouchTap = {friendListOnClickFunction({facebook: {name: queryListItem.name, id: queryListItem.id}}, self)}>
+      //           {queryListItem.name}
+      //         </ListItem>
+      //       </div>
+      //     );
+      //   }
+      // });
 
       //MemberDialogInternals sets the loading spinner when the friends
       //list is still being fetched from the database.
-      var memberDialogInternals = '';
-      if (this.state.friendsLoading) {
-          memberDialogInternals = <Loading marginLeft={45} marginTop={5}/>
-      } else {
-          memberDialogInternals = <div><List> {queryList} </List></div>
-      }
+      // var memberDialogInternals = '';
+      // if (this.state.friendsLoading) {
+      //     memberDialogInternals = <Loading marginLeft={45} marginTop={5}/>
+      // } else {
+      //     memberDialogInternals = <div><List> {queryList} </List></div>
+      // }
       
       //Stores the username in the right of the appbar.
       var usernameElement = '';

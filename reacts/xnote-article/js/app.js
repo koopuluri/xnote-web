@@ -12,11 +12,17 @@ injectTapEventPlugin();
 
 var articleId = $('.article-id-span').attr('id');
 var groupId = $('.group-id-span').attr('id');
+var highlightId = window.location.hash.slice(1);
+console.log('window.location.hash: ' + highlightId);
 
 // set the article associated with the articleId in the stores:
 Actions.fetchAndSetArticle(articleId);
 Actions.fetchAndSetGroup(groupId);
 Actions.fetchAndSetUser();
+
+if (highlightId) {
+	Actions.fetchAndSetHighlight(highlightId);
+}
 
 //Render Flux Group App
 React.render(

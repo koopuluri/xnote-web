@@ -10,10 +10,13 @@ var Colors = mui.Styles.Colors;
 var FontIcon = mui.FontIcon;
 var IconButton = mui.IconButton;
 
+
+// props:
+// - removeNote(note, highlightId)
 var NoteComponent = React.createClass ({
 
 		_menuOptions: function() {
-			this.props.actions.deleteNote(this.props.note, this.props.highlightId);
+			this.props.removeNote(this.props.note, this.props.highlightId);
 		},
 
 		render: function() {
@@ -36,11 +39,13 @@ var NoteComponent = React.createClass ({
 
 				var ownerName = note.owner ? note.owner.name : 'PoopNoteOwner';
 				return (
-					<ListItem
+					<div
 						disabled={true}
 						style ={{
-							padding : 10,
-							backgroundColor : Colors.green50,
+							paddingLeft: 10,
+							paddingRight: 10,
+							paddingTop: 10,
+							paddingBottom: 0
 						}}
 						rightIconButton={options} >
 							<p style = {
@@ -62,7 +67,7 @@ var NoteComponent = React.createClass ({
 								}>
 								{note.content}
 							</p>
-					</ListItem>
+					</div>
 
 
 				);

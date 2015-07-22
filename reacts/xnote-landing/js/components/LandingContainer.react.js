@@ -53,10 +53,17 @@ var LandingContainer = React.createClass({
         var groupCard ='';
         var group = this.state.group;
 
+        var errorComp = '';
+        if (this.props.error && (this.props.error !== null)) {
+            errorComp = <p className="error" style={{color: 'red', fontSize: 14}}>
+                There was an error logging in. Please try again in a few moments. 
+            </p>
+        }
+
         if(this.state.isLoading) {
             return (
                 <div>
-                    <p> Hey! Welcome to Tatr! </p>
+                    <p> Welcome to Xnote! </p>
                     <p> {groupMessage} </p>
                     <div style={{padding:10}}>
                         <CircularProgress mode="indeterminate" />
@@ -130,6 +137,7 @@ var LandingContainer = React.createClass({
                 <p> {groupMessage} </p>
                 {groupCard}
                 <p> To get started log in with Facebook.</p>
+                {errorComp}
                 <div style={{paddingTop:10}}>
                     <RaisedButton 
                         linkButton={true}

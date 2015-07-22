@@ -36,17 +36,19 @@ var ScrollContainer = React.createClass({
 		var self = this;
 		if (messages.length == 0) {
 			var chatPosts =
-				<div className = "no-chat-message"
-					style={{backgroundColor: Colors.grey150}}>
-        			<p>  You have no chat messages. </p>
-				</div>;
+				<div className='chat-messages'>
+					<div className = "no-chat-message"
+						style={{backgroundColor: Colors.grey150}}>
+        				<p>  You have no chat messages. </p>
+					</div>;
+				</div>
 		} else {
 			var messages = messages.map(function(message) {
 				return (
 					<div style={{backgroundColor: Colors.grey150}}>
 						<ChatPost
-							message={message}
-							user = {self.props.currentUser}/>
+							currentUser={self.props.currentUser}
+							message={message}/>
 					</div>
 				);
 			});
@@ -56,7 +58,7 @@ var ScrollContainer = React.createClass({
 				</List>
 		}
 		return (
-			<div className ='chat-messages' style={{backgroundColor: Colors.grey150}}>
+			<div className ='chat-messages'>
    				{chatPosts}
 			</div>
 		);

@@ -13,6 +13,7 @@ var ChatPost = React.createClass({
 
 	render: function() {
 		var message = this.props.message
+		var currentUser = this.props.currentUser
 		var picture = message.createdBy.facebook.picture
 		if(picture) {
 			var leftAvatar = 
@@ -21,7 +22,29 @@ var ChatPost = React.createClass({
 			var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
 			var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
 		}
+		var textAlign = "left";
+		var messageClassName="other-users-messages";
+		var messageTextClassName="other-users-messages-text";
+		var backgroundColor="#ffffff"
+		var messageSenderName =
+			<p style = {
+						{
+							fontSize : 12,
+							lineHeight : 1,
+							paddingBottom : 3,
+							color : Colors.grey400,
+							margin : 0
+						}
+					}> {message.createdBy.facebook.name} </p>
+		if(currentUser && (currentUser.facebook.id === message.createdBy.facebook.id)) {
+			messageSenderName = (<p></p>);
+			messageClassName = "user-messages"
+			messageTextClassName = "user-messages-text"
+			backgroundColor = Colors.green300;
+			textAlign = "right"
+		}
 		return (
+			<div className={messageClassName}>
 			<ListItem
 				disabled={true}
 				leftAvatar = {leftAvatar}
@@ -31,30 +54,33 @@ var ChatPost = React.createClass({
 				paddingBotom: 10,
 				paddingLeft :50,
 				paddingRight : 30}}>
-
-				<p style = {
-					{
-						fontSize : 12,
-						lineHeight : 1,
-						paddingBottom : 3,
-						color : Colors.grey400,
-						margin : 0
-					}
-				}> {message.createdBy.facebook.name} </p>
-				<Paper zDepth = {1} >				
-					<div style = {
-						{
-							fontSize : 15,
-							fontColor: Colors.grey500,
-							paddingTop : 10,
-							paddingBottom : 5,
-							paddingLeft : 10,
-							paddingRight : 10
-						}
-					}> {message.content} </div>
-				</Paper>
+				<div>
+					{messageSenderName}
+					<Paper 
+						style = {{
+							display:"inline-block",
+							backgroundColor:backgroundColor
+						}}
+						zDepth = {1} >				
+						<div 
+							className={messageTextClassName} 
+							style = {
+							{	
+								display: "inline-block",
+								fontSize : 15,
+								fontColor: Colors.grey500,
+								paddingTop : 10,
+								paddingBottom : 5,
+								paddingLeft : 10,
+								paddingRight : 10,
+								textAlign : textAlign
+							}
+						}> {message.content} </div>
+					</Paper>
+				</div>
 			</div>
 			</ListItem>
+			</div>
 		); 
 	}
 });

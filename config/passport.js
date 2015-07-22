@@ -40,14 +40,10 @@ module.exports = function(passport) {
     function(req, token, refreshToken, profile, done) {
         // asynchronous
         process.nextTick(function() {
-
             // find the user in the database based on their facebook id
             User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
-                //console.log('User.findOne area: ' + Object.keys(user));
-
                 if (user) {
                     if(!user.facebook.picture) {
-
                         User.findOneAndUpdate({_id: user._id}, 
                             {'facebook.picture': 'http://graph.facebook.com/' + user.facebook.id + '/picture?type=large'},
                             {},
@@ -67,21 +63,26 @@ module.exports = function(passport) {
 
                 if (err) {
                     console.log('error in finding user: ' + err);
-                    return done(err);
+                    return done(null, false);
+                }
+
+                var email = '';
+                if (profile.emails && profile.emails.length > 0) {
+                    email = profile.emails[0];
                 }
 
                 console.log('new user will be created');
                 // if there is no user found with that facebook id, create them
                 var newUser = new User();
-                    // set all of the facebook information in our user model
-                    newUser.facebook.id    = profile.id; // set the users facebook id
-                    newUser.facebook.token = token; // we will save the token that facebook provides to the user
-                    newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
-                    newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
-                    newUser.facebook.picture = 'http://graph.facebook.com/' + profile.id + '/picture';
+                // set all of the facebook information in our user model
+                newUser.facebook.id    = profile.id; // set the users facebook id
+                newUser.facebook.token = token; // we will save the token that facebook provides to the user
+                newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
+                newUser.facebook.email = email;
+                newUser.facebook.picture = 'http://graph.facebook.com/' + profile.id + '/picture';
 
-                    // save our user to the database
-                    newUser.save(function(err) {
+                // save our user to the database
+                newUser.save(function(err) {
                     if (err)
                         throw err;
 

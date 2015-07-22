@@ -3,7 +3,6 @@ var Actions = require('../../actions/ArticleActions');
 
 var DiscussionStore = require('../../stores/DiscussionStore');
 var GroupStore = require('../../stores/GroupStore');
-
 var NoteList = require('./NoteList.react');
 var AddNoteInput = require('./AddNoteInput.react');
 var NoteUtils = require('./utils/NoteUtils');
@@ -93,7 +92,14 @@ var Discussion = React.createClass({
                   createdBy: this.state.highlight.createdBy,
               }
 
-              comp = <FeedPost post={post} actions="Article" isLink={false}/>
+              comp = <FeedPost 
+                        post={post} 
+                        isLink={false}
+                        addNote={Actions.addNote}
+                        removeNote={Actions.removeNote}
+                        currentUser={this.state.currentUser}
+                        getCurrentTimestamp={NoteUtils.getTstamp}
+                        generateUUID={NoteUtils.generateUUID}/>
           } else {
               var messageStyle = {marginTop: '30%', marginLeft: '5%'};
               comp = <div className="message" style={messageStyle}>

@@ -23,6 +23,10 @@ var GroupStore = _.extend({}, EventEmitter.prototype, {
         return _group._id;
     },
 
+    getCurrentUser: function() {
+        return _user;
+    },
+
   	//emit change event
   	emitChange: function() {
   		this.emit('groupChange');
@@ -43,12 +47,10 @@ Dispatcher.register(function(payload) {
 	switch(action.actionType) {
 
 		case Constants.SET_GROUP:
-        console.log(action.group);
   			_group = action.group;
   			break;
 
     case Constants.SET_USER:
-        console.log(action.user);
         _user = action.user;
         break;
 

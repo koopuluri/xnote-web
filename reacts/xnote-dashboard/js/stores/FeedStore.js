@@ -12,7 +12,7 @@ var _isLazy = true;
 
 var CHANGE = 'feedStoreChange';
 
-var SEG_SIZE = 6;
+var SEG_SIZE = 10;
 
 //Method to add a note to a post
 function addNote(highlightId, note) {
