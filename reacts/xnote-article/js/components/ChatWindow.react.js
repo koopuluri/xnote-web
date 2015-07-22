@@ -15,6 +15,7 @@ var CHAT_CLOSED = "ChatClosed";
 
 // props:
 // - groupId
+// - currentUser
 
 var ChatWindow = React.createClass({
 

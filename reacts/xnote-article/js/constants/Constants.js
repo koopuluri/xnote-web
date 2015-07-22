@@ -2,6 +2,15 @@ var KeyMirror = require('react/lib/keyMirror');
 
 //Define action constants
 module.exports = KeyMirror({
+	SET_CHAT_NOTIF_COUNT: null,
+	INCREMENT_CHAT_NOTIF_COUNT: null,
+
+	CLEAR_CHAT: null,
+	SET_CHAT_LOADING: null,
+	CHAT_MESSAGE: null,
+	ADD_CHAT_SEGMENT: null,
+	RESET_CHAT_NOTIFS: null,
+
 
 	ADD_NOTE: null,
 	EDIT_NOTE: null,
@@ -14,7 +23,7 @@ module.exports = KeyMirror({
 	SET_ARTICLE: null,
 
 	SET_FEED_LOADING: null,
-	SET_CHAT_LOADING: null,
+	
 	ADD_ARTICLE_LIST_SEGMENT: null,
 	ADD_FEED_SEGMENT: null,
 
@@ -34,14 +43,9 @@ module.exports = KeyMirror({
 	SET_DISCUSSION_LOADING: null,
 	ARTICLE_VIEW_ADD_NOTE: null,
 	ARTICLE_VIEW_ADD_HIGHLIGHT: null,
-	CLEAR_CHAT: null,
+	
 	SET_DISCUSSION_LOADING: null,
 	SET_DISCUSSION_HIGHLIGHT: null,
-
-	CHAT_MESSAGE: null,
-	ADD_CHAT_SEGMENT: null,
-	SET_CHAT_LOADING: null,
-	CLEAR_CHAT: null,
 
 	DISCUSSION_ADD_NOTE: null,
 	DISCUSSION_DELETE_NOTE: null,

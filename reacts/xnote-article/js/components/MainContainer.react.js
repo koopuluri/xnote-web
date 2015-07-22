@@ -103,7 +103,7 @@ var MainContainer = React.createClass({
                     </div>
                     <ArticleToolbar groupId={this.props.groupId}/>
                     <SnackbarComponent />
-                    <ChatWindow groupId={this.props.groupId}/>
+                    <ChatWindow currentUser={this.props.currentUser} groupId={this.props.groupId}/>
                 </div>
             );
     }
