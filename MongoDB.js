@@ -763,8 +763,18 @@ var DB = {
 
                         // populate highlight createdBy:
                     });
+     },
 
+     getNotifCount: function(user, groupRef, callback) {
+        Notification.count({user: user._id, group: groupRef}, function(err, count) {
+            if (err) {
+                callback({error: 'could not get notif count'});
+                console.log('error getting notif count: ' + err);
+                return;
+            }
 
+            callback({count: count});
+        });
      },
 
      // clears notif count for this user:
@@ -863,135 +873,142 @@ var DB = {
 
 module.exports = DB;
 
-// User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
-//     if (err) {
-//         console.log('pooped in getting user!');
-//     } else {
-//         var groupRef = ObjectId("55a25931150ef26b44db57bb");
-//         var groupId = "55a5efaf9c11ff0000739eba";
-
-//         var newGroupId = "55a25931150ef26b44db57yj"
-
-//         // //addGroupMembers: function(user, groupRef, members, callback)
-//         // DB.addGroupMembers(user, groupId, ['511989525640264', '853160004761049'], function(obj) {
-//         //     console.log(obj)
-//         // });
-
-//         DB.setNotifsLastViewed(user, groupId, function(obj) {
-//             console.log('last viewed callbac: ' + Object.keys(obj));
-//             DB.getNotifsLastViewed(user, groupId, function(obj) {
-
-//             });
-//         });
-
-//         // DB.getNotifsLastViewed(user, groupId, function(obj) {
-
-//         // });
-
-//         //DB.getNotifs(user, groupId, function(obj) {});
-
-//         // var memberList = ['511989525640264', '853160004761049'];
-//         // var viggy = ['853160004761049']
-
-//         // var dummyGroup = {
-//         //     title: 'The test group, Viggy first!',
-//         //     _id: newGroupId
-//         // }
-
-//         // DB.addGroup(user, dummyGroup, viggy, function(obj) {
-//         //     console.log('poop: ' + Object.keys(obj));
-//         // });
-
-//         // DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
-//         //     console.log('poop: ' );
-//         // });
-
-
-//         // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
-//         //     console.log(obj);
-//         // });
-//         // DB.addGroupMember(user, '55a25931150ef26b44db57bb', {id: user.facebook.id}, function(obj) {
-//         //      console.log('obj: ' + obj);
-//         // });
-
-//         // DB.addChat(user, groupId, mongoose.Types.ObjectId(), 'poopopopopopop', function(obj) {
-//         //     console.log(obj);
-//         // });
-
-//         // DB.getChatSegment(user, groupId, 0, 5, function(obj) {
-//         //     console.log('chats : ' + obj.chats);
-//         // });
-
-//         //addNotification: function(targetUser, groupId, highlightRef, noteId, callback)
-
-
-//         // DB.addNotification(user, groupId,
-//         //                          "55a25cf75572e8e144c4ac68",
-//         //                          '',
-//         //                          function() {
-//         //                             console.log('poop');
-//         // });
-
-//         // DB.clearNotifs(user, groupId);
+User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
+    if (err) {
+        console.log('pooped in getting user!');
+    } else {
+        var groupRef = ObjectId("55a25931150ef26b44db57bb");
+        var groupId = "55a5efaf9c11ff0000739eba";
 
         
-//         // //
-//         // DB.getArticleListSegment(user, groupId, 0, 3, function(obj) {
-//         //     console.log('result: ' + Object.keys(obj));
-//         // });
 
-//         // console.log('got user!');
-//         //
-//         // DB.getGroup(user, 'testPoopGroup', function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
+        var newGroupId = "55a25931150ef26b44db57yj"
 
+        // //addGroupMembers: function(user, groupRef, members, callback)
+        // DB.addGroupMembers(user, groupId, ['511989525640264', '853160004761049'], function(obj) {
+        //     console.log(obj)
+        // });
 
-//         // var articleId = '5599e642f836bb36631e2e9c';
-//         // DB.getArticle(user, articleId, function(poop) {
-//         //     console.log('article.title: ' + poop.article.title);
-//         // });
+        // DB.setNotifsLastViewed(user, groupId, function(obj) {
+        //     console.log('last viewed callbac: ' + Object.keys(obj));
+        //     DB.getNotifsLastViewed(user, groupId, function(obj) {
 
-//         //
-
-//         // DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
+        //     });
+        // });
+        console.log('running somehting!');
+        DB.getNotifCount(user, "55a73e610359230000c72bf2", function(obj) {
+            console.log('count: ' + obj.count);
+        });
 
 
-//         //adding note:
-//         // var dummyNote = {
-//         //     noteId: 'dummyNote1',
-//         //     content: 'dummy note content',
-//         // }
+        // DB.getNotifsLastViewed(user, groupId, function(obj) {
+
+        // });
+
+        //DB.getNotifs(user, groupId, function(obj) {});
+
+        // var memberList = ['511989525640264', '853160004761049'];
+        // var viggy = ['853160004761049']
+
+        // var dummyGroup = {
+        //     title: 'The test group, Viggy first!',
+        //     _id: newGroupId
+        // }
+
+        // DB.addGroup(user, dummyGroup, viggy, function(obj) {
+        //     console.log('poop: ' + Object.keys(obj));
+        // });
+
+        // DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
+        //     console.log('poop: ' );
+        // });
+
+
+        // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
+        //     console.log(obj);
+        // });
+        // DB.addGroupMember(user, '55a25931150ef26b44db57bb', {id: user.facebook.id}, function(obj) {
+        //      console.log('obj: ' + obj);
+        // });
+
+        // DB.addChat(user, groupId, mongoose.Types.ObjectId(), 'poopopopopopop', function(obj) {
+        //     console.log(obj);
+        // });
+
+        // DB.getChatSegment(user, groupId, 0, 5, function(obj) {
+        //     console.log('chats : ' + obj.chats);
+        // });
+
+        //addNotification: function(targetUser, groupId, highlightRef, noteId, callback)
+
+
+        // DB.addNotification(user, groupId,
+        //                          "55a25cf75572e8e144c4ac68",
+        //                          '',
+        //                          function() {
+        //                             console.log('poop');
+        // });
+
+        // DB.clearNotifs(user, groupId);
+
         
-//         // console.log('about to add note');
-//         // DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
-//         //     console.log('poop: ' + poop.groupId.id);
-//         // });
+        // //
+        // DB.getArticleListSegment(user, groupId, 0, 3, function(obj) {
+        //     console.log('result: ' + Object.keys(obj));
+        // });
 
-//         //
-//         // console.log('about to save a dummy highlight!');
+        // console.log('got user!');
+        //
+        // DB.getGroup(user, 'testPoopGroup', function(poop) {
+        //     console.log('poop: ' + Object.keys(poop));
+        // });
 
 
-//         // var dummyHighlight = {
-//         //    _id: "55a25cf75572e8e144c4ac3d",
-//         //    article: "55a34592d5aeb6438bb5ebdb",
-//         //    group: groupId,
-//         //    clippedText: 'poop is the secret of my energy!',
-//         //    selection: {},
-//         //    notes: []
-//         // }
+        // var articleId = '5599e642f836bb36631e2e9c';
+        // DB.getArticle(user, articleId, function(poop) {
+        //     console.log('article.title: ' + poop.article.title);
+        // });
+
+        //
+
+        // DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
+        //     console.log('poop: ' + Object.keys(poop));
+        // });
+
+
+        //adding note:
+        // var dummyNote = {
+        //     noteId: 'dummyNote1',
+        //     content: 'dummy note content',
+        // }
         
-//         // // saving a dummy highlight:
-//         // DB.addHighlight(user, dummyHighlight, '', function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
+        // console.log('about to add note');
+        // DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
+        //     console.log('poop: ' + poop.groupId.id);
+        // });
 
-//         // // going to delete the dummy article added above:
-//         // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
-//         //     console.log('poop: ' + Object.keys(poop));
-//         // });
-//     }
-// });
+        //
+        // console.log('about to save a dummy highlight!');
+
+
+        // var dummyHighlight = {
+        //    _id: "55a25cf75572e8e144c4ac3d",
+        //    article: "55a34592d5aeb6438bb5ebdb",
+        //    group: groupId,
+        //    clippedText: 'poop is the secret of my energy!',
+        //    selection: {},
+        //    notes: []
+        // }
+        
+        // // saving a dummy highlight:
+        // DB.addHighlight(user, dummyHighlight, '', function(poop) {
+        //     console.log('poop: ' + Object.keys(poop));
+        // });
+
+        // // going to delete the dummy article added above:
+        // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
+        //     console.log('poop: ' + Object.keys(poop));
+        // });
+    }
+});
 
