@@ -3,9 +3,11 @@ var ChatStore = require('../stores/ChatStore');
 var ChatPost = require('./ChatPost.react.js');
 
 var ChatActions = require('../actions/ChatActions');
-var GroupUtils = require('../utils/GroupUtils');
+
+var Utils = require('../utils/NoteUtils');
+
 var GroupStore = require('../stores/GroupStore');
-var Loading = require('./ArticleViewStuff/Loading.react')
+var Loading = require('./Loading.react')
 
 var ChatScrollContainer = require('./ChatScrollContainer.react');
 var MultiLineInput = require('./MultiLineInput.react')
@@ -55,9 +57,9 @@ var ChatContainer = React.createClass({
 		if (content != '' ) {
 			var message = {
 				createdBy: this.props.currentUser,
-				createdAt: GroupUtils.getTimestamp(),
+				createdAt: Utils.getTimestamp(),
 				content: content,
-				chatId: GroupUtils.generateUUID(),
+				chatId: Utils.generateUUID(),
 			}
 			ChatActions.postChat(message, this.props.groupId);
 		}
