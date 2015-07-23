@@ -9,6 +9,7 @@ var _index = 0;
 var _lastAddedNoteId = null;
 var _isLoading = false;
 var _isLazy = true;
+var _notifCount = 0;
 
 var CHANGE = 'feedStoreChange';
 
@@ -51,6 +52,10 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 	//Return posts
 	getFeed: function() {
 		  return _feed;
+	},
+
+	getNotifCount: function() {
+		return _notifCount;
 	},
 
 	isLazy: function() {

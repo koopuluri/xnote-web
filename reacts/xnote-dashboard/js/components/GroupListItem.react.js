@@ -15,6 +15,28 @@ var Colors = mui.Styles.Colors;
 // expected prop:
 // - group
 var GroupListItem = React.createClass({
+
+    getInitialState: function() {
+        return ({
+            chatNotifs: ChatStore.getNotifCount();
+            feedNotifs: FeedStore.getNotifCount();
+        });
+    },
+
+    componentDidMount: function() {
+        ChatStore.addChangeListener(this._onChatChange);
+        FeedStore.addChangeListener(this._onFeedChange);
+        Actions.fetchAndSetNotifs(this.props.groupId);
+    },
+
+    _onChatChange: function() {
+        this.setState({chatNotifs: ChatStore.getNotifCount()});
+    },
+
+    _onFeedChange: function() {
+        this.setState({feedNotifs: FeedStore.getNotifCount()});
+    },
+
     _onClick: function() {
         window.location = '/group?groupId=' + this.props.group.groupRef._id;
     },
