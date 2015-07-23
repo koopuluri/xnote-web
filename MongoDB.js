@@ -40,7 +40,7 @@ var DB = {
                 return;
             }
             console.log('group saved successfuly, now adding members for it:');
-            self.addGroupMembers(user, savedGroup._id, memberList, callback);
+            self.addGroupMember(savedGroup._id, user, callback);
         });
      },
      
@@ -494,20 +494,18 @@ var DB = {
         });
      },
 
-     // ! need to check when adding user to group if user is already in group! 
-     addGroupMembers: function(user, groupRef, members, callback) {
-        console.log('ADD GROUP MEMBERS: ' + groupRef + 'mems: ' + members.length);
-        // getting all users with facebook.id $in [members] that are not already in groupRef group:
-        User.find({'facebook.id': {$in: members}, 'groups.groupRef': {$ne: groupRef}}, function(err, usersToAdd) {
-            if (err) {
-                console.log('getting users based on member list failed: ' + members);
-                return;
-            }
+     addGroupMember: function(groupRef, user, callback) {
+        // only gets the user if it doesn't have groupRef in its list of groups already:
+        User.findOne({_id: user._id, 'groups.groupRef': {$ne: groupRef} }, 
+          function(err, userToAdd) {
+              if (err || !userToAdd) {
+                  console.log('cannot add user because it seems user already has group: ' + err);
+                  callback({error: 'cannot add user to group'});
+                  return;
+              }
 
-            // adding these users to the group:
-            // first: add all the users to the group's list:
-            Group.findOneAndUpdate({_id: groupRef},
-                {$pushAll: {members: usersToAdd}},
+              Group.findOneAndUpdate({_id: groupRef},
+                {$push: {members: userToAdd} },
                 {},
                 function(err, updatedGroup) {
                     if (err || !updatedGroup) {
@@ -518,25 +516,64 @@ var DB = {
                     }
                 });
 
-            // for each user, add the groupRef to their lists of groups they are a part of:
-            for (var i = 0; i < usersToAdd.length; i++) {
-                var mem = usersToAdd[i];
-                User.findOneAndUpdate({_id: mem._id},
-                    {$addToSet: {groups: {groupRef: groupRef} }},
-                    {},
-                    function(err, savedMem) {
-                        if(err) {
-                            console.log('err updating groups for a member: ' + err);
-                            callback({error: 'some user fetching error for adding member(s) to group'});
-                        } else {
-                            console.log('user successfuly saved new group for it: ' + savedMem.facebook.name);
-                        }
-                    });
-            }
-
-        });
-
+              // updating the groups list for the user to add:
+              User.findOneAndUpdate({_id: userToAdd._id},
+                  {$addToSet: {groups: {groupRef: groupRef} }},
+                  {},
+                  function(err, savedMem) {
+                      if(err) {
+                          console.log('err updating groups for a member: ' + err);
+                          callback({error: 'some user fetching error for adding member(s) to group'});
+                      } else {
+                          console.log('user successfuly saved new group for it: ' + savedMem._id);
+                      }
+                  });
+          });
      },
+
+     // // ! need to check when adding user to group if user is already in group! 
+     // addGroupMembers: function(user, groupRef, members, callback) {
+     //    console.log('ADD GROUP MEMBERS: ' + groupRef + 'mems: ' + members.length);
+     //    // getting all users with facebook.id $in [members] that are not already in groupRef group:
+     //    User.find({'facebook.id': {$in: members}, 'groups.groupRef': {$ne: groupRef}}, function(err, usersToAdd) {
+     //        if (err) {
+     //            console.log('getting users based on member list failed: ' + members);
+     //            return;
+     //        }
+
+     //        // adding these users to the group:
+     //        // first: add all the users to the group's list:
+     //        Group.findOneAndUpdate({_id: groupRef},
+     //            {$pushAll: {members: usersToAdd}},
+     //            {},
+     //            function(err, updatedGroup) {
+     //                if (err || !updatedGroup) {
+     //                    console.log('error saving group when updating members; ' + err);
+     //                    callback({error: 'some group fetching error'});
+     //                } else {
+     //                    callback({groupId: updatedGroup._id});
+     //                }
+     //            });
+
+     //        // for each user, add the groupRef to their lists of groups they are a part of:
+     //        for (var i = 0; i < usersToAdd.length; i++) {
+     //            var mem = usersToAdd[i];
+     //            User.findOneAndUpdate({_id: mem._id},
+     //                {$addToSet: {groups: {groupRef: groupRef} }},
+     //                {},
+     //                function(err, savedMem) {
+     //                    if(err) {
+     //                        console.log('err updating groups for a member: ' + err);
+     //                        callback({error: 'some user fetching error for adding member(s) to group'});
+     //                    } else {
+     //                        console.log('user successfuly saved new group for it: ' + savedMem.facebook.name);
+     //                    }
+     //                });
+     //        }
+
+     //    });
+
+     // },
 
      // given article ref, goes through all members of the parent group, and 
      // adds notif for each one of them:
@@ -880,7 +917,7 @@ User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
         var groupRef = ObjectId("55a25931150ef26b44db57bb");
         var groupId = "55a5efaf9c11ff0000739eba";
 
-        
+
 
         var newGroupId = "55a25931150ef26b44db57yj"
 

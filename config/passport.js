@@ -41,24 +41,36 @@ module.exports = function(passport) {
             // try to find the user based on their google id
             User.findOne({ 'google.id' : profile.id }, function(err, user) {
                 if (err)
-                    return done(err);
+                    return done(null, false);
+
                 if (user) {
                     // if a user is found, log them in
                     return done(null, user);
                 } else {
                     // if the user isnt in our database, create a new user
-                    var newUser          = new User();
+                    var newUser = new User();
+
+                    var email = '';
+                    if (profile.emails && profile.emails.length > 0) {
+                        email = profile.emails[0].value;
+                    }
+
+                    if (!profile) {
+                        return done(null, false);
+                    }
 
                     // set all of the relevant information
                     newUser.google.id    = profile.id;
                     newUser.google.token = token;
                     newUser.google.name  = profile.displayName;
-                    newUser.google.email = profile.emails[0].value; // pull the first email
+                    newUser.google.email = email; // pull the first email
 
                     // save the user
                     newUser.save(function(err) {
-                        if (err)
+                        if (err) {
+                            console.log('error saving user!');
                             throw err;
+                        }
                         return done(null, newUser);
                     });
                 }
@@ -130,8 +142,10 @@ module.exports = function(passport) {
 
                 // save our user to the database
                 newUser.save(function(err) {
-                    if (err)
+                    if (err) {
+                        console.log('saving user!');
                         throw err;
+                    }
 
                     // if successful, return the new user
                     return done(null, newUser);

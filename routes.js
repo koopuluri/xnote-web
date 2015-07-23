@@ -98,7 +98,7 @@ module.exports = function(app, passport) {
     app.get('/auth/facebook/callback', function(req, res, next) {
         passport.authenticate('facebook', function(err, user, info) {
             var redirectUrl = '/dashboard';
-            if(err) { return next(err); }
+            if(err) { return res.redirect('/loginerror') }
 
             if (!user) { 
                 return res.redirect('/loginerror'); 
@@ -127,7 +127,7 @@ module.exports = function(app, passport) {
                 // note: this is only for when the user tries to get into a group alone, not article!
                 if (groupId && !articleId) {
                     console.log('adding user to group! groupId: ' + groupId);
-                    DB.addGroupMembers(user, groupId, [user.facebook.id], function(obj) {
+                    DB.addGroupMember(groupId, user, function(obj) {
                         if(!obj.error) {
                             console.log('error adding new user to group after login: ' + groupId);
                             res.redirect('/');
@@ -154,17 +154,10 @@ module.exports = function(app, passport) {
     // email gets their emails
     app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 
-    // the callback after google has authenticated the user
-    app.get('/auth/google/callback',
-            passport.authenticate('google', {
-                    successRedirect : '/profile',
-                    failureRedirect : '/'
-            }));
-
     app.get('/auth/google/callback', function(req, res, next) {
         passport.authenticate('google', function(err, user, info) {
             var redirectUrl = '/dashboard';
-            if(err) { return next(err); }
+            if(err) { return res.redirect('/loginerror'); }
 
             if (!user) { 
                 return res.redirect('/loginerror'); 
@@ -191,10 +184,8 @@ module.exports = function(app, passport) {
                 // then add this user to that group:
                 // note: this is only for when the user tries to get into a group alone, not article!
                 if (groupId && !articleId) {
-                    console.log('adding user to group! groupId: ' + groupId);
-                    DB.addGroupMembers(user, groupId, [user.facebook.id], function(obj) {
+                    DB.addGroupMembers(groupId, user, function(obj) {
                         if (!obj.error) {
-                            console.log('error adding new user to group after login: ' + groupId);
                             res.redirect('/');
                         }
 
@@ -203,7 +194,6 @@ module.exports = function(app, passport) {
                         return;
                     });
                 } else {
-                    console.log('redirecting to: ' + redirectUrl);
                     res.redirect(redirectUrl);
                     return;
                 }
