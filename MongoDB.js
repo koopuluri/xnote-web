@@ -803,14 +803,26 @@ var DB = {
      },
 
      getNotifCount: function(user, groupRef, callback) {
-        Notification.count({user: user._id, group: groupRef}, function(err, count) {
-            if (err) {
-                callback({error: 'could not get notif count'});
-                console.log('error getting notif count: ' + err);
+        this.getNotifsLastViewed(user, groupRef, function(obj) {
+            if (obj.error) {
+                callback(obj);
                 return;
             }
 
-            callback({count: count});
+            var lastViewed = obj.lastViewed;
+            // getting the notification count for notifs past lastViewed:
+            Notification.count({user: user._id,
+                group: groupRef, 
+                createdAt: {$gte: lastViewed}}, 
+
+                function(err, count) {
+                    if (err) {
+                        callback({error: 'could not get notif count'});
+                        console.log('error getting notif count: ' + err);
+                        return;
+                    }
+                    callback({count: count});
+                });
         });
      },
 
