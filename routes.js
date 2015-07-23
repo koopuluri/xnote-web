@@ -146,6 +146,71 @@ module.exports = function(app, passport) {
         }) (req, res, next);
     });
 
+    // =====================================
+    // GOOGLE ROUTES =======================
+    // =====================================
+    // send to google to do the authentication
+    // profile gets us their basic information including their name
+    // email gets their emails
+    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+    // the callback after google has authenticated the user
+    app.get('/auth/google/callback',
+            passport.authenticate('google', {
+                    successRedirect : '/profile',
+                    failureRedirect : '/'
+            }));
+
+    app.get('/auth/google/callback', function(req, res, next) {
+        passport.authenticate('google', function(err, user, info) {
+            var redirectUrl = '/dashboard';
+            if(err) { return next(err); }
+
+            if (!user) { 
+                return res.redirect('/loginerror'); 
+            }
+
+            // If we have previously stored a redirectUrl, use that, 
+            // otherwise, use the default.
+            var groupId = req.session.groupId;
+            var articleId = req.session.articleId;
+
+            if(groupId && !articleId) {
+                redirectUrl = '/group?groupId=' + groupId;
+                req.session.groupId = null;
+            } else if (groupId && articleId) {
+                redirectUrl = '/article?groupId=' + groupId + '&articleId=' + articleId;
+                req.session.groupId = null;
+                req.session.articleId = null;
+            }
+
+            req.logIn(user, function(err){
+                if (err) { return next(err); }
+
+                // if this user is not part of the group to redirect to (if group exists)
+                // then add this user to that group:
+                // note: this is only for when the user tries to get into a group alone, not article!
+                if (groupId && !articleId) {
+                    console.log('adding user to group! groupId: ' + groupId);
+                    DB.addGroupMembers(user, groupId, [user.facebook.id], function(obj) {
+                        if (!obj.error) {
+                            console.log('error adding new user to group after login: ' + groupId);
+                            res.redirect('/');
+                        }
+
+                        // no issues:
+                        res.redirect(redirectUrl);
+                        return;
+                    });
+                } else {
+                    console.log('redirecting to: ' + redirectUrl);
+                    res.redirect(redirectUrl);
+                    return;
+                }
+            });
+        }) (req, res, next);
+    });
+
 
     // handle the callback after facebook has authenticated the user
     // app.get('/auth/facebook/callback',
@@ -234,9 +299,13 @@ module.exports = function(app, passport) {
         DB.getChatNotifCount(req.user, groupId, _dbCallback(res));
     });
 
+    app.get('/_get_notif_count', isLoggedIn, function(req, res) {
+        var groupId = req.query.groupId;
+        DB.getNotifCount(req.user, groupId, _dbCallback(res));
+    });
+
     app.post('/_viewed_notifs', isLoggedIn, function(req, res) {
         var group = req.body.groupId;
-        console.log('group viewed notifs: ' + group);
         DB.setNotifsLastViewed(req.user, group, _dbCallback(res));
     });
 

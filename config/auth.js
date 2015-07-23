@@ -14,5 +14,11 @@ module.exports = {
         'clientID'      : '1599664560285645',
         'clientSecret'  : 'd92e033cd411da2db3f12573d41c2b09',
         'callbackURL'   : '/auth/facebook/callback'
-    }
+    },
+
+    'googleAuth' : {
+        'clientID'      : '477231423621-m34run8ssjssi3m2312eua648d8da07s.apps.googleusercontent.com',
+        'clientSecret'  : '7PvruPDj8j7qLypTkM27A8g7',
+        'callbackURL'   : '/auth/google/callback'
+    },
 }
