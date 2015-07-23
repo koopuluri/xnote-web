@@ -17,5 +17,8 @@ module.exports = keyMirror({
     SET_LOADING: null,
     SET_USER_INFO: null,
     SET_FRIENDS: null,
-    ADD_GROUP: null
+    ADD_GROUP: null,
+
+    SET_CHAT_NOTIF_COUNT: null,
+    SET_FEED_NOTIF_COUNT: null,
 });

@@ -1,4 +1,4 @@
-var Dispatcher = require('../dispatcher/LoginSignUpDispatcher');
+var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var API = require('../utils/API');
 
@@ -117,6 +117,30 @@ var Actions = {
             // callback does nothing?
         });
     },
+
+    // ========================== NOTIFICATIONS ===========================================
+
+    fetchAndSetNotifs: function(groupId) {
+        API.getChatNotifs(groupId, function(obj) {
+            if (!obj.error) {
+                Dispatcher.handleAction({
+                        actionType: Constants.SET_CHAT_NOTIF_COUNT,
+                        count: obj.count,
+                        groupId: groupId
+                });
+            }
+        });
+
+        API.getFeedNotifs(groupId, function(obj) {
+            if (!obj.error) {
+                Dispatcher.handleAction({
+                        actionType: Constants.SET_FEED_NOTIF_COUNT,
+                        count: obj.count,
+                        groupId: groupId
+                });
+            }
+        });
+    }
 }
 
 module.exports = Actions;

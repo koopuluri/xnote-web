@@ -110,15 +110,16 @@ var FeedNotifications = React.createClass({
                       </FontIcon>
                       <p style={{
                           borderRadius:1000,
-                          paddingLeft:3,
-                          paddingRight:3,
-                          paddingTop:0,
-                          paddingBottom:0,
+                          fontSize:10,
+                          paddingLeft:5,
+                          paddingRight:5,
+                          paddingTop:3,
+                          paddingBottom:2,
                           backgroundColor:Colors.red500,
                           color:Colors.white,
                           "display":"inline-block",
                           margin:0
-                         }}>{feedLabel}</p>
+                        }}>{feedLabel}</p>
                   </span>
               }> 
                 <div 

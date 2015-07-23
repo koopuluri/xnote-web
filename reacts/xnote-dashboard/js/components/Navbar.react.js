@@ -64,7 +64,7 @@ var DashNavbar = React.createClass({
                         fontWeight:500,
 							color:'#FFF'
 						}}>
-						Tatr Groups
+						Xnote Groups
 					</p>
 				}
 				iconElementLeft={
