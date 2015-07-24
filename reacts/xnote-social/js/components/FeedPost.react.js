@@ -190,10 +190,12 @@ var FeedPost = React.createClass({
         						   	onMouseOut={this._onHighlightMouseExit}
         						   	onClick={feedPostOnClick}>
 
-	        							<p style={{padding : 15, margin: 0, fontSize : 16}}>
-		        							{highlightClippedText} 
-		        							<span style={{fontWeight: 600}}> - {articleTitle} </span>
-		        						</p> 
+	        							<p style={{padding : 15, margin: 0, fontSize : 16}} 
+	        								dangerouslySetInnerHTML={{__html: highlightClippedText}}>
+		        						</p>
+		        						<p style={{padding : 15, margin: 0, fontSize : 16, fontWeight: 600}}> 
+		        							{articleTitle}
+		        						</p>
 
         						</div>
 

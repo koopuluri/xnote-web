@@ -7,9 +7,19 @@ var mongoose = require('mongoose');
 var NoteUtils = {
 
 		getTimestamp: function() {
+			var _secondsToDate = function(seconds) {
+				if (!seconds) {
+					return '';
+				}
+
+				var d = new Date(seconds*1000); // The 0 there is the key, which sets the date to the epoch
+				return '' + d;
+			};
+
 			var d = new Date();
 			var t = d.getTime() / 1000;
-			return this._secondsToDate(t);
+			return _secondsToDate(t);
+
 		},
 
 		// used for new note / article creation: (http://stackoverflow.com/a/8809472)
