@@ -201,13 +201,35 @@ module.exports = function(app, passport) {
         }) (req, res, next);
     });
 
+    app.post('/signup', function(req, res, next) {
+        passport.authenticate('local-signup', function(err, user, info) {
+            if (err) {
+                return next(err); // will generate a 500 error
+            }
+            
+            // Generate a JSON response reflecting authentication status
+            if (! user) {
+              return res.send({ success : false, message : 'authentication failed' });
+            }
+            return res.send({ success : true, message : 'authentication succeeded' });
+        })(req, res, next);
+    });
 
-    // handle the callback after facebook has authenticated the user
-    // app.get('/auth/facebook/callback',
-    // passport.authenticate('facebook', {
-    //     successRedirect : '/dashboard',
-    //     failureRedirect : '/'
-    // }));
+
+    app.post('/login', function(req, res, next) {
+        passport.authenticate('local-login', function(err, user, info) {
+            if (err) {
+                return next(err); // will generate a 500 error
+            }
+            // Generate a JSON response reflecting authentication status
+            if (! user) {
+              return res.send({ success : false, message : 'authentication failed' });
+            }
+            return res.send({ success : true, message : 'authentication succeeded' });
+        })(req, res, next);
+    });
+
+    // ===================================== GENERAL =====================================
 
     // route for logging out
     app.get('/logout', function(req, res) {

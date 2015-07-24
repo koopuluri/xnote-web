@@ -302,7 +302,6 @@ var DB = {
             });
      },
 
-
      // ========================= GROUPS =======================================
 
      // get all groups associated with user:
