@@ -59,6 +59,58 @@ var _callbackChatAdd = function(res, io) {
 
 };
 
+
+// executed after user authenticated and when the user is about to be logged in
+// (req.logIn(user)):
+var postLogin = function(req, res, next, err, user, info) {
+    var redirectUrl = '/dashboard';
+    if(err) { return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); }
+
+    if (!user) { 
+        return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+    }
+
+    // If we have previously stored a redirectUrl, use that, 
+    // otherwise, use the default.
+    var groupId = req.session.groupId;
+    var articleId = req.session.articleId;
+
+    if(groupId && !articleId) {
+        redirectUrl = '/group?groupId=' + groupId;
+        req.session.groupId = null;
+    } else if (groupId && articleId) {
+        redirectUrl = '/article?groupId=' + groupId + '&articleId=' + articleId;
+        req.session.groupId = null;
+        req.session.articleId = null;
+    }
+
+    req.logIn(user, function(err){
+        if (err) { return next(err); }
+
+        // if this user is not part of the group to redirect to (if group exists)
+        // then add this user to that group:
+        // note: this is only for when the user tries to get into a group alone, not article!
+        if (groupId && !articleId) {
+            console.log('adding user to group! groupId: ' + groupId);
+            DB.addGroupMember(groupId, user, function(obj) {
+                if(obj.error) {
+                    console.log('error adding new user to group after login: ' + groupId);
+                    res.send({redirect: '/'});
+                }
+
+                // no issues:
+                res.send({redirect: redirectUrl});
+                return;
+            });
+        } else {
+            console.log('redirecting to: ' + redirectUrl);
+            res.send({redirect: redirectUrl});
+            return;
+        }
+    });
+};
+
+
 module.exports = function(app, passport) {
 
     // =====================================
@@ -97,52 +149,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/facebook/callback', function(req, res, next) {
         passport.authenticate('facebook', function(err, user, info) {
-            var redirectUrl = '/dashboard';
-            if(err) { return res.redirect('/loginerror') }
-
-            if (!user) { 
-                return res.redirect('/loginerror'); 
-            }
-
-            // If we have previously stored a redirectUrl, use that, 
-            // otherwise, use the default.
-            var groupId = req.session.groupId;
-            var articleId = req.session.articleId;
-
-            if(groupId && !articleId) {
-                redirectUrl = '/group?groupId=' + groupId;
-                req.session.groupId = null;
-            } else if (groupId && articleId) {
-                redirectUrl = '/article?groupId=' + groupId + '&articleId=' + articleId;
-
-                req.session.groupId = null;
-                req.session.articleId = null;
-            }
-
-            req.logIn(user, function(err){
-                if (err) { return next(err); }
-
-                // if this user is not part of the group to redirect to (if group exists)
-                // then add this user to that group:
-                // note: this is only for when the user tries to get into a group alone, not article!
-                if (groupId && !articleId) {
-                    console.log('adding user to group! groupId: ' + groupId);
-                    DB.addGroupMember(groupId, user, function(obj) {
-                        if(!obj.error) {
-                            console.log('error adding new user to group after login: ' + groupId);
-                            res.redirect('/');
-                        }
-
-                        // no issues:
-                        res.redirect(redirectUrl);
-                        return;
-                    });
-                } else {
-                    console.log('redirecting to: ' + redirectUrl);
-                    res.redirect(redirectUrl);
-                    return;
-                }
-            });
+            return postLogin(req, res, next, err, user, info);
         }) (req, res, next);
     });
 
@@ -156,76 +163,33 @@ module.exports = function(app, passport) {
 
     app.get('/auth/google/callback', function(req, res, next) {
         passport.authenticate('google', function(err, user, info) {
-            var redirectUrl = '/dashboard';
-            if(err) { return res.redirect('/loginerror'); }
-
-            if (!user) { 
-                return res.redirect('/loginerror'); 
-            }
-
-            // If we have previously stored a redirectUrl, use that, 
-            // otherwise, use the default.
-            var groupId = req.session.groupId;
-            var articleId = req.session.articleId;
-
-            if(groupId && !articleId) {
-                redirectUrl = '/group?groupId=' + groupId;
-                req.session.groupId = null;
-            } else if (groupId && articleId) {
-                redirectUrl = '/article?groupId=' + groupId + '&articleId=' + articleId;
-                req.session.groupId = null;
-                req.session.articleId = null;
-            }
-
-            req.logIn(user, function(err){
-                if (err) { return next(err); }
-
-                // if this user is not part of the group to redirect to (if group exists)
-                // then add this user to that group:
-                // note: this is only for when the user tries to get into a group alone, not article!
-                if (groupId && !articleId) {
-                    DB.addGroupMembers(groupId, user, function(obj) {
-                        if (!obj.error) {
-                            res.redirect('/');
-                        }
-
-                        // no issues:
-                        res.redirect(redirectUrl);
-                        return;
-                    });
-                } else {
-                    res.redirect(redirectUrl);
-                    return;
-                }
-            });
+            return postLogin(req, res, next, err, user, info);
         }) (req, res, next);
     });
 
     app.post('/signup', function(req, res, next) {
         passport.authenticate('local-signup', function(err, user, info) {
-            if (err) {
-                return next(err); // will generate a 500 error
+            // check if email already taken error occured:
+            if (!user) {
+                // return the error to client side so it renders error message:
+                res.send({error: 'Email already taken.'});
+                return;
             }
-            
-            // Generate a JSON response reflecting authentication status
-            if (! user) {
-              return res.send({ success : false, message : 'authentication failed' });
-            }
-            return res.send({ success : true, message : 'authentication succeeded' });
+
+            return postLogin(req, res, next, err, user, info);
         })(req, res, next);
     });
 
 
     app.post('/login', function(req, res, next) {
         passport.authenticate('local-login', function(err, user, info) {
-            if (err) {
-                return next(err); // will generate a 500 error
+            if (!user) {
+                // return error to client side to render error message for user:
+                res.send({error: 'Email or password incorrect.'});
+                return;
             }
-            // Generate a JSON response reflecting authentication status
-            if (! user) {
-              return res.send({ success : false, message : 'authentication failed' });
-            }
-            return res.send({ success : true, message : 'authentication succeeded' });
+
+            return postLogin(req, res, next, err, user, info);
         })(req, res, next);
     });
 

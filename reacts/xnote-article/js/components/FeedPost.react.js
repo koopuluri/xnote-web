@@ -189,16 +189,18 @@ var FeedPost = React.createClass({
 	        							paddingLeft: 0,
 	        							paddingBottom: 0,
 	        							fontSize: 15,
-	        							backgroundColor: this.state.highlightBackgroundColor }}  
+	        							backgroundColor: this.state.highlightBackgroundColor 
+	        						}}  
         							onMouseOver={this._onHighlightMouseOver}
         						   	onMouseOut={this._onHighlightMouseExit}
         						   	onClick={feedPostOnClick}>
 
-	        							<p style={{padding : 15, margin: 0, fontSize : 16}}>
-		        							{highlightClippedText} 
-		        							<span style={{fontWeight: 600}}> {articleTitle} </span>
-		        						</p> 
-
+	        							<p style={{padding : 15, margin: 0, fontSize : 16}} 
+	        								dangerouslySetInnerHTML={{__html: highlightClippedText}}>
+		        						</p>
+		        						<p style={{padding : 15, margin: 0, fontSize : 16, fontWeight: 600}}> 
+		        							{articleTitle}
+		        						</p>
         						</div>
 
         						<div className="feedpost-notes-list" 

@@ -9,6 +9,11 @@ var User = require('../models/User');
 // load the auth variables
 var configAuth = require('./auth');
 
+var _validateEmail = function(email) {
+        var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        return re.test(email);
+};
+
 module.exports = function(passport) {
 
     // used to serialize the user for the session
@@ -35,10 +40,18 @@ module.exports = function(passport) {
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, name, email, password, done) {
+    function(req, name, email, done) {
+        var name = req.body.name;
+        var email = req.body.email;
+        var password = req.body.password;
 
-        console.log('local-signup');
-        console.log('name: ' + name + ' email: ' + email + ' password: ' + password);
+        if (! (name.length > 0 &&
+                 _validateEmail(email) && 
+                (password.length > 8 && password.match(/\d+/g) !== null))) {
+            // invalid login params, break out:
+            console.log('invalid login params!: ' + name);
+            return done('Invalid Login Params.');
+        }
 
         // asynchronous
         // User.findOne wont fire unless data is sent back
@@ -53,24 +66,27 @@ module.exports = function(passport) {
 
             // check to see if theres already a user with that email
             if (user) {
-                return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                return done(null, false);
             } else {
-                console.log('got to the saving the user part!');
+
                 // // if there is no user with that email
                 // // create the user
-                // var newUser = new User();
+                var newUser = new User();
 
-                // // set the user's local credentials
-                // newUser.local.name = name;
-                // newUser.local.email = email;
-                // newUser.local.password = newUser.generateHash(password);
+                // set the user's local credentials
+                newUser.local.name = name;
+                newUser.local.email = email;
+                newUser.local.password = newUser.generateHash(password);
 
-                // // save the user
-                // newUser.save(function(err) {
-                //     if (err)
-                //         throw err;
-                //     return done(null, newUser);
-                // });
+                // save the user
+                newUser.save(function(err) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    console.log('SAVED NEW USER!!!: ' + newUser.local.name);
+                    return done(null, newUser);
+                });
             }
         });
 

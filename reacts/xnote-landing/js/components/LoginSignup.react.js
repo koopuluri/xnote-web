@@ -1,12 +1,15 @@
 var React = require('react');
 var Input = require('./Input.react');
 var _ = require('underscore');
+var Actions = require('../actions/LandingActions');
 
 var mui = require('material-ui');
 var Card = mui.Card;
 var RaisedButton = mui.RaisedButton;
 var CardTitle = mui.CardTitle;
 var TextField = mui.TextField;
+
+var LoginStore = require('../stores/LoginStore');
 
 var LOGIN = 'Login';
 var SIGNUP = 'Signup';
@@ -19,8 +22,16 @@ var LoginForm = React.createClass({
 			name: "", 
 			email: "",
 			password: "",
-			mode: SIGNUP
+			mode: SIGNUP,
+			error: ''
 		};
+	},
+
+	componentDidMount: function() {
+		var self = this;
+		LoginStore.addChangeListener(function() {
+			self.setState({error: LoginStore.getError()});
+		});
 	},
 
 	handleEmailChange: function(e){
@@ -41,33 +52,53 @@ var LoginForm = React.createClass({
 		});
 	},
 
+	_validateEmail: function(email) {
+	    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	    return re.test(email);
+	},
+
 	validate: function(state){
 		return {
 			name: state.name.length > 0,
-			email: state.email.length > 3,
+			email: this._validateEmail(this.state.email),
 			password: (state.password.length > 8 && this.state.password.match(/\d+/g) !== null)
 		}
 	},
 
 	_toggleMode: function() {
+		Actions._setError('');
 		if (this.state.mode === LOGIN) {
-			this.setState({mode: SIGNUP});
+			this.setState({
+				mode: SIGNUP,
+				name: '',
+				email: '',
+				password: ''
+			});
 		} else {
-			this.setState({mode: LOGIN});
+			this.setState({
+				mode: LOGIN,
+				name: '',
+				email: '',
+				password: ''
+			});
 		}
 	},	
 
 	_signup: function() {
-		console.log('signup! ' + this.state.name + '::' + this.state.email + '::' + this.state.password);
-	},
-
-	_login: function() {
-
+		console.log('singup! ' + this.state.name + '::' + this.state.email + '::' + this.state.password);
+		Actions.signup(this.state.name, this.state.email, this.state.password);
 	},
 
 	render: function() {
 
 		var bottomTagStyle = {fontSize: 14, marginTop: '10px', cursor: 'pointer'}
+		var errorStyle = {fontSize: 14, marginBottom: '10px', color: 'red'}
+
+		var errorMessage = '';
+
+		if (this.state.error) {
+			errorMessage = <p style={errorStyle}>{this.state.error}</p> 
+		}
 
 		if (this.state.mode === SIGNUP) {
 			var valid = this.validate(this.state);
@@ -77,11 +108,11 @@ var LoginForm = React.createClass({
 								</RaisedButton>;
 
 			if (valid.name && valid.email && valid.password) {
-				submitButton = <RaisedButton primary={true}
-								onTouchTap={this._signup()}>
+				submitButton = <RaisedButton primary={true} onTouchTap={this._signup}>
 								 	<span>Signup</span> 
 							   </RaisedButton>;
 			}
+
 
 			return (
 				<div className="signup-form"
@@ -89,6 +120,7 @@ var LoginForm = React.createClass({
 						width: '400px',
 						textAlign: 'center'
 					}}>
+					{errorMessage}
 					<Card>
 						<CardTitle
 				            title="Sign up" />
@@ -132,8 +164,8 @@ var LoginForm = React.createClass({
 						width: '400px',
 						textAlign: 'center'
 					}}>
+					{errorMessage}
 					<Card>
-
 						<CardTitle
 				            title="Login" />
 
@@ -152,7 +184,9 @@ var LoginForm = React.createClass({
 								type="password" />
 						</div>
 
-						<RaisedButton primary={true} onTouchTap={this._login}> <span>Login</span> </RaisedButton>
+
+						<RaisedButton primary={true} 
+							onTouchTap={this._login}> <span>Login</span> </RaisedButton>
 					</Card>
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Sign up for the first time</p> 
 				</div>

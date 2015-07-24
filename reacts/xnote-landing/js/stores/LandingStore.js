@@ -5,6 +5,7 @@ var _ = require('underscore');
 
 var _group = null;
 var _loading = false;
+var _error = '';
 
 var LandingStore = _.extend({}, EventEmitter.prototype, {
   
