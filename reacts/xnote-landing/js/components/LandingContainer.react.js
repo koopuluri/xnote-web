@@ -13,6 +13,7 @@ var Avatar = mui.Avatar;
 var ToolbarGroup = mui.ToolbarGroup;
 var Toolbar = mui.Toolbar;
 var CircularProgress = mui.CircularProgress;
+var FlatButton = mui.FlatButton;
 
 var LoginSignup = require('./LoginSignup.react');
 
@@ -29,6 +30,9 @@ var LandingContainer = React.createClass({
     },
 
     componentWillMount: function() {
+        ThemeManager.setPalette({
+            textColor:"#FFF"
+        })
         ThemeManager.setComponentThemes({
             raisedButton: {
                 color: '#3b5998'
@@ -52,13 +56,13 @@ var LandingContainer = React.createClass({
     },
 
     render: function() {
-
-        return (<LoginSignup />);
-
-
         var groupMessage ='';
         var groupCard ='';
         var group = this.state.group;
+
+        var facebookButtonText = "Sign in with Facebook";
+        var googleButtonText = "Sign in with Google";
+        var standardLoginButtonText = "Sign in with email";
 
         var errorComp = '';
         if (this.props.error && (this.props.error !== null)) {
@@ -70,64 +74,68 @@ var LandingContainer = React.createClass({
         if(this.state.isLoading) {
             return (
                 <div>
-                    <p> Welcome to Xnote! </p>
-                    <p> {groupMessage} </p>
                     <div style={{padding:10}}>
                         <CircularProgress mode="indeterminate" />
                     </div>
-                    <p> To get started log in with Facebook.</p>
-                    <RaisedButton 
-                        linkButton={true}
-                        href='/auth/facebook'
-                        style={{lineHeight:1}}>
-                        <p style={
-                            {
-                                color:"#fff",
-                                paddingLeft:10,
-                                paddingRight:10,
-                                paddingTop: 2
-                            }
-                        }>Facebook</p>
-                    </RaisedButton>
+                    {loginOptions}
                 </div>
             );
         }
 
         if(group) {
-            var groupMessage =  "Your have been invited to join this group "
+            var facebookButtonText = "Join with Facebook";
+            var googleButtonText = "Join with Google";
+            var standardLoginButtonText = "Join with email";
+            var groupMessage =  "You have been invited to join this group "
+            var count = 0;
             var members = group.members.map(function(member) {
-                var picture = member.facebook.picture;
-                if(picture) {
-                    var leftAvatar = 
-                        <Avatar src={picture} size={35} />
-                } else {
-                    var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
-                    var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
+                count++;
+                if(count < 5) {
+                    var picture = member.facebook.picture;
+                    if(picture) {
+                        var leftAvatar = 
+                            <Avatar src={picture} size={35} />
+                    } else {
+                        var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
+                        var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
+                    }
+                    return (
+                        <ToolbarGroup float="left">
+                            <ListItem 
+                                primaryText = {member.facebook.name}
+                                leftAvatar = {leftAvatar}
+                                disabled = {true}/>
+                        </ToolbarGroup>
+                    );
                 }
-                return (
-                    <ToolbarGroup float="left">
-                        <ListItem 
-                            primaryText = {member.facebook.name}
-                            leftAvatar = {leftAvatar}
-                            disabled = {true}/>
-                    </ToolbarGroup>
-                );
             })
+            groupDescription='';
+            if(group.description) {
+                groupDescription = <p style={{color:"#FFF", maxWidth:"100%"}}>{group.description}</p>
+            }
             var groupCard = 
-                <div style={{padding:10}}>
-                    <Card zDepth={1} style={{
+                <div
+                    style={{padding:30}}>
+                    <Card zDepth={5} style={{
                             width:450,
                             'text-align':'center',
+                            background:"rgba(150, 150, 150, 0.3)",
                             'margin':'auto'}}>
+                        <div style={{
+                            color:"#FFF",
+                            paddingTop:20,
+                            fontSize:16,
+                            fontWeight:500,
+                        }}>{groupMessage}</div>
                         <ListItem 
-                            primaryText = {group.title}
-                            secondaryText = {group.description}
+                            primaryText = {<p style={{color:"#FFF", maxWidth:"100%"}}>{group.title}</p>}
+                            secondaryText = {groupDescription}
                             secondaryTextLines = {2}
                             disabled={true} 
                             style={{paddingBottom: 0}}/>
                         <Toolbar style={{
-                            backgroundColor:"#fff",
                             width:500,
+                            backgroundColor:"default",
                             'text-align':'center',
                             'margin':'auto'}}>
                                 {members}
@@ -137,28 +145,36 @@ var LandingContainer = React.createClass({
                 </div>
         }
 
-        return (
+        var loginOptions=
             <div>
-                <p> Welcome to Xnote! </p>
-                <p> {groupMessage} </p>
-                {groupCard}
-                <p> To get started log in with Facebook.</p>
-                {errorComp}
-                <div style={{paddingTop:10}}>
-                    <RaisedButton 
-                        linkButton={true}
-                        href='/auth/facebook'
-                        style={{lineHeight:1}}>
-                        <p style={
-                            {
-                                color:"#fff",
-                                paddingLeft:10,
-                                paddingRight:10,
-                                paddingTop: 3
-                            }
-                        }>Facebook</p>
-                    </RaisedButton>
+                <div style={{paddingTop:20}}>
+                <span style={{padding:5}}>
+                    <a className="btn btn-facebook btn-xl btn-social">
+                         <i className="fa fa-facebook"></i> {facebookButtonText}
+                    </a>
+                </span>
+                <span style={{padding:5}}>
+                    <a className="btn btn-google btn-xl btn-social">
+                         <i className="fa fa-google"></i> {googleButtonText}
+                    </a>
+                </span>
                 </div>
+                <div style={{
+                        paddingTop: 20,
+                        paddingBottom: 20,
+                        fontSize: 15,
+                        fontFamily: "sans-serif",
+                        fontWeight: 400,
+                        color:"#F6F6F6"
+                    }}>
+                    {standardLoginButtonText}
+                </div>
+            </div>
+
+        return (
+            <div classNam="row">
+                {groupCard}
+                {loginOptions}
             </div>
         );
     },

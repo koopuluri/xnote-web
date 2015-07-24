@@ -84,10 +84,6 @@ var LoginForm = React.createClass({
 		}
 	},	
 
-	_login: function() {
-
-	},
-
 	_signup: function() {
 		console.log('singup! ' + this.state.name + '::' + this.state.email + '::' + this.state.password);
 		Actions.signup(this.state.name, this.state.email, this.state.password);
@@ -129,29 +125,31 @@ var LoginForm = React.createClass({
 						<CardTitle
 				            title="Sign up" />
 
-						<div className="login-input-name">
-							<Input valid={valid.name}
-								errorMessage='name must be atleast one character long'
-								value={this.state.name} 
-								onChange={this.handleNameChange} 
-								placeholder="name"/>
-						</div>
+				        <div>
+							<div className="login-input-name">
+								<Input valid={valid.name}
+									errorMessage='name must be atleast one character long'
+									value={this.state.name} 
+									onChange={this.handleNameChange} 
+									placeholder="name"/>
+							</div>
 
-						<div className="login-input-email">
-							<Input valid={valid.email}
-								errorMessage='invalid email'
-								value={this.state.email} 
-								onChange={this.handleEmailChange} 
-								placeholder="email"/>
-						</div>
+							<div className="login-input-email">
+								<Input valid={valid.email}
+									errorMessage='invalid email'
+									value={this.state.email} 
+									onChange={this.handleEmailChange} 
+									placeholder="email"/>
+							</div>
 
-						<div className="login-input-pwd">
-							<Input valid={valid.password}
-								errorMessage='password must be at last 8 characters long with at least 1 number'
-								value={this.state.password}
-								onChange={this.handlePasswordChange}
-								placeholder="password" 
-								type="password"/>
+							<div className="login-input-pwd">
+								<Input valid={valid.password}
+									errorMessage='password must be at last 8 characters long with at least 1 number'
+									value={this.state.password}
+									onChange={this.handlePasswordChange}
+									placeholder="password" 
+									type="password"/>
+							</div>
 						</div>
 						{submitButton}
 					</Card>
@@ -185,6 +183,7 @@ var LoginForm = React.createClass({
 								onChange={this.handlePasswordChange}
 								type="password" />
 						</div>
+
 
 						<RaisedButton primary={true} 
 							onTouchTap={this._login}> <span>Login</span> </RaisedButton>

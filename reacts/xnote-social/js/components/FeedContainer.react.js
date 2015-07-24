@@ -1,6 +1,6 @@
 var React = require('react');
 var FeedPost = require('./FeedPost.react.js');
-var Loading = require('./ArticleViewStuff/Loading.react');
+var Loading = require('./Loading.react');
 var mui = require('material-ui');
 var List = mui.List;
 var ListItem = mui.ListItem;

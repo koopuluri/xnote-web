@@ -3,8 +3,8 @@ var GroupStore = require('../stores/GroupStore');
 var FriendStore = require('../stores/FriendStore');
 var NotificationStore = require('../stores/NotificationStore');
 var GroupActions = require('../actions/GroupActions');
-var Loading = require('./ArticleViewStuff/Loading.react')
-var FeedNotifications = require('./ArticleViewStuff/FeedNotifications.react');
+var Loading = require('./Loading.react')
+var FeedNotifications = require('./FeedNotifications.react');
   
 var mui = require('material-ui');
 var Dialog = mui.Dialog;
@@ -148,7 +148,7 @@ var AppToolbar = React.createClass({
       if (this.state.members) {
         var members = this.state.members.map(function(member) {
           return ({
-            text: member.facebook.name
+            text: member.name
           });
         });
       }
@@ -187,7 +187,7 @@ var AppToolbar = React.createClass({
       //   counter ++;
       //   var found = false;
       //   for(var i = 0; i < self.state.addList.length; i++) {
-      //     if (self.state.addList[i].facebook.id == queryListItem.id) {
+      //     if (self.state.addList[i].id == queryListItem.id) {
       //       found = true;
       //       break;
       //     }
@@ -197,7 +197,7 @@ var AppToolbar = React.createClass({
       //     return (
       //       <div>
       //         <ListItem
-      //           onTouchTap = {friendListOnClickFunction({facebook: {name: queryListItem.name, id: queryListItem.id}}, self)}>
+      //           onTouchTap = {friendListOnClickFunction({name: queryListItem.name, id: queryListItem.id}, self)}>
       //           {queryListItem.name}
       //         </ListItem>
       //       </div>
@@ -217,11 +217,11 @@ var AppToolbar = React.createClass({
       //Stores the username in the right of the appbar.
       var usernameElement = '';
       var me = this.state.currentUser;
-      if (me && me.facebook.name) {
+      if (me && me.name) {
           usernameElement = (
             <FlatButton 
               style={{color:Colors.grey500}}
-              label={me.facebook.name}
+              label={me.name}
               disabled={true} />
           );
       }
@@ -243,7 +243,7 @@ var AppToolbar = React.createClass({
       //           paddingLeft:5,
       //           paddingTop:2}}
 
-      //       primaryText = {<p style={{paddingRight:15}}> {addListItem.facebook.name} </p>}
+      //       primaryText = {<p style={{paddingRight:15}}> {addListItem.name} </p>}
       //       rightIconButton = {
       //           <FontIcon 
       //             onClick={onDeleteFromAddList(addListItem, self)}>

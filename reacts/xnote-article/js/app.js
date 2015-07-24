@@ -3,6 +3,7 @@ var API = require('./utils/API')
 var MainContainer = require('./components/MainContainer.react');
 var injectTapEventPlugin = require("react-tap-event-plugin");
 var Actions = require('./actions/ArticleActions');
+var Utils = require('./utils/NoteUtils');
 
 //Needed for onTouchTap
 //Can go away when react 1.0 release
@@ -17,6 +18,7 @@ var highlightId = window.location.hash.slice(1);
 var user = $('.user-span').attr('id');
 
 var user = JSON.parse(user);
+user = Utils.normalizeUser(user);
 
 // set the article associated with the articleId in the stores:
 Actions.fetchAndSetArticle(articleId);

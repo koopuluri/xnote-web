@@ -86,14 +86,15 @@ var ChatWindow = React.createClass({
 				 		{
 				 			{
 			  					borderRadius:1000,
-			  					paddingLeft:3,
-			  					paddingRight:3,
-			  					paddingTop:3,
-			  					paddingBottom:3,
-			  					backgroundColor:Colors.red500,
-			  					color:Colors.white,
-			  					"display":"inline-block",
-			  					margin:0
+		                        fontSize:10,
+		                        paddingLeft:5,
+		                        paddingRight:5,
+		                        paddingTop:3,
+		                        paddingBottom:2,
+		                        backgroundColor:Colors.red500,
+		                        color:Colors.white,
+		                        "display":"inline-block",
+		                        margin:0
 			 				}
 			 			}>
 			 			{this.state.chatNotifs}

@@ -44,4 +44,17 @@ module.exports = {
             callback(data);
         });
     },
+
+    //Notification stuff
+    getChatNotifs: function(groupId, callback) {
+        $.get('/_get_chat_notif_count', {groupId: groupId}, function(data, status) {
+            callback(data);
+        });
+    },
+
+    getFeedNotifs: function(groupId, callback) {
+        $.get('/_get_notif_count', {groupId: groupId}, function(data, status) {
+            callback(data);
+        });
+    },
 }

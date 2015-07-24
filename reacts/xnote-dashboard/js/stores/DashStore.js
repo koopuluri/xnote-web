@@ -1,4 +1,4 @@
-var AppDispatcher = require('../dispatcher/LoginSignUpDispatcher');
+var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var _ = require('underscore');
@@ -41,7 +41,7 @@ var DashStore = _.extend({}, EventEmitter.prototype, {
   	},
 });
 
-AppDispatcher.register(function(payload) {
+Dispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
 

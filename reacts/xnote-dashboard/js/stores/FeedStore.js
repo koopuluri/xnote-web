@@ -1,4 +1,4 @@
-var GroupDispatcher = require('../dispatcher/LoginSignUpDispatcher');
+var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var Actions = require('../actions/Actions');
@@ -9,6 +9,7 @@ var _index = 0;
 var _lastAddedNoteId = null;
 var _isLoading = false;
 var _isLazy = true;
+var _notifCount = {};
 
 var CHANGE = 'feedStoreChange';
 
@@ -50,7 +51,15 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 
 	//Return posts
 	getFeed: function() {
-		  return _feed;
+		return _feed;
+	},
+
+	getNotifCount: function(groupId) {
+		if(_notifCount[groupId]) {
+			return _notifCount[groupId];
+		} else {
+			return 0;
+		}
 	},
 
 	isLazy: function() {
@@ -76,7 +85,7 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 	}
 });
 
-GroupDispatcher.register(function(payload) {
+Dispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
 		case Constants.SET_FEED:
@@ -134,6 +143,10 @@ GroupDispatcher.register(function(payload) {
 			}
 			break;
 
+		case Constants.SET_FEED_NOTIF_COUNT: 
+			_notifCount[action.groupId] = action.count;
+			break;
+
 		default:
 			return true;
 		}
@@ -142,4 +155,5 @@ GroupDispatcher.register(function(payload) {
 	return true;
 });
 
+FeedStore.setMaxListeners(0);
 module.exports = FeedStore;

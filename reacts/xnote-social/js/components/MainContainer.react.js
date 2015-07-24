@@ -1,7 +1,6 @@
 var React = require('react');
 var GroupSidebar = require('./GroupSidebar.react');
 var AppToolbar = require('./AppToolbar.react');
-var ArticleToolbar = require('./ArticleViewStuff/ArticleToolbar.react');
 var SnackbarComponent = require('./SnackbarComponent.react');
 
 var ContentView = require('./ContentView.react');
@@ -15,9 +14,6 @@ var GroupUtils = require('../utils/GroupUtils');
 
 var GroupActions = require('../actions/GroupActions');
 var ArticleActions = require('../actions/ArticleActions');
-
-var ArticleView = require('../components/ArticleViewStuff/ArticleView.react');
-var Discussion = require('../components/ArticleViewStuff/Discussion.react');
 
 var mui = require('material-ui');
 var ThemeManager = new mui.Styles.ThemeManager();

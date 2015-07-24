@@ -126,9 +126,8 @@ var AddGroupComponent = React.createClass({
         // for (var i = 0; i < this.state.addList.length; i++) {
         //     newList.push(this.state.addList[i].id);
         // }
-        newList.push(this.state.currentUser.facebook.id);
+        newList.push(this.state.currentUser.id);
         var id = Utils.generateUUID();
-        console.log('groupId: ' + id);
         var group = {
             groupRef: {
                 title: this.state.groupName,
@@ -136,7 +135,6 @@ var AddGroupComponent = React.createClass({
                 _id: id,
                 members: 1
             },
-            createdBy: this.state.currentUser,
             _id: id,
             title: this.state.groupName,
             description: this.state.groupDescription,
@@ -249,7 +247,7 @@ var AddGroupComponent = React.createClass({
                                 color:"#FFF",
                             }}
                             className="material-icons">
-                                add
+                                group_add
                         </FontIcon>
                     </FloatingActionButton>
                 </span>

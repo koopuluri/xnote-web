@@ -1,6 +1,7 @@
 var GroupDispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
+var Utils = require('../utils/NoteUtils');
 var _ = require('underscore');
 
 //TODO: Remove dummy chat and feed notification values
@@ -82,14 +83,6 @@ GroupDispatcher.register(function(payload) {
 	var action = payload.action;
 	switch(action.actionType) {
 
-		case Constants.RECEIVE_CHAT_NOTIFS:
-			loadChatNotifs(action.data);
-			break;
-
-		case Constants.RECEIVE_FEED_NOTIFS:
-			loadFeedNotifs(action.data);
-			break;
-
 		case Constants.RESET_CHAT_NOTIFS:
 			resetChatNotifs();
 			break;
@@ -99,12 +92,32 @@ GroupDispatcher.register(function(payload) {
 			break;
 
 		case Constants.SET_NOTIFS:
+			for(var i = 0; i < action.notifs.length; i++) {
+				if(action.notifs[i].article) {
+					var article = action.notifs[i].article;
+					var createdBy = Utils.normalizeUser(article.createdBy);
+					article.createdBy = createdBy;
+				} else if(action.notifs[i].highlight) {
+					var highlight = action.notifs[i].highlight;
+					var createdBy = Utils.normalizeUser(highlight.createdBy);
+					highlight.createdBy = createdBy;
+				}
+			}
 			_lastViewed = new Date(action.lastViewed).getTime();
 			_notifs = action.notifs;
 			_count = getCount(_notifs, _lastViewed);
 			break;
 
 		case Constants.ADD_NOTIF:
+			if(action.notif.article) {
+				var article = action.notifs.article;
+				var createdBy = Utils.normalizeUser(article.createdBy);
+				article.createdBy = createdBy;
+			} else if(action.notif.highlight) {
+				var highlight = action.notif.highlight;
+				var createdBy = Utils.normalizeUser(highlight.createdBy);
+				highlight.createdBy = createdBy;
+			}
 			var notifTstamp = new Date(action.notif.createdAt).getTime()
 			if (_lastViewed < notifTstamp) {
 				_count++;

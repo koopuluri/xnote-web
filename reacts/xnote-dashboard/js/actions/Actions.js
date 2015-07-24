@@ -1,5 +1,6 @@
-var Dispatcher = require('../dispatcher/LoginSignUpDispatcher');
+var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
+var Utils = require('../utils/Utils');
 var API = require('../utils/API');
 
 var Actions = {
@@ -19,9 +20,10 @@ var Actions = {
     },
 
     _setUserInfo: function(userInfo) {
+        var user = Utils.normalizeUser(userInfo);
         Dispatcher.handleAction({
             actionType: Constants.SET_USER_INFO,
-            userInfo: userInfo
+            userInfo: user
         });
     },
 
@@ -117,6 +119,30 @@ var Actions = {
             // callback does nothing?
         });
     },
+
+    // ========================== NOTIFICATIONS ===========================================
+
+    fetchAndSetNotifs: function(groupId) {
+        API.getChatNotifs(groupId, function(obj) {
+            if (!obj.error) {
+                Dispatcher.handleAction({
+                        actionType: Constants.SET_CHAT_NOTIF_COUNT,
+                        count: obj.count,
+                        groupId: groupId
+                });
+            }
+        });
+
+        API.getFeedNotifs(groupId, function(obj) {
+            if (!obj.error) {
+                Dispatcher.handleAction({
+                        actionType: Constants.SET_FEED_NOTIF_COUNT,
+                        count: obj.count,
+                        groupId: groupId
+                });
+            }
+        });
+    }
 }
 
 module.exports = Actions;

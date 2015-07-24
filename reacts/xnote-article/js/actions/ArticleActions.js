@@ -1,6 +1,7 @@
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
 var API = require('../utils/API');
+var Utils = require('../utils/NoteUtils');
 
 var Actions = {
 
@@ -23,13 +24,6 @@ var Actions = {
             actionType: Constants.SET_GROUP,
             group: group
         });
-    },
-
-    _setUser: function(user) {
-        Dispatcher.handleAction({
-            actionType: Constants.SET_USER,
-            user: user
-        })
     },
 
     fetchAndSetArticle: function(articleId) {
@@ -59,18 +53,6 @@ var Actions = {
             // got group:
             self._setGroup(data.group);
         });
-    },
-
-    fetchAndSetUser: function() {
-        var self = this;
-        API.getUserInfo(function(data) {
-            if(data.error) {
-                self.displaySnackMessage("Error could not fetch username");
-                return;
-            }
-            //got user:
-            self._setUser(data.user);
-        })
     },
 
     // ============================= HIGHLIGHT =================================
@@ -224,13 +206,3 @@ var Actions = {
 };
 
 module.exports = Actions;
-
-
-
-
-
-
-
-
-
-

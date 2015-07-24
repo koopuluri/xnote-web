@@ -1,6 +1,7 @@
 var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
+var Utils = require('../utils/NoteUtils');
 var _ = require('underscore');
 
 // variables:
@@ -67,6 +68,8 @@ Dispatcher.register(function(payload) {
   switch(action.actionType) {
 
     case Constants.SET_DISCUSSION_HIGHLIGHT:
+        var createdBy = Utils.normalizeUser(action.highlight.createdBy);
+        action.highlight.createdBy = createdBy;
         _highlight = action.highlight;
         break;
 
@@ -81,6 +84,8 @@ Dispatcher.register(function(payload) {
 
     case Constants.DISCUSSION_ADD_NOTE:
         if (action.highlightId == _highlight._id) {
+            var createdBy = Utils.normalizeUser(action.note.createdBy);
+            action.note.createdBy = createdBy;
             addNote(action.note);
         } else {
             // do nothing.
@@ -105,6 +110,8 @@ Dispatcher.register(function(payload) {
     case Constants.SOCKET_RECEIVE_NOTE:
         if (_highlight && action.highlightId === _highlight._id) {
             // time to add the note to this highlight:
+            var createdBy = Utils.normalizeUser(action.note.createdBy);
+            action.note.createdBy = createdBy;
             addNote(action.note);
         }
         break;

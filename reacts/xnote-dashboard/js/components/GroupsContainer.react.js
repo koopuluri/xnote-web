@@ -17,7 +17,6 @@ var Groups = React.createClass({
     },
 
     _onChange: function() {
-        console.log('_onChange called in GroupsContainer!');
         this.setState({groups: Store.getGroups()});
     },
 
@@ -30,7 +29,7 @@ var Groups = React.createClass({
         var groups = this.state.groups.map(function(group) {
             if (group.groupRef) {
                 return (
-                    <GroupListItem group={group} />
+                    <GroupListItem group={group} groupId={group.groupRef._id}/>
                 );
             } else {
                 // do nothing. TODO: figure out why!!!?!?!
@@ -42,18 +41,11 @@ var Groups = React.createClass({
                 style={{
                     height: 'calc(100% - 40px)',
                     marginTop: '40px',
-                    width: '40%',
-                    position: 'fixed',
-                    left: 0,
                 }}>
                     <AddGroupComponent/>
-
-                    <Card style={{height: '100%', overflow: 'scroll'}} zDepth = {1} >
-                        <List>
-                            {groups}
-                        </List>
-                    </Card>
-
+                    <List>
+                        {groups}
+                    </List>
             </div>
         );
     }
