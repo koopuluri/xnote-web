@@ -36,6 +36,7 @@ var Actions = {
 				self._setError(obj.error);
 			} else {
 				var redirectUrl = obj.redirect;
+				console.log('faecbook login came back! ' + redirectUrl);
 				window.location = redirectUrl;
 			}
 		});
