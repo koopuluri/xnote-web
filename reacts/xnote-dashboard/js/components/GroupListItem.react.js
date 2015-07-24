@@ -108,21 +108,21 @@ var GroupListItem = React.createClass({
                 </div>
         }
         return (
-            <div style={{paddingTop:10, paddingBottom:10, paddingRight:100, paddingLeft:100}}>
+            <div style={{paddingTop:10, paddingBottom:10, paddingRight:200, paddingLeft:200}}>
             <Card>
             <ListItem
                 secondaryText={
-                    <p> {group.members.length + ' members'} </p>
+                    <p style={{paddingLeft:20}}> {group.members.length + ' members'} </p>
                 }
 
                 rightIconButton={
-                    <span>
+                    <span style={{paddingRight:20}}>
                         {feedNotifsIcon}
                         {chatNotifsIcon}
                     </span>
                 }
                 onTouchTap = {this._onClick}>
-                    <p style={{fontSize: '20px', fontWeight: 650}}> {group.title} </p>
+                    <p style={{fontSize: '20px', fontWeight: 650, paddingLeft:20}}> {group.title} </p>
                 
             </ListItem>
             </Card>

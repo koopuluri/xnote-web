@@ -14,12 +14,12 @@ var ChatPost = React.createClass({
 	render: function() {
 		var message = this.props.message
 		var currentUser = this.props.currentUser
-		var picture = message.createdBy.facebook.picture
+		var picture = message.createdBy.picture
 		if(picture) {
 			var leftAvatar = 
 				<Avatar src={picture} size={35} />
 		} else {
-			var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
+			var avatarCharacter = message.createdBy.name.substring(0, 1);
 			var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
 		}
 		var textAlign = "left";
@@ -35,8 +35,8 @@ var ChatPost = React.createClass({
 							color : Colors.grey400,
 							margin : 0
 						}
-					}> {message.createdBy.facebook.name} </p>
-		if(currentUser && (currentUser.facebook.id === message.createdBy.facebook.id)) {
+					}> {message.createdBy.name} </p>
+		if(currentUser && (currentUser.id === message.createdBy.id)) {
 			messageSenderName = (<p></p>);
 			messageClassName = "user-messages"
 			messageTextClassName = "user-messages-text"

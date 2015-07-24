@@ -2,6 +2,7 @@ var GroupDispatcher = require('../dispatcher/GroupDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var GroupConstants = require('../constants/Constants');
 var Actions = require('../actions/GroupActions');
+var Utils = require('../utils/GroupUtils');
 var _ = require('underscore');
 
 var _feed = [];
@@ -77,73 +78,88 @@ var FeedStore = _.extend({}, EventEmitter.prototype, {
 });
 
 GroupDispatcher.register(function(payload) {
-		var action = payload.action;
+	var action = payload.action;
 
-		switch(action.actionType) {
-			case GroupConstants.SET_FEED:
-				_feed = action.feed.reverse();
-				break;
+	switch(action.actionType) {
+		case GroupConstants.SET_FEED:
+			//Normalizing the user to ensure no discrepancy between various login methods
+			for(var i = 0; i < action.feed.length; i++) {
+				var createdBy = Utils.normalizeUser(action.feed[i].createdBy);
+				action.feed[i].createdBy = createdBy;
+			}
+			_feed = action.feed.reverse();
+			break;
 
-			case GroupConstants.SET_FEED_LOADING:
-				_isLoading = action.isLoading;
-				break;
+		case GroupConstants.SET_FEED_LOADING:
+			_isLoading = action.isLoading;
+			break;
 
-			case GroupConstants.ADD_NOTE:
-				addNote(action.highlightId, action.note);
-				_lastAddedNoteId = action.note.noteId;
-				break;
+		case GroupConstants.ADD_NOTE:
+			addNote(action.highlightId, action.note);
+			_lastAddedNoteId = action.note.noteId;
+			break;
 
-			case GroupConstants.EDIT_NOTE:
-				editNote(action.note);
-				break;
+		case GroupConstants.EDIT_NOTE:
+			editNote(action.note);
+			break;
 
-			case GroupConstants.DELETE_NOTE:
-				deleteNote(action.note, action.highlightId);
-				break;
+		case GroupConstants.DELETE_NOTE:
+			deleteNote(action.note, action.highlightId);
+			break;
 
-			case GroupConstants.SOCKET_RECEIVE_POST:
-				_feed.unshift(action.post);
-				break;
+		case GroupConstants.SOCKET_RECEIVE_POST:
+			//Normalizing the user to ensure no discrepancy between various login methods
+			var createdBy = Utils.normalizeUser(action.post.createdBy);
+			action.post.createdBy = createdBy;
+			_feed.unshift(action.post);
+			break;
 
-			case GroupConstants.SOCKET_RECEIVE_NOTE:
-				var noteId = action.note.noteId;
-				if (! (_lastAddedNoteId && _lastAddedNoteId == noteId) ) {
-					var toUpdate  = addNote(action.highlightId, action.note);
-					if (toUpdate) {
-							Actions.incrementFeedNotifs();
-					}
-					_lastAddedNoteId = noteId;
-				} else {
-					// do nothing. --> note already added, don't add again.
+		case GroupConstants.SOCKET_RECEIVE_NOTE:
+			var noteId = action.note.noteId;
+			if (! (_lastAddedNoteId && _lastAddedNoteId == noteId) ) {
+				//Normalizing the user to ensure no discrepancy between various login methods
+				var createdBy = Utils.normalizeUser(action.note.createdBy);
+				action.note.createdBy = createdBy;
+				var toUpdate  = addNote(action.highlightId, action.note);
+				if (toUpdate) {
+					Actions.incrementFeedNotifs();
 				}
-
-				break;
-
-			case GroupConstants.CLEAR_FEED:
-				_index = 0;
-				_feed = [];
-				break;
-
-			case GroupConstants.ADD_FEED_SEGMENT:
-				var posts = action.feedPosts;
-				if (posts) {
-					_feed = _feed.concat(posts);
-					_index += posts.length;
-				}
-
-				if (posts.length < SEG_SIZE) {
-					_isLazy = false;
-				}
-				
-				break;
-
-
-			default:
-				return true;
+				_lastAddedNoteId = noteId;
+			} else {
+				// do nothing. --> note already added, don't add again.
 			}
 
-		FeedStore.emitChange();
-		return true;
+			break;
+
+		case GroupConstants.CLEAR_FEED:
+			_index = 0;
+			_feed = [];
+			break;
+
+		case GroupConstants.ADD_FEED_SEGMENT:
+			var posts = action.feedPosts;
+			if (posts) {
+				for(var i = 0; i < posts.length; i++) {
+					//Normalizing the user to ensure no discrepancy between various login methods
+					var createdBy = Utils.normalizeUser(posts[i].createdBy);
+					posts[i].createdBy = createdBy;
+				}	
+				_feed = _feed.concat(posts);
+				_index += posts.length;
+			}
+
+			if (posts.length < SEG_SIZE) {
+				_isLazy = false;
+			}
+			
+			break;
+
+		default:
+			return true;
+		}
+
+	FeedStore.emitChange();
+	return true;
 });
 
 module.exports = FeedStore;

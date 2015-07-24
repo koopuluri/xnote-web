@@ -1,6 +1,6 @@
 var mui = require('material-ui');
 var FeedNotificationsItem = require('./FeedNotificationsItem.react');
-var NotifStore = require('../../stores/NotificationStore');
+var NotifStore = require('../stores/NotificationStore');
 
 var ListItem = mui.ListItem;
 var IconMenu = mui.IconMenu;
@@ -10,7 +10,7 @@ var Card = mui.Card;
 var FontIcon = mui.FontIcon;
 var Colors = mui.Styles.Colors;
 
-var GroupActions = require('../../actions/GroupActions');
+var GroupActions = require('../actions/GroupActions');
 
 // props:
 // - groupId
@@ -41,11 +41,11 @@ var FeedNotifications = React.createClass({
       var feedNotifsList = notifs.map(function(post) {
           if (post.article) {
               var article = post.article;
-              var feedOwner = article.createdBy.facebook.name;
+              var feedOwner = article.createdBy.name;
               var feedText = 'Added an article "' + article.title + '"';
           } else if(post.highlight) {
               highlight = post.highlight;
-              var feedOwner = highlight.createdBy.facebook.name;
+              var feedOwner = highlight.createdBy.name;
               if(highlight.notes && highlight.notes.length > 0) {
                   var lastNote = highlight.notes[highlight.notes.length - 1];
                   feedOwner = lastNote.owner.name;
@@ -70,7 +70,6 @@ var FeedNotifications = React.createClass({
           );
       });
 
-      var feedLabel = 'Notifs'
       var feedButton =  
         <FontIcon
             style={{
@@ -86,6 +85,22 @@ var FeedNotifications = React.createClass({
       if(notifs.length > 0) {
           var count = this.state.count;
           var feedLabel = (count > 0) ? count : '';
+          var feedLabelCount = null;
+          if(count > 0) {
+            var feedLabelCount = 
+              <p style={{
+                borderRadius:1000,
+                fontSize:10,
+                paddingLeft:5,
+                paddingRight:5,
+                paddingTop:3,
+                paddingBottom:2,
+                backgroundColor:Colors.red500,
+                color:Colors.white,
+                "display":"inline-block",
+                margin:0
+               }}>{feedLabel}</p>
+          }
           var feedButton = 
               <IconMenu
                 menuStyle={{
@@ -107,19 +122,8 @@ var FeedNotifications = React.createClass({
                         }}
                         className="material-icons">
                           notifications
-                      </FontIcon>
-                      <p style={{
-                          borderRadius:1000,
-                          fontSize:10,
-                          paddingLeft:5,
-                          paddingRight:5,
-                          paddingTop:3,
-                          paddingBottom:2,
-                          backgroundColor:Colors.red500,
-                          color:Colors.white,
-                          "display":"inline-block",
-                          margin:0
-                         }}>{feedLabel}</p>
+                    </FontIcon>
+                    {feedLabelCount}
                   </span>
               }> 
                 <div 

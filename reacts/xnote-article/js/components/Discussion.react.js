@@ -81,7 +81,7 @@ var Discussion = React.createClass({
                   addNote={Actions.addNote}
                   removeNote={Actions.removeNote}
                   currentUser={this.props.currentUser}
-                  getCurrentTimestamp={NoteUtils.getTstamp}
+                  getCurrentTimestamp={NoteUtils.getTimestamp}
                   generateUUID={NoteUtils.generateUUID}/>
 
           } else {

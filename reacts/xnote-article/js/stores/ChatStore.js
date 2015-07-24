@@ -1,6 +1,7 @@
 var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
+var Utils = require('../utils/NoteUtils');
 var _ = require('underscore');
 
 var _chat = [];
@@ -67,6 +68,9 @@ Dispatcher.register(function(payload) {
 		case Constants.CHAT_MESSAGE:
 			var newChat = action.chat;
 			if (! (_lastAddedChatId && _lastAddedChatId == newChat.chatId) ) {
+				//Normalizing the user to ensure no discrepancy between various login methods
+				var createdBy = Utils.normalizeUser(newChat.createdBy);
+				newChat.createdBy = createdBy;
 				_chat.push(newChat);
 				_lastAddedChatId = newChat.chatId;
 			}
@@ -75,6 +79,11 @@ Dispatcher.register(function(payload) {
 		case Constants.ADD_CHAT_SEGMENT: 
 			var chats = action.chats;
 			if (chats) {
+				//Normalizing the user to ensure no discrepancy between various login methods
+				for(var i = 0; i < chats.length; i++) {
+					var createdBy = Utils.normalizeUser(chats[i].createdBy);
+					chats[i].createdBy = createdBy;
+				}
 				_chat = chats.reverse().concat(_chat);
 				_index += chats.length;
 			} else {

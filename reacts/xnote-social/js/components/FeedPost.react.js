@@ -72,7 +72,7 @@ var FeedPost = React.createClass({
 				createdAt: this.props.getCurrentTimestamp(),
 				content: content,
 				noteId: this.props.generateUUID(),
-				owner: this.props.currentUser.facebook
+				owner: this.props.currentUser
 			}
 			this.props.addNote(highlightId, note);
 		}
@@ -84,11 +84,11 @@ var FeedPost = React.createClass({
 		var feedPostOnClick = this.props.isLink ? getFeedPostOnClick(post) : function() {};
 		if (post.type === ARTICLE) {
 			var article = post.article;
-			if(post.createdBy.facebook.picture) {
+			if(post.createdBy.picture) {
 				var leftAvatar = 
-					<Avatar src={post.createdBy.facebook.picture} size={40} />
+					<Avatar src={post.createdBy.picture} size={40} />
 			} else {
-				var avatarCharacter = post.createdBy.facebook.name.substring(0, 1);
+				var avatarCharacter = post.createdBy.name.substring(0, 1);
 				var leftAvatar = <Avatar size={40}>{avatarCharacter}</Avatar>
 			}
 			return (
@@ -98,7 +98,7 @@ var FeedPost = React.createClass({
 						style = {{padding : 10}}
 						disabled = {true}
 						primaryText= {
-							<p style = {{ paddingLeft: 60, paddingTop: 8, fontWeight: 800, fontSize: 13}}> {post.createdBy.facebook.name} </p>
+							<p style = {{ paddingLeft: 60, paddingTop: 8, fontWeight: 800, fontSize: 13}}> {post.createdBy.name} </p>
 						}
 						secondaryText = {
 							<p style = {{ paddingLeft: 60, fontSize: 10}}> {article.createdAt} </p>
@@ -128,11 +128,11 @@ var FeedPost = React.createClass({
 		} else if (post.type === HIGHLIGHT) {
 				var self = this;
 
-				if(post.createdBy.facebook.picture) {
+				if(post.createdBy.picture) {
 					var leftAvatar = 
-						<Avatar src={post.createdBy.facebook.picture} size={40} />
+						<Avatar src={post.createdBy.picture} size={40} />
 				} else {
-					var avatarCharacter = post.createdBy.facebook.name.substring(0, 1);
+					var avatarCharacter = post.createdBy.name.substring(0, 1);
 					var leftAvatar = <Avatar size={40}>{avatarCharacter}</Avatar>
 				}
 
@@ -169,7 +169,7 @@ var FeedPost = React.createClass({
 							style = {{padding : 10, backgroundColor: '#fff'}}
 							disabled = {true}
 							primaryText= {
-								<p style = {{ paddingLeft: 60, paddingTop: 8, fontWeight: 800, fontSize: 13}}> {post.createdBy.facebook.name} </p>
+								<p style = {{ paddingLeft: 60, paddingTop: 8, fontWeight: 800, fontSize: 13}}> {post.createdBy.name} </p>
 							}
 							secondaryText = {
 								<p style = {{ paddingLeft: 60, fontSize: 10}}> {highlight.lastModifiedTimestamp} </p>

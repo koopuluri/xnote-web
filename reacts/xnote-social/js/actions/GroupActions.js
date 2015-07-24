@@ -23,8 +23,6 @@ var GroupActions = {
 		API.getNotifs(group, function(obj) {
 			if(!obj.error) {
 				var notifs = obj.notifs;
-				console.log('NOTIFS RECEIVED');
-				console.log(notifs);
 				var lastViewed = obj.lastViewed;
 				GroupDispatcher.handleAction({
 					actionType: Constants.SET_NOTIFS,
@@ -38,13 +36,18 @@ var GroupActions = {
 	},
 
 	_setUser: function(user) {
+		var userInfo = GroupUtils.normalizeUser(user);
 		GroupDispatcher.handleAction({
 			actionType: Constants.SET_USER,
-			user: user
+			user: userInfo
 		});
 	},
 
 	_setGroup: function(group) {
+		for(var i = 0; i < group.members.length; i++) {
+			var member = GroupUtils.normalizeUser(group.members[i]);
+			group.members[i] = member;
+		}
 		GroupDispatcher.handleAction({
 			actionType: Constants.SET_GROUP,
 			group: group
@@ -132,7 +135,6 @@ var GroupActions = {
 		
 		_setFeedLoading(true);
 		var self = this;
-		console.log('fetchFeedSegment: ' + start + '::' + count);
 		API.getFeedSegment(groupId, start, count, function(obj) {
 				if (!obj.error) {
 					_setFeedLoading(false);
@@ -207,14 +209,6 @@ var GroupActions = {
                 return;
             }
         });
-	},
-
-	editNote: function(note, content) {
-		note.content = content;
-		GroupDispatcher.handleAction({
-			actionType: Constants.EDIT_NOTE,
-			note: note
-		});
 	},
 
 	deleteNote: function(note, highlightId) {
@@ -303,7 +297,7 @@ var GroupActions = {
 
     	var memberIdList = [];
         for (var i = 0; i < memberList.length; i++) {
-        	memberIdList.push(memberList[i].facebook.id);
+        	memberIdList.push(memberList[i].id);
         }
 
         API.addMembers(groupId, memberIdList, function() {

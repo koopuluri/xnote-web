@@ -19,6 +19,12 @@ var userSchema = mongoose.Schema({
         email: String,
         picture: String
     },
+    google: {
+        id: String,
+        token: String,
+        name: String,
+        email: String
+    },    
     groups: [{
 	    groupRef: {type: mongoose.Schema.Types.ObjectId, ref: 'Group'},
 	    notifLastViewed: {type: Date, default: Date.now},

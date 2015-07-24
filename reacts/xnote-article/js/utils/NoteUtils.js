@@ -7,9 +7,19 @@ var mongoose = require('mongoose');
 var NoteUtils = {
 
 		getTimestamp: function() {
+			var _secondsToDate = function(seconds) {
+				if (!seconds) {
+					return '';
+				}
+
+				var d = new Date(seconds*1000); // The 0 there is the key, which sets the date to the epoch
+				return '' + d;
+			};
+
 			var d = new Date();
 			var t = d.getTime() / 1000;
-			return this._secondsToDate(t);
+			return _secondsToDate(t);
+
 		},
 
 		// used for new note / article creation: (http://stackoverflow.com/a/8809472)
@@ -67,6 +77,20 @@ var NoteUtils = {
 		    }
 
 		    return interval + ' ' + intervalType;
+		},
+
+		//Used to have a consistent user object no matter
+		//the method of login. 
+		normalizeUser: function(user) {
+			if(user.facebook) {
+				return user.facebook;
+			} else if(user.google) {
+				return user.google;
+			} else if(user.standard) {
+				return user.standard;
+			} else {
+				return user;
+			}
 		}
 };
 

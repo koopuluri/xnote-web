@@ -3,7 +3,7 @@ var mui = require('material-ui');
 var ArticleListItem = require('./ArticleListItem.react');
 var ContentStore = require('../stores/ContentStore');
 var GroupActions = require('../actions/GroupActions');
-var Loading = require('./ArticleViewStuff/Loading.react');
+var Loading = require('./Loading.react');
 
 var ThemeManager = new mui.Styles.ThemeManager();
 var Colors = mui.Styles.Colors;

@@ -62,11 +62,11 @@ var ArticleToolbar = React.createClass({
       //Stores the username in the right of the appbar.
       var usernameElement = '';
       var me = this.state.currentUser;
-      if (me && me.facebook.name) {
+      if (me && me.name) {
           usernameElement = (
               <FlatButton 
                   primary={true} 
-                  label={me.facebook.name}
+                  label={me.name}
                   disabled={true} />
           );
       }

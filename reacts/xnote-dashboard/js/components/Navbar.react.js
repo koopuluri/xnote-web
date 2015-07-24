@@ -43,7 +43,7 @@ var DashNavbar = React.createClass({
     },
 
 	render: function() {
-		var name = this.state.currentUser ? this.state.currentUser.facebook.name : "";
+		var name = this.state.currentUser ? this.state.currentUser.name : "";
 		var menuItems = [
         	{ type: MenuItem.Types.SUBHEADER, text: 'Settings' },
         	{

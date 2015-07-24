@@ -2,7 +2,7 @@ var React = require('react');
 var GroupActions = require('../actions/GroupActions');
 var ContentStore = require('../stores/ContentStore');
 var GroupStore = require('../stores/GroupStore');
-var Loading = require('./ArticleViewStuff/Loading.react')
+var Loading = require('./Loading.react')
 
 var mui = require('material-ui');
 var FloatingActionButton = mui.FloatingActionButton;

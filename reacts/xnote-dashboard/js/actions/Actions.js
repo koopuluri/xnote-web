@@ -1,5 +1,6 @@
 var Dispatcher = require('../dispatcher/Dispatcher');
 var Constants = require('../constants/Constants');
+var Utils = require('../utils/Utils');
 var API = require('../utils/API');
 
 var Actions = {
@@ -19,9 +20,10 @@ var Actions = {
     },
 
     _setUserInfo: function(userInfo) {
+        var user = Utils.normalizeUser(userInfo);
         Dispatcher.handleAction({
             actionType: Constants.SET_USER_INFO,
-            userInfo: userInfo
+            userInfo: user
         });
     },
 

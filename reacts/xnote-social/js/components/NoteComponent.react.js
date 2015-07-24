@@ -23,7 +23,7 @@ var NoteComponent = React.createClass ({
 				var note = this.props.note
 				var self = this
 				var options = null;
-				if (this.props.user && this.props.user.facebook.id === note.owner.id) {
+				if (this.props.user && this.props.user.id === note.owner.id) {
 					var options =
 						<FontIcon 
 							style={{
