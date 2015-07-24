@@ -14,6 +14,8 @@ var ToolbarGroup = mui.ToolbarGroup;
 var Toolbar = mui.Toolbar;
 var CircularProgress = mui.CircularProgress;
 
+var LoginSignup = require('./LoginSignup.react');
+
 var LandingContainer = React.createClass({
 
     childContextTypes : {
@@ -50,6 +52,10 @@ var LandingContainer = React.createClass({
     },
 
     render: function() {
+
+        return (<LoginSignup />);
+
+
         var groupMessage ='';
         var groupCard ='';
         var group = this.state.group;

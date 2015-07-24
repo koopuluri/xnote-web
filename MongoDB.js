@@ -302,7 +302,6 @@ var DB = {
             });
      },
 
-
      // ========================= GROUPS =======================================
 
      // get all groups associated with user:
@@ -469,8 +468,6 @@ var DB = {
 
      addChat: function(user, groupRef, chatId, content, callback) {
         if (!groupRef || !content) {
-            console.log('groupRef: ' + groupRef);
-            console.log('content;: ' + content);
             callback({error: 'poop'});
             return;
         }
@@ -483,6 +480,7 @@ var DB = {
             chatId: chatId
         });
 
+        var self = this;
         chat.save(function(err, savedChat) {
             if (err) {
                 console.log('addChat error: ' + err);
@@ -490,6 +488,22 @@ var DB = {
             }
 
             // chat saved!
+            // time to increment chat notif count for all the users in the group
+            // besides this user:
+            Group.findOne({_id: groupRef}, function(err, group) {
+                if(!err) {
+                    for (var i = 0; i < group.members.length; i++) {
+                        var mem = group.members[i];
+                        // increment chat notif for this member:
+                        if (!mem.equals(user._id)) {
+                            self.incrementChatNotifCount({_id: mem}, group._id, function(obj) {
+                                // do nothing.
+                            });
+                        }
+                    }
+                }
+            });
+
             callback({chat: savedChat.content});
         });
      },
@@ -803,14 +817,26 @@ var DB = {
      },
 
      getNotifCount: function(user, groupRef, callback) {
-        Notification.count({user: user._id, group: groupRef}, function(err, count) {
-            if (err) {
-                callback({error: 'could not get notif count'});
-                console.log('error getting notif count: ' + err);
+        this.getNotifsLastViewed(user, groupRef, function(obj) {
+            if (obj.error) {
+                callback(obj);
                 return;
             }
 
-            callback({count: count});
+            var lastViewed = obj.lastViewed;
+            // getting the notification count for notifs past lastViewed:
+            Notification.count({user: user._id,
+                group: groupRef, 
+                createdAt: {$gte: lastViewed}}, 
+
+                function(err, count) {
+                    if (err) {
+                        callback({error: 'could not get notif count'});
+                        console.log('error getting notif count: ' + err);
+                        return;
+                    }
+                    callback({count: count});
+                });
         });
      },
 
@@ -845,7 +871,6 @@ var DB = {
      },
 
      getNotifsLastViewed: function(user, groupRef, callback) {
-
         User.findOne({_id: user._id}, {groups: {$elemMatch: {'groupRef': groupRef} }}, 
             function(err, doc) {
                 if(err) {
@@ -871,12 +896,16 @@ var DB = {
                     return;
                 } 
 
-                console.log('incremented chat notifs for user+group: ' + Date.now());
+                console.log('clear chat notifs for user+group: ' + updatedUser._id);
                 callback({});                                
             });
      },
 
      incrementChatNotifCount: function(user, groupRef, callback) {
+        if (!groupRef) {
+            callback({error: 'invalid group'});
+        }
+
         User.findOneAndUpdate({_id: user._id, 'groups.groupRef': groupRef}, 
             {$inc: {'groups.$.chatNotifCount': 1} },
             {},
@@ -887,7 +916,7 @@ var DB = {
                     return;
                 } 
 
-                console.log('incremented chat notifs for user+group: ' + Date.now());
+                console.log('incremented chat notifs for user+group: ' + updatedUser._id);
                 callback({});                                
             });
      },
