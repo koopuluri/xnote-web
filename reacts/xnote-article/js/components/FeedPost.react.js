@@ -142,6 +142,10 @@ var FeedPost = React.createClass({
 
 				var highlightClippedText = '"' + highlight.clippedText + '"';
 				var notes = highlight.notes.map(function(note) {
+					if (!note.owner) {
+						return false;
+					}
+					
 					return (
 						<NoteComponent 
 							highlightId = {highlight._id}

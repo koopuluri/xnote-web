@@ -48,6 +48,11 @@ var FeedNotifications = React.createClass({
               var feedOwner = highlight.createdBy.name;
               if(highlight.notes && highlight.notes.length > 0) {
                   var lastNote = highlight.notes[highlight.notes.length - 1];
+                  
+                  if (!lastNote.owner) {
+                      return false;
+                  }
+
                   feedOwner = lastNote.owner.name;
                   feedText = 'Added a note ';
                   feedText = feedText + '"' + lastNote.content + '" for the highlight ';

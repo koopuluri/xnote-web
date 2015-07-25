@@ -23,6 +23,9 @@ var NoteComponent = React.createClass ({
 				var note = this.props.note
 				var self = this
 				var options = null;
+				if (!note.owner) {
+					return '';
+				}
 				if (this.props.user && this.props.user.id === note.owner.id) {
 					var options =
 						<FontIcon 

@@ -21,11 +21,13 @@ try {
 }
 
 var normalizeUser = function(user) {
-    if(user.facebook) {
+  console.log('NORMA..LIZE USER');
+    console.log(user);
+    if(user.facebook && user.facebook.name) {
       return user.facebook;
-    } else if(user.google) {
+    } else if(user.google && user.google.name) {
       return user.google;
-    } else if(user.local) {
+    } else if(user.local && user.local.name) {
       return user.local;
     } else {
       return user;
@@ -268,13 +270,13 @@ var DB = {
 
      // TODO: add notifications for users that have also added notes to the same highlight / creator of highlight.
      addNote: function(user, highlightRef, noteObj, callback, io) {
-        var self = this;
         var normUser = normalizeUser(user);
+        var self = this;
         var note = {
             createdBy: user,
             noteId: noteObj.noteId,
             content: noteObj.content,
-            owner: {name: normUser.name, id: normUser.id}
+            owner: normUser
         };
 
         Highlight.findOneAndUpdate({_id: highlightRef},
