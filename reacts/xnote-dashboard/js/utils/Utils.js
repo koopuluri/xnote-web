@@ -85,8 +85,8 @@ var Utils = {
 			return user.facebook;
 		} else if(user.google) {
 			return user.google;
-		} else if(user.standard) {
-			return user.standard;
+		} else if(user.local) {
+			return user.local;
 		} else {
 			return user;
 		}

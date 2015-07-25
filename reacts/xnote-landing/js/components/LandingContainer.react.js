@@ -111,6 +111,9 @@ var LandingContainer = React.createClass({
             var count = 0;
 
             var members = group.members.map(function(member) {
+                if (!member) {
+                    return false;
+                }
                 count++;
                 if(count < 5) {
                     var picture = member.picture;
@@ -118,7 +121,7 @@ var LandingContainer = React.createClass({
                         var leftAvatar = 
                             <Avatar src={picture} size={35} />
                     } else {
-                        var avatarCharacter = message.createdBy.name.substring(0, 1);
+                        var avatarCharacter = member.name.substring(0, 1);
                         var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
                     }
                     return (

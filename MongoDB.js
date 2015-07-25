@@ -20,6 +20,18 @@ try {
     // do nothing.
 }
 
+var normalizeUser = function(user) {
+    if(user.facebook) {
+      return user.facebook;
+    } else if(user.google) {
+      return user.google;
+    } else if(user.local) {
+      return user.local;
+    } else {
+      return user;
+    }
+}
+
 var DB = {
      // add provided group for the provided user:
      addGroup: function(user, groupObj, memberList, callback) {
@@ -77,7 +89,7 @@ var DB = {
             self.addNotifsForArticle(user, savedArticle, function(notif) {
                 console.log('emiting notif for article: ' + savedArticle.group + ':' + notif.user);
                 io.emit('notification:' + savedArticle.group + notif.user, 
-                    {notif: notif, article: savedArticle, user: {facebook: user.facebook} }); 
+                    {notif: notif, article: savedArticle, user: user }); 
             });
         });
      },
@@ -150,8 +162,7 @@ var DB = {
             }
 
             console.log('feedPost for article successfuly created, now emitting something');
-            article.createdBy = article.createdBy.facebook;
-            savedObject.createdBy = user.facebook;
+            savedObject.createdBy = user;
             callback({article: article, feedPost: savedObject});
         });
      },
@@ -199,7 +210,7 @@ var DB = {
             // adding notifs for highlight: 
             self.addNotifsForHighlight(user, savedHighlight, function(notif) {
                 io.emit('notification:' + savedHighlight.group + notif.user,
-                     {notif: notif, highlight: savedHighlight, user: {facebook: user.facebook} }); 
+                     {notif: notif, highlight: savedHighlight, user: user}); 
             });
         });
      },
@@ -258,11 +269,12 @@ var DB = {
      // TODO: add notifications for users that have also added notes to the same highlight / creator of highlight.
      addNote: function(user, highlightRef, noteObj, callback, io) {
         var self = this;
+        var normUser = normalizeUser(user);
         var note = {
             createdBy: user,
             noteId: noteObj.noteId,
             content: noteObj.content,
-            owner: {name: user.facebook.name, id: user.facebook.id}
+            owner: {name: normUser.name, id: normUser.id}
         };
 
         Highlight.findOneAndUpdate({_id: highlightRef},
@@ -297,7 +309,7 @@ var DB = {
                     console.log('emitting notif for note add!');
                     console.log(notif);
                     io.emit('notification:' + savedHighlight.group + notif.user,
-                         {notif: notif, highlight: savedHighlight, user: {facebook: user.facebook} });
+                         {notif: notif, highlight: savedHighlight, user: user });
                 });
             });
      },
@@ -316,8 +328,8 @@ var DB = {
 
      getHighlight: function(user, highlightRef, callback) {
         Highlight.findOne({_id: highlightRef})
-                  .populate('createdBy', 'facebook.id facebook.name facebook.picture')
-                  .populate('notes.createdBy', 'facebook.id facebook.name facebook.picture')
+                  .populate('createdBy')
+                  .populate('notes.createdBy')
                   .exec(function(err, doc) {
                       if (err) {
                           console.log('highlight populate error; ' + err);
@@ -335,8 +347,8 @@ var DB = {
        getGroup: function(user, groupRef, callback) {
             Group.findOne({_id: groupRef})
                .select('createdBy members groupId title description')
-               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
-               .populate('members', '-_id facebook.id facebook.name facebook.picture')
+               .populate('createdBy', '-_id')
+               .populate('members', '-_id')
                .exec(function(err, doc) {
                     if (err || !doc) {
                         if (err)
@@ -349,7 +361,8 @@ var DB = {
        },
 
      getUserInfo: function(user, callback) {
-        callback({name: user.facebook.name, id: user.facebook.id, picture: user.facebook.picture});
+        user._id = '';
+        callback({user: user});
      },
 
      getArticle: function(user, articleId, callback) {
@@ -378,7 +391,7 @@ var DB = {
         FeedPost.find({group: {$in: groupIds} })
                 .sort({'lastModifiedTimestamp': 'desc'})
                 .skip(start).limit(count)
-                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
+                .populate('createdBy', '-_id')
                 .populate('highlight', '-createdBy')
                 .populate('highlight.notes', '-createdBy')
                 .populate('article', '-createdBy')
@@ -408,7 +421,7 @@ var DB = {
         FeedPost.find({group: groupRef})
                 .sort({'lastModifiedTimestamp': 'desc'})
                 .skip(start).limit(count)
-                .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
+                .populate('createdBy', '-_id')
                 .populate('highlight', '-createdBy')
                 .populate('highlight.notes', '-createdBy')
                 .populate('article', '-createdBy')
@@ -438,7 +451,7 @@ var DB = {
         Article.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
-               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
+               .populate('createdBy', '-_id')
                .exec(function(err, results) {
                   if(err) {
                       console.log('articleListSegment: ' + err);
@@ -454,7 +467,7 @@ var DB = {
         Chat.find({group: groupRef})
                .sort({'createdAt': 'desc'})
                .skip(start).limit(count)
-               .populate('createdBy', '-_id facebook.id facebook.name facebook.picture')
+               .populate('createdBy', '-_id')
                .exec(function(err, results) {
                   if(err) {
                       console.log('chatSegment error: ' + err);
@@ -855,8 +868,6 @@ var DB = {
                 if (err) {
                     console.log('failed to clear notes for user');
                 } 
-
-                console.log('cleared notifs for user: ' + user.facebook.name);
             });
      },
 
@@ -945,142 +956,142 @@ var DB = {
 
 module.exports = DB;
 
-User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
-    if (err) {
-        console.log('pooped in getting user!');
-    } else {
-        var groupRef = ObjectId("55a25931150ef26b44db57bb");
-        var groupId = "55a5efaf9c11ff0000739eba";
+// User.findOne({'facebook.name': 'Vignesh Prasad'}, function(err, user) {
+//     if (err) {
+//         console.log('pooped in getting user!');
+//     } else {
+//         var groupRef = ObjectId("55a25931150ef26b44db57bb");
+//         var groupId = "55a5efaf9c11ff0000739eba";
 
 
 
-        var newGroupId = "55a25931150ef26b44db57yj"
+//         var newGroupId = "55a25931150ef26b44db57yj"
 
-        // //addGroupMembers: function(user, groupRef, members, callback)
-        // DB.addGroupMembers(user, groupId, ['511989525640264', '853160004761049'], function(obj) {
-        //     console.log(obj)
-        // });
+//         // //addGroupMembers: function(user, groupRef, members, callback)
+//         // DB.addGroupMembers(user, groupId, ['511989525640264', '853160004761049'], function(obj) {
+//         //     console.log(obj)
+//         // });
 
-        // DB.setNotifsLastViewed(user, groupId, function(obj) {
-        //     console.log('last viewed callbac: ' + Object.keys(obj));
-        //     DB.getNotifsLastViewed(user, groupId, function(obj) {
+//         // DB.setNotifsLastViewed(user, groupId, function(obj) {
+//         //     console.log('last viewed callbac: ' + Object.keys(obj));
+//         //     DB.getNotifsLastViewed(user, groupId, function(obj) {
 
-        //     });
-        // });
-        console.log('running somehting!');
-        DB.getNotifCount(user, "55a73e610359230000c72bf2", function(obj) {
-            console.log('count: ' + obj.count);
-        });
-
-
-        // DB.getNotifsLastViewed(user, groupId, function(obj) {
-
-        // });
-
-        //DB.getNotifs(user, groupId, function(obj) {});
-
-        // var memberList = ['511989525640264', '853160004761049'];
-        // var viggy = ['853160004761049']
-
-        // var dummyGroup = {
-        //     title: 'The test group, Viggy first!',
-        //     _id: newGroupId
-        // }
-
-        // DB.addGroup(user, dummyGroup, viggy, function(obj) {
-        //     console.log('poop: ' + Object.keys(obj));
-        // });
-
-        // DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
-        //     console.log('poop: ' );
-        // });
+//         //     });
+//         // });
+//         console.log('running somehting!');
+//         DB.getNotifCount(user, "55a73e610359230000c72bf2", function(obj) {
+//             console.log('count: ' + obj.count);
+//         });
 
 
-        // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
-        //     console.log(obj);
-        // });
-        // DB.addGroupMember(user, '55a25931150ef26b44db57bb', {id: user.facebook.id}, function(obj) {
-        //      console.log('obj: ' + obj);
-        // });
+//         // DB.getNotifsLastViewed(user, groupId, function(obj) {
 
-        // DB.addChat(user, groupId, mongoose.Types.ObjectId(), 'poopopopopopop', function(obj) {
-        //     console.log(obj);
-        // });
+//         // });
 
-        // DB.getChatSegment(user, groupId, 0, 5, function(obj) {
-        //     console.log('chats : ' + obj.chats);
-        // });
+//         //DB.getNotifs(user, groupId, function(obj) {});
 
-        //addNotification: function(targetUser, groupId, highlightRef, noteId, callback)
+//         // var memberList = ['511989525640264', '853160004761049'];
+//         // var viggy = ['853160004761049']
+
+//         // var dummyGroup = {
+//         //     title: 'The test group, Viggy first!',
+//         //     _id: newGroupId
+//         // }
+
+//         // DB.addGroup(user, dummyGroup, viggy, function(obj) {
+//         //     console.log('poop: ' + Object.keys(obj));
+//         // });
+
+//         // DB.addGroupMembers(user, newGroupId, memberList, function(obj) {
+//         //     console.log('poop: ' );
+//         // });
 
 
-        // DB.addNotification(user, groupId,
-        //                          "55a25cf75572e8e144c4ac68",
-        //                          '',
-        //                          function() {
-        //                             console.log('poop');
-        // });
+//         // DB.getGroup(user, "55a25931150ef26b44db57bb", function(obj) {
+//         //     console.log(obj);
+//         // });
+//         // DB.addGroupMember(user, '55a25931150ef26b44db57bb', {id: user.facebook.id}, function(obj) {
+//         //      console.log('obj: ' + obj);
+//         // });
 
-        // DB.clearNotifs(user, groupId);
+//         // DB.addChat(user, groupId, mongoose.Types.ObjectId(), 'poopopopopopop', function(obj) {
+//         //     console.log(obj);
+//         // });
+
+//         // DB.getChatSegment(user, groupId, 0, 5, function(obj) {
+//         //     console.log('chats : ' + obj.chats);
+//         // });
+
+//         //addNotification: function(targetUser, groupId, highlightRef, noteId, callback)
+
+
+//         // DB.addNotification(user, groupId,
+//         //                          "55a25cf75572e8e144c4ac68",
+//         //                          '',
+//         //                          function() {
+//         //                             console.log('poop');
+//         // });
+
+//         // DB.clearNotifs(user, groupId);
 
         
-        // //
-        // DB.getArticleListSegment(user, groupId, 0, 3, function(obj) {
-        //     console.log('result: ' + Object.keys(obj));
-        // });
+//         // //
+//         // DB.getArticleListSegment(user, groupId, 0, 3, function(obj) {
+//         //     console.log('result: ' + Object.keys(obj));
+//         // });
 
-        // console.log('got user!');
-        //
-        // DB.getGroup(user, 'testPoopGroup', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-
-
-        // var articleId = '5599e642f836bb36631e2e9c';
-        // DB.getArticle(user, articleId, function(poop) {
-        //     console.log('article.title: ' + poop.article.title);
-        // });
-
-        //
-
-        // DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
+//         // console.log('got user!');
+//         //
+//         // DB.getGroup(user, 'testPoopGroup', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
 
 
-        //adding note:
-        // var dummyNote = {
-        //     noteId: 'dummyNote1',
-        //     content: 'dummy note content',
-        // }
+//         // var articleId = '5599e642f836bb36631e2e9c';
+//         // DB.getArticle(user, articleId, function(poop) {
+//         //     console.log('article.title: ' + poop.article.title);
+//         // });
+
+//         //
+
+//         // DB.addArticleFromUrl(user, groupId, 'http://sockpuppet.org/blog/2015/07/13/starfighter/', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+
+
+//         //adding note:
+//         // var dummyNote = {
+//         //     noteId: 'dummyNote1',
+//         //     content: 'dummy note content',
+//         // }
         
-        // console.log('about to add note');
-        // DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
-        //     console.log('poop: ' + poop.groupId.id);
-        // });
+//         // console.log('about to add note');
+//         // DB.addNote(user,  "55a25cf75572e8e144c4ac3d", dummyNote, function(poop) {
+//         //     console.log('poop: ' + poop.groupId.id);
+//         // });
 
-        //
-        // console.log('about to save a dummy highlight!');
+//         //
+//         // console.log('about to save a dummy highlight!');
 
 
-        // var dummyHighlight = {
-        //    _id: "55a25cf75572e8e144c4ac3d",
-        //    article: "55a34592d5aeb6438bb5ebdb",
-        //    group: groupId,
-        //    clippedText: 'poop is the secret of my energy!',
-        //    selection: {},
-        //    notes: []
-        // }
+//         // var dummyHighlight = {
+//         //    _id: "55a25cf75572e8e144c4ac3d",
+//         //    article: "55a34592d5aeb6438bb5ebdb",
+//         //    group: groupId,
+//         //    clippedText: 'poop is the secret of my energy!',
+//         //    selection: {},
+//         //    notes: []
+//         // }
         
-        // // saving a dummy highlight:
-        // DB.addHighlight(user, dummyHighlight, '', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
+//         // // saving a dummy highlight:
+//         // DB.addHighlight(user, dummyHighlight, '', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
 
-        // // going to delete the dummy article added above:
-        // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
-        //     console.log('poop: ' + Object.keys(poop));
-        // });
-    }
-});
+//         // // going to delete the dummy article added above:
+//         // DB.deleteHighlight(user, 'poopopo', 'dummyHighlight1', function(poop) {
+//         //     console.log('poop: ' + Object.keys(poop));
+//         // });
+//     }
+// });
 

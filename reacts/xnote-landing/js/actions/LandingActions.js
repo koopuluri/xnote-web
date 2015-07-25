@@ -21,6 +21,7 @@ var Actions = {
 	login: function(email, password) {
 		var self = this;
 		API.login(email, password, function(obj) {
+			console.log(obj);
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
@@ -37,9 +38,7 @@ var Actions = {
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
-				var redirectUrl = obj.redirect;
-				console.log('faecbook login came back! ' + redirectUrl);
-				//window.location = redirectUrl;
+				// do nothing.
 			}
 		});
 	},
@@ -51,9 +50,7 @@ var Actions = {
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
-				var redirectUrl = obj.redirect;
-				console.log('GOOG CAME BACK!');
-				//window.location = redirectUrl;
+				// do nothing.
 			}
 		});
 	},
@@ -74,6 +71,8 @@ var Actions = {
 
 	_setGroup: function(group) {
 		for(var i = 0; i < group.members.length; i++) {
+			console.log('group members: ' + group.members[i]);
+			console.log(group.members[i]);
 			group.members[i] = Utils.normalizeUser(group.members[i]);
 		}
 		Dispatcher.handleAction({

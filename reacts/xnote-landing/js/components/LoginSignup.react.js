@@ -91,7 +91,6 @@ var LoginForm = React.createClass({
 	},
 
 	_toggleMode: function() {
-		console.log("HMM");
 		Actions._setError('');
 		if (this.state.mode === LOGIN) {
 			this.setState({
@@ -112,6 +111,10 @@ var LoginForm = React.createClass({
 
 	_signup: function() {
 		Actions.signup(this.state.name, this.state.email, this.state.password);
+	},
+
+	_login: function() {
+		Actions.login(this.state.email, this.state.password);
 	},
 
 	render: function() {
@@ -207,7 +210,8 @@ var LoginForm = React.createClass({
 					</div>
 					<RaisedButton primary={true} 
 						style={{marginTop: 40}}
-						onTouchTap={this._login}> <span>Login</span> </RaisedButton>
+						onTouchTap={this._login}
+						label="Login"/>
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Sign up for the first time</p> 
 				</div>
 			);

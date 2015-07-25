@@ -16,9 +16,10 @@ var groupId = $('.group-id-span').attr('id');
 var highlightId = window.location.hash.slice(1);
 
 var user = $('.user-span').attr('id');
-
 var user = JSON.parse(user);
+
 user = Utils.normalizeUser(user);
+
 
 // set the article associated with the articleId in the stores:
 Actions.fetchAndSetArticle(articleId);

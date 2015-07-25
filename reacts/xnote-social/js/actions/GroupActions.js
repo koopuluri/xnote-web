@@ -37,6 +37,8 @@ var GroupActions = {
 
 	_setUser: function(user) {
 		var userInfo = GroupUtils.normalizeUser(user);
+		console.log('USER RECEIVED');
+		console.log(userInfo);
 		GroupDispatcher.handleAction({
 			actionType: Constants.SET_USER,
 			user: userInfo
@@ -45,6 +47,10 @@ var GroupActions = {
 
 	_setGroup: function(group) {
 		for(var i = 0; i < group.members.length; i++) {
+			if (!group.members[i]) {
+				group.members.splice(i, 1);
+				continue;
+			}
 			var member = GroupUtils.normalizeUser(group.members[i]);
 			group.members[i] = member;
 		}

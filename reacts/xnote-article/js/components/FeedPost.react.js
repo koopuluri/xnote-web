@@ -129,7 +129,7 @@ var FeedPost = React.createClass({
 		} else if (post.type === HIGHLIGHT) {
 
 				var self = this;
-
+				
 				if(post.createdBy.picture) {
 					var leftAvatar = 
 						<Avatar src={post.createdBy.picture} size={40} />

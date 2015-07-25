@@ -68,16 +68,18 @@ var LOCAL = 'Local';
 // (req.logIn(user)):
 // - type: "SOCIAL" / "LOCAL"
 var postLogin = function(req, res, next, err, user, info, type) {
+    console.log('type: ' + type);
     var redirectUrl = '/dashboard';
 
 
     if(err) { return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); }
 
     if (!user) { 
-        if (SOCIAL) {
+        if (type === SOCIAL) {
             return res.redirect('/loginerror');
         } else {
-            return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+            res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+            return;
         }
     }
 
@@ -95,7 +97,10 @@ var postLogin = function(req, res, next, err, user, info, type) {
         req.session.articleId = null;
     }
 
+    console.log('OK I:M IN: ' + redirectUrl);
+
     req.logIn(user, function(err){
+        console.log('ERROR: ' + err);
         if (err) { return next(err); }
 
         // if this user is not part of the group to redirect to (if group exists)
@@ -106,23 +111,29 @@ var postLogin = function(req, res, next, err, user, info, type) {
             DB.addGroupMember(groupId, user, function(obj) {
                 if(obj.error) {
                     console.log('error adding new user to group after login: ' + groupId);
-                    if (SOCIAL) {
+                    if (type === SOCIAL) {
                         return res.redirect('/loginerror');
                     }
-                    return res.send({error: 'Failed to login.'});
+                    res.send({error: 'Failed to login.'});
+                    return;
                 }
 
                 // no issues:
-                if (SOCIAL) {
+                if (type === SOCIAL) {
                     return res.redirect(redirectUrl);
                 }
-                return res.send({redirect: redirectUrl});
+
+                console.log('SENDING BACK! ' + redirectUrl);
+                res.send({redirect: redirectUrl});
+                return;
             });
         } else {
-            if (SOCIAL) {
+            if (type === SOCIAL) {
                 return res.redirect(redirectUrl);
             }
-            return res.send({redirect: redirectUrl});
+            console.log('SENDING BACK!');
+            res.send({redirect: redirectUrl});
+            return;
         }
     });
 };
@@ -259,7 +270,7 @@ module.exports = function(app, passport) {
 
         console.log('/article: ' + groupId + '::' + articleId);
         res.render('article.ejs', {
-            user: {facebook: req.user.facebook, _id: req.user._id},
+            user: req.user,
             groupId: groupId,
             articleId: articleId
         });
@@ -309,12 +320,12 @@ module.exports = function(app, passport) {
     });
 
     app.get('/_user_info', isLoggedIn, function(req, res) {
-        console.log('hit /_user_info: ' + req.user.facebook.name);
-        res.send({user: {facebook: {
-                                name: req.user.facebook.name,
-                                id: req.user.facebook.id,
-                                picture: req.user.facebook.picture}
-                            }});
+        console.log('hit /_user_info: ');
+
+        var id = req.user._id;
+        req.user._id = '';
+        res.send({ user: req.user });
+        req.user_id = id;
     });
 
     app.get('/_get_feed_segment_across_groups', isLoggedIn, function(req, res) {

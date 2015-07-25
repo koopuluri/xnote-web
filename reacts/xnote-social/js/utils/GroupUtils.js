@@ -94,12 +94,14 @@ var GroupUtils = {
 	//Used to have a consistent user object no matter
 	//the method of login. 
 	normalizeUser: function(user) {
+		console.log('NORMALIZE USER');
+		console.log(user);
 		if(user.facebook) {
 			return user.facebook;
 		} else if(user.google) {
 			return user.google;
-		} else if(user.standard) {
-			return user.standard;
+		} else if(user.local) {
+			return user.local;
 		} else {
 			return user;
 		}
