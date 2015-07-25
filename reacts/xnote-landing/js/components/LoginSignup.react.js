@@ -129,12 +129,14 @@ var LoginForm = React.createClass({
 			var valid = this.validate(this.state);
 
 			var submitButton = <RaisedButton 
+									style={{marginTop: 40}}
 									label="Sign Up"
 									primary={true}
 									disabled={true}/>;
 
 			if (valid.name && valid.email && valid.password) {
 				submitButton = <RaisedButton 
+									style={{marginTop: 40}}
 									primary={true}
 									label="Sign Up"
 									onTouchTap={this._signup}/>;
@@ -177,16 +179,7 @@ var LoginForm = React.createClass({
 						</div>
 						{submitButton}
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Already a user?</p> 
-					<span style={{padding:5}}>
-                	    <a className="btn btn-facebook2 btn-social">
-                        	<i className="fa fa-facebook"></i> Login with Facebook
-                    	</a>
-                	</span>
-                	<span style={{padding:5}}>
-                    	<a className="btn btn-google2 btn-social">
-                         	<i className="fa fa-google"></i> Login with Google
-                    	</a>
-                	</span>
+
 				</div>
 			);
 		} else {
@@ -213,18 +206,9 @@ var LoginForm = React.createClass({
 							type="password" />
 					</div>
 					<RaisedButton primary={true} 
+						style={{marginTop: 40}}
 						onTouchTap={this._login}> <span>Login</span> </RaisedButton>
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Sign up for the first time</p> 
-					<span style={{padding:5}}>
-                	    <a className="btn btn-facebook2 btn-social">
-                        	<i className="fa fa-facebook"></i> Login with Facebook
-                    	</a>
-                	</span>
-                	<span style={{padding:5}}>
-                    	<a className="btn btn-google2 btn-social">
-                         	<i className="fa fa-google"></i> Login with Google
-                    	</a>
-                	</span>
 				</div>
 			);
 		}
