@@ -29,7 +29,8 @@
     "express-session": "~1.0.0",
     "material-design-lite": "~1.0.0-3",
     "bcrypt": "*",
-    "passport-google-oauth": "*"
+    "passport-google-oauth": "*",
+    "passport-local"
   },
   "devDependencies": {
     "nodemon": "^1.2.1",
