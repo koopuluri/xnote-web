@@ -15,3 +15,14 @@
   top:40px;
   height:calc(100% - 30px);	
 }
+
+.no-groups-message {
+  top:50%;
+  width:100%;
+  text-align: center;
+  position:fixed;
+}
+
+.groups-container {
+  height:100%;
+}

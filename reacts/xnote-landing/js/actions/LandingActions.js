@@ -1,7 +1,7 @@
 var Dispatcher = require('../dispatcher/LandingDispatcher');
 var Constants = require('../constants/Constants');
 var API = require('../utils/API');
-//var Utils = require('../utils/Utils');
+var Utils = require('../utils/Utils');
 
 //Define actions object
 var Actions = {
@@ -68,10 +68,9 @@ var Actions = {
 	},
 
 	_setGroup: function(group) {
-		// console.log(group);
-		// for(var i = 0; i < group.members.length; i++) {
-		// 	group.members[i] = Utils.normalizeUser(group.members[i]);
-		// }
+		for(var i = 0; i < group.members.length; i++) {
+			group.members[i] = Utils.normalizeUser(group.members[i]);
+		}
 		Dispatcher.handleAction({
 			actionType: Constants.SET_GROUP,
 			group: group

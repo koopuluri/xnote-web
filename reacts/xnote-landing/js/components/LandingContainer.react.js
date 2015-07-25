@@ -91,18 +91,18 @@ var LandingContainer = React.createClass({
             var members = group.members.map(function(member) {
                 count++;
                 if(count < 5) {
-                    var picture = member.facebook.picture;
+                    var picture = member.picture;
                     if(picture) {
                         var leftAvatar = 
                             <Avatar src={picture} size={35} />
                     } else {
-                        var avatarCharacter = message.createdBy.facebook.name.substring(0, 1);
+                        var avatarCharacter = member.name.substring(0, 1);
                         var leftAvatar = <Avatar size={35}>{avatarCharacter}</Avatar>
                     }
                     return (
                         <ToolbarGroup float="left">
                             <ListItem 
-                                primaryText = {member.facebook.name}
+                                primaryText = {member.name}
                                 leftAvatar = {leftAvatar}
                                 disabled = {true}/>
                         </ToolbarGroup>
@@ -180,7 +180,7 @@ var LandingContainer = React.createClass({
                 </div>
                 <Dialog
                     style={{
-                        transform:"translate3d(0px, -200px, 0px)",
+                        transform:"translate3d(0px, -150px, 0px)",
                     }}
                     contentStyle={{
                         width:500,
