@@ -30,7 +30,7 @@
     "material-design-lite": "~1.0.0-3",
     "bcrypt": "*",
     "passport-google-oauth": "*",
-    "passport-local"
+    "passport-local": "*"
   },
   "devDependencies": {
     "nodemon": "^1.2.1",
