@@ -32,7 +32,7 @@ var ChatWindow = React.createClass({
 		var groupId = this.props.groupId;
 		socket = io();
 		// fetch and set the chat segment:
-		ChatActions.fetchChatSegment(this.props.groupId, 0, ChatStore.SEG_SIZE);
+		ChatActions.fetchChatSegment(this.props.groupId, 0, 9);
 		ChatActions.fetchChatNotifCount(this.props.groupId);
 	
 		var self = this;		

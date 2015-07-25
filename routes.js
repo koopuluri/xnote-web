@@ -24,6 +24,8 @@ var _callbackNoteAdd = function(user, res, io) {
     };
 };
 
+
+
 var _callbackPostAdd = function(user, res, io) {
     return function(dbOutput) {
         if (!dbOutput.error) {
@@ -59,15 +61,24 @@ var _callbackChatAdd = function(res, io) {
 
 };
 
+var SOCIAL = 'Social';
+var LOCAL = 'Local';
 
 // executed after user authenticated and when the user is about to be logged in
 // (req.logIn(user)):
-var postLogin = function(req, res, next, err, user, info) {
+// - type: "SOCIAL" / "LOCAL"
+var postLogin = function(req, res, next, err, user, info, type) {
     var redirectUrl = '/dashboard';
+
+
     if(err) { return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); }
 
     if (!user) { 
-        return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+        if (SOCIAL) {
+            return res.redirect('/loginerror');
+        } else {
+            return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+        }
     }
 
     // If we have previously stored a redirectUrl, use that, 
@@ -95,17 +106,23 @@ var postLogin = function(req, res, next, err, user, info) {
             DB.addGroupMember(groupId, user, function(obj) {
                 if(obj.error) {
                     console.log('error adding new user to group after login: ' + groupId);
-                    res.send({redirect: '/'});
+                    if (SOCIAL) {
+                        return res.redirect('/loginerror');
+                    }
+                    return res.send({error: 'Failed to login.'});
                 }
 
                 // no issues:
-                res.send({redirect: redirectUrl});
-                return;
+                if (SOCIAL) {
+                    return res.redirect(redirectUrl);
+                }
+                return res.send({redirect: redirectUrl});
             });
         } else {
-            console.log('redirecting to: ' + redirectUrl);
-            res.send({redirect: redirectUrl});
-            return;
+            if (SOCIAL) {
+                return res.redirect(redirectUrl);
+            }
+            return res.send({redirect: redirectUrl});
         }
     });
 };
@@ -149,7 +166,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/facebook/callback', function(req, res, next) {
         passport.authenticate('facebook', function(err, user, info) {
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, SOCIAL);
         }) (req, res, next);
     });
 
@@ -163,7 +180,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/google/callback', function(req, res, next) {
         passport.authenticate('google', function(err, user, info) {
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, SOCIAL);
         }) (req, res, next);
     });
 
@@ -176,7 +193,7 @@ module.exports = function(app, passport) {
                 return;
             }
 
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, LOCAL);
         })(req, res, next);
     });
 
@@ -189,7 +206,7 @@ module.exports = function(app, passport) {
                 return;
             }
 
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, LOCAL);
         })(req, res, next);
     });
 

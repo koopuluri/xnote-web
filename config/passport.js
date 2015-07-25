@@ -100,12 +100,10 @@ module.exports = function(passport) {
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, name, email, password, done) { // callback with email and password from our form
+    function(req, email, password, done) { // callback with email and password from our form
 
-        // MUST REMOVE FOLLOWING LINE WHEN DEPLOYING! DONT EVER STORE PASSWORDS IN LOG FILES LIKE THAT!
-        console.log('login: ' + name + ' email: ' + email + ' password: ' + password);
-        // find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
+        var email
+
         User.findOne({ 'local.email' :  email }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err)

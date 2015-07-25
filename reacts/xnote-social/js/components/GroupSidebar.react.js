@@ -35,8 +35,15 @@ var GroupSidebar = React.createClass({
     },
 
     render: function() {
+        var style = {
+            position: 'fixed',
+            width: '40%',
+            height: '100%',
+            top: 27
+        };
+
         return (
-            <div className = "group-sidebar-container">
+            <div style={style}>
                 <FeedContainer
                     segSize={5}
                     FeedStore={FeedStore} 

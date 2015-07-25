@@ -39,11 +39,12 @@ var Groups = React.createClass({
         return (
             <div className="groups-container" 
                 style={{
+                    backgroundColor: '#f6f6f6',
                     height: 'calc(100% - 40px)',
                     marginTop: '40px',
                 }}>
                     <AddGroupComponent/>
-                    <List>
+                    <List style={{backgroundColor: '#f6f6f6'}}>
                         {groups}
                     </List>
             </div>

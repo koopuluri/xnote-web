@@ -32,24 +32,28 @@ var Actions = {
 
 	loginFacebook: function() {
 		var self = this;
+		console.log('facebook login!');
 		API.loginFacebook(function(obj) {
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
 				var redirectUrl = obj.redirect;
 				console.log('faecbook login came back! ' + redirectUrl);
-				window.location = redirectUrl;
+				//window.location = redirectUrl;
 			}
 		});
 	},
 
 	loginGoogle: function() {
+		var self = this;
+		console.log('google login');
 		API.loginGoogle(function(obj) {
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
 				var redirectUrl = obj.redirect;
-				window.location = redirectUrl;
+				console.log('GOOG CAME BACK!');
+				//window.location = redirectUrl;
 			}
 		});
 	},

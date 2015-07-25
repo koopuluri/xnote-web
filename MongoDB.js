@@ -514,6 +514,12 @@ var DB = {
           function(err, userToAdd) {
               if (err || !userToAdd) {
                   console.log('cannot add user because it seems user already has group: ' + err);
+                  if (!userToAdd) {
+                      callback({groupId: groupRef});
+                      return;
+                  }
+
+                  // return the error:
                   callback({error: 'cannot add user to group'});
                   return;
               }

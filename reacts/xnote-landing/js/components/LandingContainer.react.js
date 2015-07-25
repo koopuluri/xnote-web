@@ -42,7 +42,8 @@ var LandingContainer = React.createClass({
 	getInitialState: function() {
         return {
             group: LandingStore.getGroup(),
-            isLoading: LandingStore.getLoading()
+            isLoading: LandingStore.getLoading(),
+            displayForm: false
         }
     },
 
@@ -53,6 +54,22 @@ var LandingContainer = React.createClass({
 
     componentDidMount: function() {
         LandingStore.addChangeListener(this._onChange);
+    },
+
+    _toggleFormDisplay: function() {
+        if (!this.state.displayForm)
+            this.setState({displayForm: true});
+        else 
+            this.setState({displayForm: false});
+    },
+
+    facebookLogin: function() {
+        //Actions.loginFacebook();
+        window.location = '/auth/facebook';
+    },
+
+    googleLogin: function() {
+        window.location = '/auth/google';
     },
 
     render: function() {
@@ -88,6 +105,9 @@ var LandingContainer = React.createClass({
             var standardLoginButtonText = "Join with email";
             var groupMessage =  "You have been invited to join this group "
             var count = 0;
+
+            var displayForm = this.state.displayForm ? <LoginSignup /> : '';
+
             var members = group.members.map(function(member) {
                 count++;
                 if(count < 5) {
@@ -108,11 +128,15 @@ var LandingContainer = React.createClass({
                         </ToolbarGroup>
                     );
                 }
-            })
+            });
+
+            // adding group description:
             groupDescription='';
             if(group.description) {
                 groupDescription = <p style={{color:"#FFF", maxWidth:"100%"}}>{group.description}</p>
             }
+
+
             var groupCard = 
                 <div
                     style={{padding:30}}>
@@ -149,12 +173,12 @@ var LandingContainer = React.createClass({
             <div>
                 <div style={{paddingTop:20}}>
                 <span style={{padding:5}}>
-                    <a className="btn btn-facebook btn-xl btn-social">
+                    <a onClick={this.facebookLogin} className="btn btn-facebook btn-xl btn-social">
                          <i className="fa fa-facebook"></i> {facebookButtonText}
                     </a>
                 </span>
                 <span style={{padding:5}}>
-                    <a className="btn btn-google btn-xl btn-social">
+                    <a onClick={this.googleLogin} className="btn btn-google btn-xl btn-social">
                          <i className="fa fa-google"></i> {googleButtonText}
                     </a>
                 </span>
@@ -165,10 +189,14 @@ var LandingContainer = React.createClass({
                         fontSize: 15,
                         fontFamily: "sans-serif",
                         fontWeight: 400,
-                        color:"#F6F6F6"
-                    }}>
+                        color:"#F6F6F6",
+                        cursor: 'pointer'
+                    }} onClick={this._toggleFormDisplay}>
                     {standardLoginButtonText}
                 </div>
+
+                {displayForm}
+
             </div>
 
         return (
