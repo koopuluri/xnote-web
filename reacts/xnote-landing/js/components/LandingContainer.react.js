@@ -14,6 +14,7 @@ var ToolbarGroup = mui.ToolbarGroup;
 var Toolbar = mui.Toolbar;
 var CircularProgress = mui.CircularProgress;
 var FlatButton = mui.FlatButton;
+var Dialog = mui.Dialog;
 
 var LoginSignup = require('./LoginSignup.react');
 
@@ -33,11 +34,6 @@ var LandingContainer = React.createClass({
         ThemeManager.setPalette({
             textColor:"#FFF"
         })
-        ThemeManager.setComponentThemes({
-            raisedButton: {
-                color: '#3b5998'
-            },
-        })
     },
 	getInitialState: function() {
         return {
@@ -53,6 +49,10 @@ var LandingContainer = React.createClass({
 
     componentDidMount: function() {
         LandingStore.addChangeListener(this._onChange);
+    },
+
+    _openLoginDialog: function() {
+        this.refs.loginDialog.show();
     },
 
     render: function() {
@@ -144,7 +144,7 @@ var LandingContainer = React.createClass({
                     </Card>
                 </div>
         }
-
+        var self = this;
         var loginOptions=
             <div>
                 <div style={{paddingTop:20}}>
@@ -159,7 +159,9 @@ var LandingContainer = React.createClass({
                     </a>
                 </span>
                 </div>
-                <div style={{
+                <div
+                    onClick={self._openLoginDialog} 
+                    style={{
                         paddingTop: 20,
                         paddingBottom: 20,
                         fontSize: 15,
@@ -170,11 +172,23 @@ var LandingContainer = React.createClass({
                     {standardLoginButtonText}
                 </div>
             </div>
-
         return (
-            <div classNam="row">
-                {groupCard}
-                {loginOptions}
+            <div>
+                <div classNam="row">
+                    {groupCard}
+                    {loginOptions}
+                </div>
+                <Dialog
+                    style={{
+                        transform:"translate3d(0px, -200px, 0px)",
+                    }}
+                    contentStyle={{
+                        width:500,
+                    }}
+                    isModal={true}
+                    ref="loginDialog">
+                    <LoginSignup />
+                </Dialog>
             </div>
         );
     },

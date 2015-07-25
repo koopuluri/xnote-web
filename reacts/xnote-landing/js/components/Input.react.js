@@ -62,11 +62,11 @@ var Input = React.createClass({
             }
         } else {
             return (
-              <TextField
-                  hintText={this.props.placeholder}
-                  value={this.props.value}
-                  onChange={this._handleChange}
-                  type={this.props.type} />
+                <TextField
+                    hintText={this.props.placeholder}
+                    value={this.props.value}
+                    onChange={this._handleChange}
+                    type={this.props.type} />
             );
         }
     }

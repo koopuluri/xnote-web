@@ -14,12 +14,6 @@ body {
     font-family: Merriweather,'Helvetica Neue',Arial,sans-serif;
 }
 
-hr {
-    max-width: 50px;
-    border-color: #4CAF50;
-    border-width: 3px;
-}
-
 hr.light {
     border-color: #fff;
 }
@@ -430,6 +424,27 @@ fieldset[disabled] .btn-default.active {
     background-color: #3B5998;
 }
 
+.btn-facebook2 {
+    border-color: #3B5998;
+    border: solid 1px;
+    color: #fff;
+    background-color: #3B5998;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.btn-facebook2:hover,
+.btn-facebook2:focus,
+.btn-facebook2.focus,
+.btn-facebook2:active,
+.btn-facebook2.active,
+.open > .dropdown-toggle.btn-facebook2 {
+    border-color: #3B5998;
+    color: #fff;
+    background-color: #3B5998;
+}
+
 .btn-google {
     border-color: #D50F25;
     border:solid 1px;
@@ -446,6 +461,27 @@ fieldset[disabled] .btn-default.active {
 .btn-google:active,
 .btn-google.active,
 .open > .dropdown-toggle.btn-google {
+    border-color: #D50F25;
+    color: #fff;
+    background-color: #D50F25;
+}
+
+.btn-google2 {
+    border-color: #D50F25;
+    border:solid 1px;
+    color: #fff;
+    background-color: #D50F25;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.btn-google2:hover,
+.btn-google2:focus,
+.btn-google2.focus,
+.btn-google2:active,
+.btn-google2.active,
+.open > .dropdown-toggle.btn-google2 {
     border-color: #D50F25;
     color: #fff;
     background-color: #D50F25;

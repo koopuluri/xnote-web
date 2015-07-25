@@ -8,14 +8,39 @@ var Card = mui.Card;
 var RaisedButton = mui.RaisedButton;
 var CardTitle = mui.CardTitle;
 var TextField = mui.TextField;
-
 var LoginStore = require('../stores/LoginStore');
+
+var Colors = mui.Styles.Colors;
+var ThemeManager = new mui.Styles.ThemeManager();
 
 var LOGIN = 'Login';
 var SIGNUP = 'Signup';
 
 
 var LoginForm = React.createClass({
+
+	childContextTypes : {
+      muiTheme: React.PropTypes.object
+    },
+
+    getChildContext: function() { 
+      return {
+        muiTheme: ThemeManager.getCurrentTheme()
+      }
+    },
+
+    componentWillMount: function() {
+      	ThemeManager.setPalette({
+            primary1Color: Colors.green500,
+            focusColor: Colors.green500
+        });
+        ThemeManager.setComponentThemes({
+            raisedButton: {
+                primaryColor: Colors.green500,
+        		primaryTextColor: "#FFF",
+            },
+        })
+    },
 
 	getInitialState: function(){
 		return {
@@ -66,6 +91,7 @@ var LoginForm = React.createClass({
 	},
 
 	_toggleMode: function() {
+		console.log("HMM");
 		Actions._setError('');
 		if (this.state.mode === LOGIN) {
 			this.setState({
@@ -85,13 +111,12 @@ var LoginForm = React.createClass({
 	},	
 
 	_signup: function() {
-		console.log('singup! ' + this.state.name + '::' + this.state.email + '::' + this.state.password);
 		Actions.signup(this.state.name, this.state.email, this.state.password);
 	},
 
 	render: function() {
 
-		var bottomTagStyle = {fontSize: 14, marginTop: '10px', cursor: 'pointer'}
+		var bottomTagStyle = {color: Colors.grey500, fontSize: 14, marginTop: '10px', cursor: 'pointer'}
 		var errorStyle = {fontSize: 14, marginBottom: '10px', color: 'red'}
 
 		var errorMessage = '';
@@ -103,32 +128,31 @@ var LoginForm = React.createClass({
 		if (this.state.mode === SIGNUP) {
 			var valid = this.validate(this.state);
 
-			var submitButton = <RaisedButton primary={true} disabled={true}>
-									<span>Signup</span> 
-								</RaisedButton>;
+			var submitButton = <RaisedButton 
+									label="Sign Up"
+									primary={true}
+									disabled={true}/>;
 
 			if (valid.name && valid.email && valid.password) {
-				submitButton = <RaisedButton primary={true} onTouchTap={this._signup}>
-								 	<span>Signup</span> 
-							   </RaisedButton>;
+				submitButton = <RaisedButton 
+									primary={true}
+									label="Sign Up"
+									onTouchTap={this._signup}/>;
 			}
 
 
 			return (
-				<div className="signup-form"
+				<div className="signup-form" style={{}}
 					style={{
-						width: '400px',
 						textAlign: 'center'
 					}}>
 					{errorMessage}
-					<Card>
-						<CardTitle
-				            title="Sign up" />
-
+					<CardTitle
+				        title="Sign up" />
 				        <div>
 							<div className="login-input-name">
 								<Input valid={valid.name}
-									errorMessage='name must be atleast one character long'
+									errorMessage='Name must be atleast one character long'
 									value={this.state.name} 
 									onChange={this.handleNameChange} 
 									placeholder="name"/>
@@ -136,7 +160,7 @@ var LoginForm = React.createClass({
 
 							<div className="login-input-email">
 								<Input valid={valid.email}
-									errorMessage='invalid email'
+									errorMessage='Invalid email'
 									value={this.state.email} 
 									onChange={this.handleEmailChange} 
 									placeholder="email"/>
@@ -144,7 +168,7 @@ var LoginForm = React.createClass({
 
 							<div className="login-input-pwd">
 								<Input valid={valid.password}
-									errorMessage='password must be at last 8 characters long with at least 1 number'
+									errorMessage='Password must be at last 8 characters long with at least 1 number'
 									value={this.state.password}
 									onChange={this.handlePasswordChange}
 									placeholder="password" 
@@ -152,8 +176,17 @@ var LoginForm = React.createClass({
 							</div>
 						</div>
 						{submitButton}
-					</Card>
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Already a user?</p> 
+					<span style={{padding:5}}>
+                	    <a className="btn btn-facebook2 btn-social">
+                        	<i className="fa fa-facebook"></i> Login with Facebook
+                    	</a>
+                	</span>
+                	<span style={{padding:5}}>
+                    	<a className="btn btn-google2 btn-social">
+                         	<i className="fa fa-google"></i> Login with Google
+                    	</a>
+                	</span>
 				</div>
 			);
 		} else {
@@ -161,34 +194,37 @@ var LoginForm = React.createClass({
 			return (
 				<div className="login-form"
 					style={{
-						width: '400px',
 						textAlign: 'center'
 					}}>
 					{errorMessage}
-					<Card>
-						<CardTitle
-				            title="Login" />
-
-			            <div className="login-email">
-						    <TextField
-								hintText='email'
-								value={this.state.email}
-								onChange={this.handleEmailChange} />
-						</div>
-
-						<div className="login-password">
-							<TextField
-								hintText="password"
-								value={this.state.password}
-								onChange={this.handlePasswordChange}
-								type="password" />
-						</div>
-
-
-						<RaisedButton primary={true} 
-							onTouchTap={this._login}> <span>Login</span> </RaisedButton>
-					</Card>
+					<CardTitle
+				        title="Login" />
+		            <div className="login-email">
+					    <TextField
+							hintText='email'
+							value={this.state.email}
+							onChange={this.handleEmailChange} />
+					</div>
+					<div className="login-password">
+						<TextField
+							hintText="password"
+							value={this.state.password}
+							onChange={this.handlePasswordChange}
+							type="password" />
+					</div>
+					<RaisedButton primary={true} 
+						onTouchTap={this._login}> <span>Login</span> </RaisedButton>
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Sign up for the first time</p> 
+					<span style={{padding:5}}>
+                	    <a className="btn btn-facebook2 btn-social">
+                        	<i className="fa fa-facebook"></i> Login with Facebook
+                    	</a>
+                	</span>
+                	<span style={{padding:5}}>
+                    	<a className="btn btn-google2 btn-social">
+                         	<i className="fa fa-google"></i> Login with Google
+                    	</a>
+                	</span>
 				</div>
 			);
 		}
