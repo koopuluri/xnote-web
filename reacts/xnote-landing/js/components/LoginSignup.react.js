@@ -212,8 +212,8 @@ var LoginForm = React.createClass({
 							onChange={this.handlePasswordChange}
 							type="password" />
 					</div>
-					<RaisedButton primary={true} 
-						onTouchTap={this._login}> <span>Login</span> </RaisedButton>
+					<RaisedButton primary={true} label="Login" 
+						onTouchTap={this._login} />
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Sign up for the first time</p> 
 					<span style={{padding:5}}>
                 	    <a className="btn btn-facebook2 btn-social">
