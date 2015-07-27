@@ -38,7 +38,7 @@ var LandingContainer = React.createClass({
 	getInitialState: function() {
         return {
             group: LandingStore.getGroup(),
-            isLoading: LandingStore.getLoading()
+            isLoading: LandingStore.getLoading(),
         }
     },
 
@@ -46,9 +46,18 @@ var LandingContainer = React.createClass({
         this.setState(this.getInitialState());
     },
 
-
     componentDidMount: function() {
         LandingStore.addChangeListener(this._onChange);
+    },
+
+
+    facebookLogin: function() {
+        //Actions.loginFacebook();
+        window.location = '/auth/facebook';
+    },
+
+    googleLogin: function() {
+        window.location = '/auth/google';
     },
 
     _openLoginDialog: function() {
@@ -63,6 +72,18 @@ var LandingContainer = React.createClass({
         var facebookButtonText = "Sign in with Facebook";
         var googleButtonText = "Sign in with Google";
         var standardLoginButtonText = "Sign in with email";
+
+        var facebookButton = <span style={{padding:5}}>
+                                <a onClick={this.facebookLogin} className="btn btn-facebook btn-xl btn-social">
+                                     <i className="fa fa-facebook"></i> {facebookButtonText}
+                                </a>
+                            </span>;
+
+        var googleButton =  <span style={{padding:5}}>
+                                <a onClick={this.googleLogin} className="btn btn-google btn-xl btn-social">
+                                     <i className="fa fa-google"></i> {googleButtonText}
+                                </a>
+                            </span>;
 
         var errorComp = '';
         if (this.props.error && (this.props.error !== null)) {
@@ -88,7 +109,11 @@ var LandingContainer = React.createClass({
             var standardLoginButtonText = "Join with email";
             var groupMessage =  "You have been invited to join this group "
             var count = 0;
+
             var members = group.members.map(function(member) {
+                if (!member) {
+                    return false;
+                }
                 count++;
                 if(count < 5) {
                     var picture = member.picture;
@@ -108,11 +133,14 @@ var LandingContainer = React.createClass({
                         </ToolbarGroup>
                     );
                 }
-            })
-            groupDescription='';
+            });
+
+            // adding group description:
+            var groupDescription='';
             if(group.description) {
                 groupDescription = <p style={{color:"#FFF", maxWidth:"100%"}}>{group.description}</p>
             }
+
             var groupCard = 
                 <div
                     style={{padding:30}}>
@@ -148,16 +176,8 @@ var LandingContainer = React.createClass({
         var loginOptions=
             <div>
                 <div style={{paddingTop:20}}>
-                <span style={{padding:5}}>
-                    <a className="btn btn-facebook btn-xl btn-social">
-                         <i className="fa fa-facebook"></i> {facebookButtonText}
-                    </a>
-                </span>
-                <span style={{padding:5}}>
-                    <a className="btn btn-google btn-xl btn-social">
-                         <i className="fa fa-google"></i> {googleButtonText}
-                    </a>
-                </span>
+                {facebookButton}
+                {googleButton}
                 </div>
                 <div
                     onClick={self._openLoginDialog} 
@@ -167,7 +187,8 @@ var LandingContainer = React.createClass({
                         fontSize: 15,
                         fontFamily: "sans-serif",
                         fontWeight: 400,
-                        color:"#F6F6F6"
+                        color:"#F6F6F6",
+                        cursor: 'pointer'
                     }}>
                     {standardLoginButtonText}
                 </div>
@@ -180,7 +201,7 @@ var LandingContainer = React.createClass({
                 </div>
                 <Dialog
                     style={{
-                        transform:"translate3d(0px, -150px, 0px)",
+                        transform:"translate3d(0px, -200px, 0px)",
                     }}
                     contentStyle={{
                         width:500,

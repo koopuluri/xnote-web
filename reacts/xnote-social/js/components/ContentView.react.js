@@ -10,6 +10,7 @@ var Colors = mui.Styles.Colors;
 var List = mui.List;
 var Card = mui.Card;
 var CardText = mui.CardText;
+var Paper = mui.Paper;
 
 //Using material UI themes
 //http://material-ui.com/#/customization/themes

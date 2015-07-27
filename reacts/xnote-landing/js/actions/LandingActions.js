@@ -21,6 +21,7 @@ var Actions = {
 	login: function(email, password) {
 		var self = this;
 		API.login(email, password, function(obj) {
+			console.log(obj);
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
@@ -32,23 +33,24 @@ var Actions = {
 
 	loginFacebook: function() {
 		var self = this;
+		console.log('facebook login!');
 		API.loginFacebook(function(obj) {
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
-				var redirectUrl = obj.redirect;
-				window.location = redirectUrl;
+				// do nothing.
 			}
 		});
 	},
 
 	loginGoogle: function() {
+		var self = this;
+		console.log('google login');
 		API.loginGoogle(function(obj) {
 			if (obj.error) {
 				self._setError(obj.error);
 			} else {
-				var redirectUrl = obj.redirect;
-				window.location = redirectUrl;
+				// do nothing.
 			}
 		});
 	},
@@ -69,6 +71,8 @@ var Actions = {
 
 	_setGroup: function(group) {
 		for(var i = 0; i < group.members.length; i++) {
+			console.log('group members: ' + group.members[i]);
+			console.log(group.members[i]);
 			group.members[i] = Utils.normalizeUser(group.members[i]);
 		}
 		Dispatcher.handleAction({

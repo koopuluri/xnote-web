@@ -2,19 +2,14 @@ var React = require('react');
 var Actions = require('../actions/ArticleActions');
 var PartialHighlightStore = require('../stores/PartialHighlightStore');
 
-// colors:
-var SELECTED_NOTE_COLOR = "#FFFF7F";
-var UNSELECTED_NOTE_COLOR = "#87cefa";
-
+var	UNSELECTED_NOTE_COLOR = "#FFECB3";
+var	SELECTED_NOTE_COLOR = "#69F0AE";
 
 // requires following props:
 // - noteId
 // - contentHtml: the html to render in its container.
 // - partialNoteId
 var PartialHighlight = React.createClass({
-
-	SELECTED_COLOR: "#FFFF7F",
-	UNSELECTED_NOTE_COLOR: "#87cefa",
 
 	getInitialState: function() {
 			// var selectedNoteId = NoteStore.getSelectedNoteId();
@@ -74,7 +69,7 @@ var PartialHighlight = React.createClass({
 	render: function() {
 		// the highlighted text for the note:
 		var elementInnerHtml = this.props.content;
-		var bgColor = (this.state.isSelected || this.state.isHovered) ? "#FFFF7F" : "#87cefa";
+		var bgColor = (this.state.isSelected || this.state.isHovered) ? SELECTED_NOTE_COLOR : UNSELECTED_NOTE_COLOR;
 		var style = {
 			backgroundColor: bgColor
 		};

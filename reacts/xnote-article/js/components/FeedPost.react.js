@@ -82,6 +82,7 @@ var FeedPost = React.createClass({
 		var post = this.props.post;
 		var self = this;
 		var feedPostOnClick = this.props.isLink ? getFeedPostOnClick(post) : function() {};
+
 		if (post.type === ARTICLE) {
 			var article = post.article;
 			if(post.createdBy.picture) {
@@ -126,8 +127,9 @@ var FeedPost = React.createClass({
       			</Card>
 			);
 		} else if (post.type === HIGHLIGHT) {
-				var self = this;
 
+				var self = this;
+				
 				if(post.createdBy.picture) {
 					var leftAvatar = 
 						<Avatar src={post.createdBy.picture} size={40} />
@@ -140,6 +142,10 @@ var FeedPost = React.createClass({
 
 				var highlightClippedText = '"' + highlight.clippedText + '"';
 				var notes = highlight.notes.map(function(note) {
+					if (!note.owner) {
+						return false;
+					}
+					
 					return (
 						<NoteComponent 
 							highlightId = {highlight._id}
@@ -151,7 +157,6 @@ var FeedPost = React.createClass({
 
 				var noteList = null;
 				var noteLength = highlight.notes.length;
-				var articleTitle = highlight.article.title ? '- ' + highlight.article.title : '';
 
 				if (noteLength > 0) {
 					noteList =
@@ -161,7 +166,7 @@ var FeedPost = React.createClass({
 				}
 
 				var rightIconButton = '';
-
+				console.log(highlightClippedText);
 				return (
 					<Card style={{
 						backgroundColor: '#fafafa',
@@ -198,9 +203,6 @@ var FeedPost = React.createClass({
 	        							<div style={{padding : 15, margin: 0, fontSize : 16}} 
 	        								dangerouslySetInnerHTML={{__html: highlightClippedText}}>
 		        						</div>
-		        						<p style={{padding : 15, margin: 0, fontSize : 16, fontWeight: 600}}> 
-		        							{articleTitle}
-		        						</p>
         						</div>
 
         						<div className="feedpost-notes-list" 

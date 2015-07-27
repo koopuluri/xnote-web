@@ -24,6 +24,8 @@ var _callbackNoteAdd = function(user, res, io) {
     };
 };
 
+
+
 var _callbackPostAdd = function(user, res, io) {
     return function(dbOutput) {
         if (!dbOutput.error) {
@@ -59,15 +61,26 @@ var _callbackChatAdd = function(res, io) {
 
 };
 
+var SOCIAL = 'Social';
+var LOCAL = 'Local';
 
 // executed after user authenticated and when the user is about to be logged in
 // (req.logIn(user)):
-var postLogin = function(req, res, next, err, user, info) {
+// - type: "SOCIAL" / "LOCAL"
+var postLogin = function(req, res, next, err, user, info, type) {
+    console.log('type: ' + type);
     var redirectUrl = '/dashboard';
+
+
     if(err) { return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); }
 
     if (!user) { 
-        return res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+        if (type === SOCIAL) {
+            return res.redirect('/loginerror');
+        } else {
+            res.send({error: 'Failed to authenticate. Check your credentials and try again in a few moments.'}); 
+            return;
+        }
     }
 
     // If we have previously stored a redirectUrl, use that, 
@@ -84,7 +97,10 @@ var postLogin = function(req, res, next, err, user, info) {
         req.session.articleId = null;
     }
 
+    console.log('OK I:M IN: ' + redirectUrl);
+
     req.logIn(user, function(err){
+        console.log('ERROR: ' + err);
         if (err) { return next(err); }
 
         // if this user is not part of the group to redirect to (if group exists)
@@ -95,15 +111,27 @@ var postLogin = function(req, res, next, err, user, info) {
             DB.addGroupMember(groupId, user, function(obj) {
                 if(obj.error) {
                     console.log('error adding new user to group after login: ' + groupId);
-                    res.send({redirect: '/'});
+                    if (type === SOCIAL) {
+                        return res.redirect('/loginerror');
+                    }
+                    res.send({error: 'Failed to login.'});
+                    return;
                 }
 
                 // no issues:
+                if (type === SOCIAL) {
+                    return res.redirect(redirectUrl);
+                }
+
+                console.log('SENDING BACK! ' + redirectUrl);
                 res.send({redirect: redirectUrl});
                 return;
             });
         } else {
-            console.log('redirecting to: ' + redirectUrl);
+            if (type === SOCIAL) {
+                return res.redirect(redirectUrl);
+            }
+            console.log('SENDING BACK!');
             res.send({redirect: redirectUrl});
             return;
         }
@@ -149,7 +177,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/facebook/callback', function(req, res, next) {
         passport.authenticate('facebook', function(err, user, info) {
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, SOCIAL);
         }) (req, res, next);
     });
 
@@ -163,7 +191,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/google/callback', function(req, res, next) {
         passport.authenticate('google', function(err, user, info) {
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, SOCIAL);
         }) (req, res, next);
     });
 
@@ -176,7 +204,7 @@ module.exports = function(app, passport) {
                 return;
             }
 
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, LOCAL);
         })(req, res, next);
     });
 
@@ -189,7 +217,7 @@ module.exports = function(app, passport) {
                 return;
             }
 
-            return postLogin(req, res, next, err, user, info);
+            return postLogin(req, res, next, err, user, info, LOCAL);
         })(req, res, next);
     });
 
@@ -242,7 +270,7 @@ module.exports = function(app, passport) {
 
         console.log('/article: ' + groupId + '::' + articleId);
         res.render('article.ejs', {
-            user: {facebook: req.user.facebook, _id: req.user._id},
+            user: req.user,
             groupId: groupId,
             articleId: articleId
         });
@@ -292,12 +320,12 @@ module.exports = function(app, passport) {
     });
 
     app.get('/_user_info', isLoggedIn, function(req, res) {
-        console.log('hit /_user_info: ' + req.user.facebook.name);
-        res.send({user: {facebook: {
-                                name: req.user.facebook.name,
-                                id: req.user.facebook.id,
-                                picture: req.user.facebook.picture}
-                            }});
+        console.log('hit /_user_info: ');
+
+        var id = req.user._id;
+        req.user._id = '';
+        res.send({ user: req.user });
+        req.user_id = id;
     });
 
     app.get('/_get_feed_segment_across_groups', isLoggedIn, function(req, res) {

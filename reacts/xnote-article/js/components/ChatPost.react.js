@@ -46,7 +46,11 @@ var ChatPost = React.createClass({
 			<div className={messageClassName}>
 			<ListItem
 				disabled={true}
-				leftAvatar = {leftAvatar}
+				leftAvatar = {
+					<span className={messageTextClassName}>
+						{leftAvatar}
+					</span>
+				}
 				style={{padding: 0}}>
 			<div style={{
 				paddingTop : 10,

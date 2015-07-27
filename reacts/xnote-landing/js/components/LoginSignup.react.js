@@ -91,7 +91,6 @@ var LoginForm = React.createClass({
 	},
 
 	_toggleMode: function() {
-		console.log("HMM");
 		Actions._setError('');
 		if (this.state.mode === LOGIN) {
 			this.setState({
@@ -114,6 +113,10 @@ var LoginForm = React.createClass({
 		Actions.signup(this.state.name, this.state.email, this.state.password);
 	},
 
+	_login: function() {
+		Actions.login(this.state.email, this.state.password);
+	},
+
 	render: function() {
 
 		var bottomTagStyle = {color: Colors.grey500, fontSize: 14, marginTop: '10px', cursor: 'pointer'}
@@ -129,12 +132,14 @@ var LoginForm = React.createClass({
 			var valid = this.validate(this.state);
 
 			var submitButton = <RaisedButton 
+									style={{marginTop: 40}}
 									label="Sign Up"
 									primary={true}
 									disabled={true}/>;
 
 			if (valid.name && valid.email && valid.password) {
 				submitButton = <RaisedButton 
+									style={{marginTop: 40}}
 									primary={true}
 									label="Sign Up"
 									onTouchTap={this._signup}/>;
@@ -177,16 +182,7 @@ var LoginForm = React.createClass({
 						</div>
 						{submitButton}
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Already a user?</p> 
-					<span style={{padding:5}}>
-                	    <a className="btn btn-facebook2 btn-social">
-                        	<i className="fa fa-facebook"></i> Login with Facebook
-                    	</a>
-                	</span>
-                	<span style={{padding:5}}>
-                    	<a className="btn btn-google2 btn-social">
-                         	<i className="fa fa-google"></i> Login with Google
-                    	</a>
-                	</span>
+
 				</div>
 			);
 		} else {
@@ -212,19 +208,11 @@ var LoginForm = React.createClass({
 							onChange={this.handlePasswordChange}
 							type="password" />
 					</div>
-					<RaisedButton primary={true} label="Login" 
-						onTouchTap={this._login} />
+					<RaisedButton primary={true} 
+						style={{marginTop: 40}}
+						onTouchTap={this._login}
+						label="Login"/>
 					<p onClick={this._toggleMode} style={bottomTagStyle}>Sign up for the first time</p> 
-					<span style={{padding:5}}>
-                	    <a className="btn btn-facebook2 btn-social">
-                        	<i className="fa fa-facebook"></i> Login with Facebook
-                    	</a>
-                	</span>
-                	<span style={{padding:5}}>
-                    	<a className="btn btn-google2 btn-social">
-                         	<i className="fa fa-google"></i> Login with Google
-                    	</a>
-                	</span>
 				</div>
 			);
 		}

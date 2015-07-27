@@ -28,6 +28,7 @@ module.exports = {
 	},
 
 	loginFacebook: function(callback) {
+		console.log('API.loginFacebook()');
 		$.get('/auth/facebook', {}, function(data, status) {
 			callback(data);
 		});
