@@ -1,4 +1,4 @@
-[Xnote] — Social Annotation (www.xnote.io)
+Xnote — Social Annotation (www.xnote.io)
 ==================================================
 
 # What is Xnote?
