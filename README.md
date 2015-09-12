@@ -9,11 +9,6 @@ The code is divided into two portions, the back end mostly present in routes.js,
 server.js, passport.js and DB.js and the front end which is in the reacts folder.
 The front end is further divided into 4 components each corresponding to a single page in the application. The following sections describe each of these sections briefly.
 
-# What you need to build your own Xnote
-
-TBD
-
-
 # Understanding the Components
 
 # Backend:
