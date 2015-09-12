@@ -4,13 +4,10 @@
 # What is Xnote?
 
 Xnote is a tool that allows groups to read and discuss articles via annotations.
-The project can be viewed at www.xnote.io. Xnote is built using MongoDB, Express
-React and NodeJS among other libraries (discussed later).
+The project can be viewed at www.xnote.io. Xnote is built using MongoDB, Express, React and NodeJS among other libraries (discussed later).
 The code is divided into two portions, the back end mostly present in routes.js,
 server.js, passport.js and DB.js and the front end which is in the reacts folder.
-The front end is further divided into 4 components each of which contains the 
-code for one page of xnote. The following sections describe each of these sections
-briefly.
+The front end is further divided into 4 components each corresponding to a single page in the application. The following sections describe each of these sections briefly.
 
 # What you need to build your own Xnote
 
@@ -19,7 +16,9 @@ TBD
 
 # Understanding the Components
 
-### Backend:
+# Backend:
+
+### Routing and Database
 
 `routes.js and server.js` are the files that define routing, and other node.js formalities. 
 
@@ -28,6 +27,14 @@ TBD
 ### Authentication:
 
 `Passport.js` (http://passportjs.org/) was used; it provides an easy way to integrate social logins (fb, google), and also custom logins. Expects a config.js file placed on the same level to access social tokens.
+
+### Article Parsing:
+
+Diffbot (https://www.diffbot.com/ - "Get structured content from articles, products, and other familiar page types.") article parser was used to obtain the html and other meta information about a web page. This was used to render the page in the article view ('/article') of the app. 
+
+### Annotation:
+
+Rendering highlights and selecing regions of the article was largely supported by Tim Down's Rangy library (https://github.com/timdown/rangy). Specifically Rangy-Highligher (https://github.com/timdown/rangy/wiki/Highlighter-Module) was very useful in the highlight rendering. 
 
 # Frontend:
 
