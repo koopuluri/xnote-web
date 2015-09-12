@@ -1,8 +1,7 @@
 [Xnote](www.xnote.io) — Social Annotation
 ==================================================
 
-What is Xnote?
---------------------------------------
+# What is Xnote?
 
 Xnote is a tool that allows groups to read and discuss articles via annotations.
 The project can be viewed at www.xnote.io. Xnote is built using MongoDB, Express
@@ -13,14 +12,12 @@ The front end is further divided into 4 components each of which contains the
 code for one page of xnote. The following sections describe each of these sections
 briefly.
 
-What you need to build your own Xnote
---------------------------------------
+# What you need to build your own Xnote
 
 TBD
 
 
-Understanding the Components
-----------------------------
+# Understanding the Components
 
 ### Backend:
 
@@ -33,7 +30,6 @@ Understanding the Components
 `Passport.js` (http://passportjs.org/) was used; it provides an easy way to integrate social logins (fb, google), and also custom logins. Expects a config.js file placed on the same level to access social tokens.
 
 # Frontend:
------------
 
 ## React.js:
 
@@ -60,7 +56,6 @@ http://startbootstrap.com/template-overviews/creative/
 
 
 #Dependencies
-============
 - Google Roboto Font. Included in the ejs files under views.
 - Google Font Icons. Included in the ejs files under views. Used primarily for 
 the notification and chat icons.
@@ -79,7 +74,6 @@ https://scotch.io/tutorials/creating-a-simple-shopping-cart-with-react-js-and-fl
 
 
 #Planned Improvements and Bugs:
-------------------------------
 - Chat window lazy loading. Currently the chat window only displays the last 10
 messages. We're working on it to make sure that it lazy loads and displays more
 messages as you scroll up.
@@ -97,7 +91,6 @@ experience to our users.
 
 
 #Running the Code
-================
 Perform the following steps to run the code. 
 - Make sure to add the tokens that are missing. Diffbot token, Facebook application
 token for facebook login, google application token for google login. Most of these
