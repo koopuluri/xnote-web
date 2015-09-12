@@ -35,9 +35,9 @@ The front-end is built with React.js (http://facebook.github.io/react/) using th
 
 Description from homepage:
 
-`React is a JavaScript library for creating user interfaces by Facebook and Instagram. Many people choose to think of React as the V in MVC.
+"React is a JavaScript library for creating user interfaces by Facebook and Instagram. Many people choose to think of React as the V in MVC.
 
-We built React to solve one problem: building large applications with data that changes over time.`
+We built React to solve one problem: building large applications with data that changes over time."
 
 The application is modularized into 4 react folders, each corresponding to a page in the app:
 - **/xnote-article**: deals with reading and annotating a single article
